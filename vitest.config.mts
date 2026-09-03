@@ -1,16 +1,18 @@
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 import { defineConfig } from "vitest/config";
-
-const root = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   test: {
-    environment: "node",
-  },
-  resolve: {
-    alias: {
-      "@": root,
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "json-summary"],
+      include: ["lib/**/*.ts"],
+      exclude: ["**/*.test.ts"],
+      thresholds: {
+        lines: 80,
+        functions: 80,
+        branches: 80,
+        statements: 80,
+      },
     },
   },
 });
