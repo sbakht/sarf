@@ -4,7 +4,6 @@ import { SpotterCard } from "./SpotterCard";
 import { SpotterFilters } from "./SpotterFilters";
 import { SpotterStep } from "./SpotterStep";
 import { useSpotterQuiz } from "./useSpotterQuiz";
-import type { ReactNode } from "react";
 
 function NextButton({
   label,
