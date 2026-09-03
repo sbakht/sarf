@@ -1,10 +1,20 @@
 import { ArabicWord } from "@/components/ArabicWord";
 import { FormBadge } from "@/components/FormBadge";
-import { personQuizFeedback, rootArabic, type ConjugateResult, type Prompt } from "@/lib/sarf";
+import {
+  personQuizFeedback,
+  rootArabic,
+  type ConjugateResult,
+  type Prompt,
+} from "@/lib/sarf";
 
 function CheckIcon() {
   return (
-    <svg aria-hidden="true" viewBox="0 0 16 16" className="size-4 shrink-0" fill="none">
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 16 16"
+      className="size-4 shrink-0"
+      fill="none"
+    >
       <path
         d="M3.5 8.5 6.5 11.5 12.5 4.5"
         stroke="currentColor"
@@ -18,7 +28,12 @@ function CheckIcon() {
 
 function XIcon() {
   return (
-    <svg aria-hidden="true" viewBox="0 0 16 16" className="size-4 shrink-0" fill="none">
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 16 16"
+      className="size-4 shrink-0"
+      fill="none"
+    >
       <path
         d="M4 4 12 12M12 4 4 12"
         stroke="currentColor"
@@ -51,13 +66,21 @@ export function SpotterCard({
   const cardTone = cardToneClass(feedback);
 
   return (
-    <section className={`rounded-3xl border bg-card px-6 py-10 text-center ${cardTone}`}>
-      <p className="text-xs uppercase tracking-wider text-ink-soft">Identify this verb</p>
+    <section
+      className={`rounded-3xl border bg-card px-6 py-10 text-center ${cardTone}`}
+    >
+      <p className="text-xs uppercase tracking-wider text-ink-soft">
+        Identify this verb
+      </p>
       {prompt && result ? (
         <>
           <div className="mt-4">
             {showColors || done ? (
-              <ArabicWord slots={result.slots} surface={result.surface} size="xl" />
+              <ArabicWord
+                slots={result.slots}
+                surface={result.surface}
+                size="xl"
+              />
             ) : (
               <span dir="rtl" className="font-arabic text-5xl">
                 {result.surface}

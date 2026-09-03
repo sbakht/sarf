@@ -1,12 +1,7 @@
 export type FormId = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
 
 export type FormIBab =
-  | "nasara"
-  | "daraba"
-  | "fataha"
-  | "fariha"
-  | "karuma"
-  | "hasiba";
+  "nasara" | "daraba" | "fataha" | "fariha" | "karuma" | "hasiba";
 
 export type Tense = "past" | "present" | "imperative";
 export type Voice = "active" | "passive";

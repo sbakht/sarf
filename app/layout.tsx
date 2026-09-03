@@ -22,7 +22,8 @@ const naskh = Noto_Naskh_Arabic({
 
 export const metadata: Metadata = {
   title: "Sarf Trainer",
-  description: "Recognize and memorize Arabic sarf patterns — Forms I–X, abwab, and weak verbs.",
+  description:
+    "Recognize and memorize Arabic sarf patterns — Forms I–X, abwab, and weak verbs.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

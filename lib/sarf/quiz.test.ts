@@ -33,9 +33,13 @@ describe("2nd dual quiz identity", () => {
   it("never offers both 2nd dual genders as distinct choices", () => {
     const ids = ["antuma_f", ...ALL_PERSON_IDS] as PersonId[];
     const choices = uniqueOptions("antuma_f", ids, 14, "seed", quizPersonKey);
-    const duals = choices.filter((id) => id === "antuma_m" || id === "antuma_f");
+    const duals = choices.filter(
+      (id) => id === "antuma_m" || id === "antuma_f",
+    );
     expect(duals).toHaveLength(1);
-    expect(choices.map(personQuizEnglish).filter((label) => label === "you (m/f)")).toHaveLength(1);
+    expect(
+      choices.map(personQuizEnglish).filter((label) => label === "you (m/f)"),
+    ).toHaveLength(1);
   });
 });
 
@@ -68,39 +72,57 @@ describe("2nd dual conjugations", () => {
 
 describe("mudari person homographs", () => {
   it("treats 2nd dual and 3rd dual feminine as the same present answer", () => {
-    expect(quizPersonGroup("antuma_m", "present")).toBe(quizPersonGroup("huma_f", "present"));
-    expect(quizPersonGroup("antuma_f", "present")).toBe(quizPersonGroup("huma_f", "present"));
+    expect(quizPersonGroup("antuma_m", "present")).toBe(
+      quizPersonGroup("huma_f", "present"),
+    );
+    expect(quizPersonGroup("antuma_f", "present")).toBe(
+      quizPersonGroup("huma_f", "present"),
+    );
     expect(isCorrectQuizPerson("antuma_m", "huma_f", "present")).toBe(true);
     expect(isCorrectQuizPerson("huma_f", "antuma_f", "present")).toBe(true);
   });
 
   it("keeps 2nd dual and 3rd dual feminine distinct in the past", () => {
-    expect(quizPersonGroup("antuma_m", "past")).not.toBe(quizPersonGroup("huma_f", "past"));
+    expect(quizPersonGroup("antuma_m", "past")).not.toBe(
+      quizPersonGroup("huma_f", "past"),
+    );
     expect(isCorrectQuizPerson("antuma_m", "huma_f", "past")).toBe(false);
     expect(isCorrectQuizPerson("antuma_m", "huma_f")).toBe(false);
   });
 
   it("treats you (m) and she as the same present answer", () => {
-    expect(quizPersonGroup("anta", "present")).toBe(quizPersonGroup("hiya", "present"));
+    expect(quizPersonGroup("anta", "present")).toBe(
+      quizPersonGroup("hiya", "present"),
+    );
     expect(isCorrectQuizPerson("anta", "hiya", "present")).toBe(true);
     expect(isCorrectQuizPerson("hiya", "anta", "present")).toBe(true);
   });
 
   it("keeps you (m) and she distinct in the past", () => {
-    expect(quizPersonGroup("anta", "past")).not.toBe(quizPersonGroup("hiya", "past"));
+    expect(quizPersonGroup("anta", "past")).not.toBe(
+      quizPersonGroup("hiya", "past"),
+    );
     expect(isCorrectQuizPerson("anta", "hiya", "past")).toBe(false);
   });
 
   it("does not collapse 3rd dual masculine with 3rd dual feminine in the present", () => {
-    expect(quizPersonGroup("huma_m", "present")).not.toBe(quizPersonGroup("huma_f", "present"));
+    expect(quizPersonGroup("huma_m", "present")).not.toBe(
+      quizPersonGroup("huma_f", "present"),
+    );
     expect(isCorrectQuizPerson("huma_m", "huma_f", "present")).toBe(false);
   });
 
   it("never offers present dual homographs as distinct choices", () => {
-    const choices = uniqueOptions("antuma_m", ALL_PERSON_IDS, 14, "seed", (id) =>
-      quizPersonGroup(id, "present"),
+    const choices = uniqueOptions(
+      "antuma_m",
+      ALL_PERSON_IDS,
+      14,
+      "seed",
+      (id) => quizPersonGroup(id, "present"),
     );
-    const duals = choices.filter((id) => id === "antuma_m" || id === "antuma_f" || id === "huma_f");
+    const duals = choices.filter(
+      (id) => id === "antuma_m" || id === "antuma_f" || id === "huma_f",
+    );
     expect(duals).toHaveLength(1);
   });
 
@@ -113,8 +135,12 @@ describe("mudari person homographs", () => {
   });
 
   it("still offers 2nd dual and 3rd dual feminine as distinct past choices", () => {
-    const choices = uniqueOptions("antuma_m", ALL_PERSON_IDS, 14, "seed", (id) =>
-      quizPersonGroup(id, "past"),
+    const choices = uniqueOptions(
+      "antuma_m",
+      ALL_PERSON_IDS,
+      14,
+      "seed",
+      (id) => quizPersonGroup(id, "past"),
     );
     expect(choices).toContain("antuma_m");
     expect(choices).toContain("huma_f");
@@ -127,8 +153,12 @@ describe("mudari person homographs", () => {
     expect(personQuizFeedback("huma_f", "present")).toBe(
       "أَنْتُمَا / هُمَا · you (m/f) or they two (f)",
     );
-    expect(personQuizFeedback("anta", "present")).toBe("أَنْتَ / هِيَ · you (m) or she");
-    expect(personQuizFeedback("antuma_m", "past")).toBe("أَنْتُمَا · you (m/f)");
+    expect(personQuizFeedback("anta", "present")).toBe(
+      "أَنْتَ / هِيَ · you (m) or she",
+    );
+    expect(personQuizFeedback("antuma_m", "past")).toBe(
+      "أَنْتُمَا · you (m/f)",
+    );
   });
 });
 

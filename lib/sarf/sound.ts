@@ -50,7 +50,11 @@ function lastLamIndex(pieces: Piece[]): number {
   return -1;
 }
 
-function setLastLamVowel(pieces: Piece[], lastVowel: string, shadda = false): Piece[] {
+function setLastLamVowel(
+  pieces: Piece[],
+  lastVowel: string,
+  shadda = false,
+): Piece[] {
   const copy = pieces.map((p) => ({ ...p, marks: [...p.marks] }));
   const idx = lastLamIndex(copy);
   if (idx < 0) return copy;
@@ -80,7 +84,14 @@ function pastThemeA(form: FormId, voice: Voice, bab: FormIBab): string {
 function presentThemeA(form: FormId, voice: Voice, bab: FormIBab): string {
   if (voice === "passive") return FATHA;
   if (form === 1) return BAB_BY_ID[bab].presentA;
-  if (form === 2 || form === 3 || form === 4 || form === 7 || form === 8 || form === 10) {
+  if (
+    form === 2 ||
+    form === 3 ||
+    form === 4 ||
+    form === 7 ||
+    form === 8 ||
+    form === 10
+  ) {
     return KASRA;
   }
   return FATHA;
@@ -91,7 +102,12 @@ function firstVowelPast(form: FormId, voice: Voice): string {
   return FATHA;
 }
 
-function buildPastStem(root: [string, string, string], form: FormId, voice: Voice, bab: FormIBab): Piece[] {
+function buildPastStem(
+  root: [string, string, string],
+  form: FormId,
+  voice: Voice,
+  bab: FormIBab,
+): Piece[] {
   const [f, a, l] = root;
   const aV = pastThemeA(form, voice, bab);
   const fV = firstVowelPast(form, voice);
@@ -103,9 +119,19 @@ function buildPastStem(root: [string, string, string], form: FormId, voice: Voic
       return [piece("f", f, fV), piece("a", a, SHADDA, aV), piece("l", l)];
     case 3:
       if (voice === "passive") {
-        return [piece("f", f, DAMMA), piece("extra", "و"), piece("a", a, KASRA), piece("l", l)];
+        return [
+          piece("f", f, DAMMA),
+          piece("extra", "و"),
+          piece("a", a, KASRA),
+          piece("l", l),
+        ];
       }
-      return [piece("f", f, FATHA), piece("extra", ALEF), piece("a", a, FATHA), piece("l", l)];
+      return [
+        piece("f", f, FATHA),
+        piece("extra", ALEF),
+        piece("a", a, FATHA),
+        piece("l", l),
+      ];
     case 4:
       return [
         piece("extra", ALEF_HAMZA_ABOVE, voice === "passive" ? DAMMA : FATHA),
@@ -172,7 +198,12 @@ function buildPastStem(root: [string, string, string], form: FormId, voice: Voic
   }
 }
 
-function buildPresentStem(root: [string, string, string], form: FormId, voice: Voice, bab: FormIBab): Piece[] {
+function buildPresentStem(
+  root: [string, string, string],
+  form: FormId,
+  voice: Voice,
+  bab: FormIBab,
+): Piece[] {
   const [f, a, l] = root;
   const aV = presentThemeA(form, voice, bab);
 
@@ -182,7 +213,12 @@ function buildPresentStem(root: [string, string, string], form: FormId, voice: V
     case 2:
       return [piece("f", f, FATHA), piece("a", a, SHADDA, aV), piece("l", l)];
     case 3:
-      return [piece("f", f, FATHA), piece("extra", ALEF), piece("a", a, aV), piece("l", l)];
+      return [
+        piece("f", f, FATHA),
+        piece("extra", ALEF),
+        piece("a", a, aV),
+        piece("l", l),
+      ];
     case 4:
       return [piece("f", f, SUKUN), piece("a", a, aV), piece("l", l)];
     case 5:
@@ -286,7 +322,10 @@ export function toImperative(
 
   // Form IV keeps أَ even after أجوف collapse (أَقِمْ, not قِمْ).
   if (form === 4) {
-    return [slot(withMarks(ALEF_HAMZA_ABOVE, FATHA), "extra"), ...withoutPrefix];
+    return [
+      slot(withMarks(ALEF_HAMZA_ABOVE, FATHA), "extra"),
+      ...withoutPrefix,
+    ];
   }
 
   if (!startsWithSukun) return withoutPrefix;
@@ -303,7 +342,14 @@ export function buildSoundVerb(input: ConjugateInput): MorphemeSlot[] {
 
   if (tense === "imperative") {
     if (!isSecondPerson(person) || voice === "passive") return [];
-    const present = buildSoundPresent(root, form, "active", person, "jussive", bab);
+    const present = buildSoundPresent(
+      root,
+      form,
+      "active",
+      person,
+      "jussive",
+      bab,
+    );
     return toImperative(present, form, bab);
   }
 
@@ -341,7 +387,10 @@ function pastOpeningVowel(form: FormId, voice: Voice): string {
   return FATHA;
 }
 
-export function hasMorphologicalPassive(form: FormId, tense: Tense = "past"): boolean {
+export function hasMorphologicalPassive(
+  form: FormId,
+  tense: Tense = "past",
+): boolean {
   if (tense === "imperative") return false;
   if (form === 9) return false;
   return true;

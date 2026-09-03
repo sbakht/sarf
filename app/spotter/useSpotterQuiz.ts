@@ -72,7 +72,10 @@ function filtersOf(state: QuizState): SpotterFilters {
   };
 }
 
-function rollPrompt(filters: SpotterFilters, rng?: () => number): Prompt | null {
+function rollPrompt(
+  filters: SpotterFilters,
+  rng?: () => number,
+): Prompt | null {
   return makePrompt(
     filters.includeWeak,
     filters.enabledForms,
@@ -95,7 +98,10 @@ function resetRound(state: QuizState, filters: SpotterFilters): QuizState {
   };
 }
 
-function applyFilters(state: QuizState, patch: Partial<SpotterFilters>): QuizState {
+function applyFilters(
+  state: QuizState,
+  patch: Partial<SpotterFilters>,
+): QuizState {
   return resetRound(state, { ...filtersOf(state), ...patch });
 }
 
@@ -177,7 +183,9 @@ function reducer(state: QuizState, action: Action): QuizState {
         },
         feedback: {
           ok: action.ok,
-          text: action.ok ? `Correct — ${action.label}` : `Not quite — ${action.label}`,
+          text: action.ok
+            ? `Correct — ${action.label}`
+            : `Not quite — ${action.label}`,
         },
         showColors: action.ok ? state.showColors : true,
         step: state.step + 1,
@@ -190,14 +198,21 @@ function reducer(state: QuizState, action: Action): QuizState {
 function isTypingTarget(target: EventTarget | null): boolean {
   if (!(target instanceof HTMLElement)) return false;
   const tag = target.tagName;
-  return tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA" || target.isContentEditable;
+  return (
+    tag === "INPUT" ||
+    tag === "SELECT" ||
+    tag === "TEXTAREA" ||
+    target.isContentEditable
+  );
 }
 
 export function useSpotterQuiz() {
   const { labelMode } = useSettings();
   const [state, dispatch] = useReducer(reducer, undefined, createInitialState);
 
-  const steps = state.prompt ? buildSpotterSteps(state.prompt, filtersOf(state), labelMode) : [];
+  const steps = state.prompt
+    ? buildSpotterSteps(state.prompt, filtersOf(state), labelMode)
+    : [];
   const current = steps[state.step];
   const done = !state.prompt || state.step >= steps.length;
   const result = state.prompt
@@ -214,7 +229,11 @@ export function useSpotterQuiz() {
 
   const onKey = useEffectEvent((event: KeyboardEvent) => {
     if (isTypingTarget(event.target)) return;
-    if (event.target instanceof HTMLElement && event.target.closest("[data-spotter-filters]")) return;
+    if (
+      event.target instanceof HTMLElement &&
+      event.target.closest("[data-spotter-filters]")
+    )
+      return;
     if (done) {
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
@@ -258,12 +277,15 @@ export function useSpotterQuiz() {
     done,
     result,
     labelMode,
-    setIncludeWeak: (value: boolean) => dispatch({ type: "setIncludeWeak", value }),
+    setIncludeWeak: (value: boolean) =>
+      dispatch({ type: "setIncludeWeak", value }),
     toggleForm: (form: FormId) => dispatch({ type: "toggleForm", form }),
-    togglePerson: (person: PersonId) => dispatch({ type: "togglePerson", person }),
+    togglePerson: (person: PersonId) =>
+      dispatch({ type: "togglePerson", person }),
     toggleVoice: (voice: Voice) => dispatch({ type: "toggleVoice", voice }),
     toggleTense: (tense: Tense) => dispatch({ type: "toggleTense", tense }),
-    toggleQuestion: (question: QuestionId) => dispatch({ type: "toggleQuestion", question }),
+    toggleQuestion: (question: QuestionId) =>
+      dispatch({ type: "toggleQuestion", question }),
     selectAllForms: () => dispatch({ type: "selectAllForms" }),
     selectAllPersons: () => dispatch({ type: "selectAllPersons" }),
     selectAllVoices: () => dispatch({ type: "selectAllVoices" }),

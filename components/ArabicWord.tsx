@@ -8,7 +8,8 @@ const KIND_CLASS: Record<SlotKind, string> = {
   f: "text-fa font-semibold",
   a: "text-ayn font-semibold",
   l: "text-lam font-semibold",
-  extra: "text-extra font-semibold underline decoration-dotted decoration-2 underline-offset-4",
+  extra:
+    "text-extra font-semibold underline decoration-dotted decoration-2 underline-offset-4",
   prefix: "text-affix font-normal opacity-80",
   suffix: "text-affix font-normal opacity-80",
 };
@@ -45,12 +46,17 @@ export function ArabicWord({
   }
 
   return (
-    <span dir="rtl" className={`font-arabic ${sizeClass} ${className} tracking-wide`}>
+    <span
+      dir="rtl"
+      className={`font-arabic ${sizeClass} ${className} tracking-wide`}
+    >
       {slots.map((slot, i) => (
         <span
           key={`${slot.kind}-${i}`}
           className={`${KIND_CLASS[slot.kind]}${
-            marked.has(slot.kind) ? " rounded-sm bg-paper-deep/80 px-0.5 ring-1 ring-rule" : ""
+            marked.has(slot.kind)
+              ? " rounded-sm bg-paper-deep/80 px-0.5 ring-1 ring-rule"
+              : ""
           }`}
         >
           {showHarakat ? slot.text : stripHarakat(slot.text)}
@@ -69,10 +75,14 @@ export function ColorLegend({ compact = false }: { compact?: boolean }) {
     { label: "ضمير", cls: KIND_CLASS.prefix, name: "person affix" },
   ];
   return (
-    <ul className={`flex flex-wrap gap-x-4 gap-y-1 ${compact ? "text-xs" : "text-sm"} text-ink-soft`}>
+    <ul
+      className={`flex flex-wrap gap-x-4 gap-y-1 ${compact ? "text-xs" : "text-sm"} text-ink-soft`}
+    >
       {items.map((item) => (
         <li key={item.label} className="flex items-center gap-1.5">
-          <span className={`font-arabic text-base ${item.cls}`}>{item.label}</span>
+          <span className={`font-arabic text-base ${item.cls}`}>
+            {item.label}
+          </span>
           <span>{item.name}</span>
         </li>
       ))}

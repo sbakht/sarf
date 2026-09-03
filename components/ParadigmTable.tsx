@@ -1,6 +1,12 @@
 "use client";
 
-import { conjugate, PERSON_BY_ID, TABLE_ROWS, type ConjugateInput, type PersonId } from "@/lib/sarf";
+import {
+  conjugate,
+  PERSON_BY_ID,
+  TABLE_ROWS,
+  type ConjugateInput,
+  type PersonId,
+} from "@/lib/sarf";
 import { ArabicWord } from "./ArabicWord";
 
 export function ParadigmTable({
@@ -36,7 +42,9 @@ export function ParadigmTable({
         <tbody>
           {TABLE_ROWS.map((row) => (
             <tr key={row.label} className="border-t border-rule">
-              <th className="p-3 text-left text-sm font-medium text-ink-soft">{row.label}</th>
+              <th className="p-3 text-left text-sm font-medium text-ink-soft">
+                {row.label}
+              </th>
               {row.label === "1st" ? (
                 <>
                   <td className="p-2">
@@ -112,14 +120,18 @@ function PersonCell({
     <button
       type="button"
       className={`w-full rounded-xl px-2 py-2 ${isSelected ? "ring-2 ring-accent" : ""} ${
-        onSelect || onToggleReveal ? "cursor-pointer hover:bg-paper-deep/50" : ""
+        onSelect || onToggleReveal
+          ? "cursor-pointer hover:bg-paper-deep/50"
+          : ""
       }`}
       onClick={() => {
         onSelect?.(person);
         if (quiz && result.available) onToggleReveal?.(person);
       }}
       aria-label={
-        covered ? `Reveal ${info.english}` : `${info.english}: ${result.surface}`
+        covered
+          ? `Reveal ${info.english}`
+          : `${info.english}: ${result.surface}`
       }
     >
       <div dir="rtl" className="font-arabic text-xs text-ink-soft">

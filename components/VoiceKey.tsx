@@ -61,9 +61,16 @@ function Example({
     <div className="rounded-2xl bg-paper p-3">
       <p className="text-xs uppercase tracking-wider text-ink-soft">{label}</p>
       <div className="mt-1">
-        <ArabicWord slots={slots} surface={surface} size="md" highlight={highlight} />
+        <ArabicWord
+          slots={slots}
+          surface={surface}
+          size="md"
+          highlight={highlight}
+        />
       </div>
-      <p className="mt-1 font-arabic text-sm text-ink-soft">{voice === "active" ? "معلوم" : "مجهول"}</p>
+      <p className="mt-1 font-arabic text-sm text-ink-soft">
+        {voice === "active" ? "معلوم" : "مجهول"}
+      </p>
     </div>
   );
 }
@@ -88,13 +95,20 @@ export function VoiceKey({
 }) {
   const { showHarakat, labelMode } = useSettings();
   const showPassive = hasMorphologicalPassive(form);
-  const pastHighlight: SlotKind[] = form === 1 ? ["f", "a"] : ["extra", "f", "a"];
+  const pastHighlight: SlotKind[] =
+    form === 1 ? ["f", "a"] : ["extra", "f", "a"];
   const presentHighlight: SlotKind[] = ["prefix", "a"];
 
   const livePastActive = verb(TEMPLATE, form, "past", "active", formIBab);
   const livePastPassive = verb(TEMPLATE, form, "past", "passive", formIBab);
   const livePresentActive = verb(TEMPLATE, form, "present", "active", formIBab);
-  const livePresentPassive = verb(TEMPLATE, form, "present", "passive", formIBab);
+  const livePresentPassive = verb(
+    TEMPLATE,
+    form,
+    "present",
+    "passive",
+    formIBab,
+  );
 
   const kataba = verb(KTB, 1, "past", "active");
   const kutiba = verb(KTB, 1, "past", "passive");
@@ -103,12 +117,16 @@ export function VoiceKey({
   const yuallimu = verb(ILM, 2, "present", "active");
 
   return (
-    <section className={compact ? "" : "rounded-3xl border border-rule bg-card p-6"}>
-      <p className="text-sm uppercase tracking-[0.2em] text-accent">Voice key</p>
+    <section
+      className={compact ? "" : "rounded-3xl border border-rule bg-card p-6"}
+    >
+      <p className="text-sm uppercase tracking-[0.2em] text-accent">
+        Voice key
+      </p>
       <h2 className="mt-1 text-2xl font-semibold">معلوم or مجهول?</h2>
       <p className="mt-2 max-w-2xl text-ink-soft leading-7">
-        This reads morphological voice from vowels, not meaning. Form VII إنفعل can
-        feel “passive” but is still معلوم here.
+        This reads morphological voice from vowels, not meaning. Form VII إنفعل
+        can feel “passive” but is still معلوم here.
       </p>
 
       {!showHarakat ? (
@@ -125,18 +143,28 @@ export function VoiceKey({
               <span className="text-affix">(أ / ت / ي / ن)</span>.
             </li>
             <li>
-              <span className="font-arabic text-base text-ink">{CUE_NAME.fatha} َ</span> → معلوم
+              <span className="font-arabic text-base text-ink">
+                {CUE_NAME.fatha} َ
+              </span>{" "}
+              → معلوم
             </li>
             <li>
-              <span className="font-arabic text-base text-ink">{CUE_NAME.damma} ُ</span> → inspect{" "}
-              <span className="font-arabic text-ayn">ع</span>
+              <span className="font-arabic text-base text-ink">
+                {CUE_NAME.damma} ُ
+              </span>{" "}
+              → inspect <span className="font-arabic text-ayn">ع</span>
               <ul className="mt-1 list-disc space-y-1 ps-4">
                 <li>
-                  <span className="font-arabic text-base text-ink">{CUE_NAME.kasra} ِ</span> → معلوم
-                  (II, III, IV)
+                  <span className="font-arabic text-base text-ink">
+                    {CUE_NAME.kasra} ِ
+                  </span>{" "}
+                  → معلوم (II, III, IV)
                 </li>
                 <li>
-                  <span className="font-arabic text-base text-ink">{CUE_NAME.fatha} َ</span> → مجهول
+                  <span className="font-arabic text-base text-ink">
+                    {CUE_NAME.fatha} َ
+                  </span>{" "}
+                  → مجهول
                 </li>
               </ul>
             </li>
@@ -170,12 +198,13 @@ export function VoiceKey({
           <ol className="mt-3 list-decimal space-y-2 ps-5 text-sm leading-6 text-ink-soft">
             <li>
               Opening {CUE_NAME.damma} ُ and{" "}
-              <span className="font-arabic text-ayn">ع</span> with {CUE_NAME.kasra} ِ → مجهول
+              <span className="font-arabic text-ayn">ع</span> with{" "}
+              {CUE_NAME.kasra} ِ → مجهول
             </li>
             <li>Anything else → معلوم</li>
             <li>
-              باب فرح <span className="font-arabic text-ink">فَعِلَ</span> has kasra on ع but fatha
-              on the first letter — still معلوم.
+              باب فرح <span className="font-arabic text-ink">فَعِلَ</span> has
+              kasra on ع but fatha on the first letter — still معلوم.
             </li>
           </ol>
           <div className="mt-3 grid gap-2 sm:grid-cols-2">

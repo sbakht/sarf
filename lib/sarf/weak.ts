@@ -20,7 +20,14 @@ import {
   stripHarakat,
   withMarks,
 } from "./harakat";
-import { consOf, findKind, findLastKind, marksOf, slot, surfaceOf } from "./slots";
+import {
+  consOf,
+  findKind,
+  findLastKind,
+  marksOf,
+  slot,
+  surfaceOf,
+} from "./slots";
 import type {
   ConjugateInput,
   FormIBab,
@@ -48,7 +55,11 @@ function vowelOf(item: MorphemeSlot): string | null {
   return null;
 }
 
-function rewrite(item: MorphemeSlot, letter: string, ...marks: string[]): MorphemeSlot {
+function rewrite(
+  item: MorphemeSlot,
+  letter: string,
+  ...marks: string[]
+): MorphemeSlot {
   return slot(withMarks(letter, ...marks), item.kind);
 }
 
@@ -73,14 +84,27 @@ function formIPastAjwafShort(middle: string, bab: FormIBab): string {
 
 function applyAjwaf(
   slots: MorphemeSlot[],
-  ctx: { tense: Tense; form: FormId; bab: FormIBab; root: [string, string, string]; voice: Voice },
+  ctx: {
+    tense: Tense;
+    form: FormId;
+    bab: FormIBab;
+    root: [string, string, string];
+    voice: Voice;
+  },
 ): { slots: MorphemeSlot[]; mutations: Mutation[] } {
-  if (ctx.form === 2 || ctx.form === 3 || ctx.form === 5 || ctx.form === 6 || ctx.form === 9) {
+  if (
+    ctx.form === 2 ||
+    ctx.form === 3 ||
+    ctx.form === 5 ||
+    ctx.form === 6 ||
+    ctx.form === 9
+  ) {
     return { slots, mutations: [] };
   }
 
   const aIdx = slots.findIndex(
-    (item) => item.kind === "a" && isWeakLetter(consOf(item)) && !hasShadda(item),
+    (item) =>
+      item.kind === "a" && isWeakLetter(consOf(item)) && !hasShadda(item),
   );
   const fIdx = findKind(slots, "f");
   const lIdx = findLastKind(slots, "l");
@@ -152,7 +176,12 @@ function applyAjwaf(
 
 function applyMithal(
   slots: MorphemeSlot[],
-  ctx: { tense: Tense; form: FormId; root: [string, string, string]; voice: Voice },
+  ctx: {
+    tense: Tense;
+    form: FormId;
+    root: [string, string, string];
+    voice: Voice;
+  },
 ): { slots: MorphemeSlot[]; mutations: Mutation[] } {
   if (ctx.form !== 1) return { slots, mutations: [] };
   if (ctx.tense === "past") return { slots, mutations: [] };
@@ -163,7 +192,8 @@ function applyMithal(
   if (fIdx < 0) return { slots, mutations: [] };
   const F = slots[fIdx];
   if (consOf(F) !== WAW) return { slots, mutations: [] };
-  if (!hasSukun(F) && ctx.tense !== "imperative") return { slots, mutations: [] };
+  if (!hasSukun(F) && ctx.tense !== "imperative")
+    return { slots, mutations: [] };
 
   const from = surfaceOf(slots);
   const next = slots.filter((_, i) => i !== fIdx);
@@ -192,7 +222,9 @@ function suffixStartsWith(slots: MorphemeSlot[], letter: string): boolean {
 }
 
 function replaceVowel(item: MorphemeSlot, vowel: string): MorphemeSlot {
-  const keep = [...marksOf(item)].filter((mark) => mark !== FATHA && mark !== DAMMA && mark !== KASRA);
+  const keep = [...marksOf(item)].filter(
+    (mark) => mark !== FATHA && mark !== DAMMA && mark !== KASRA,
+  );
   return rewrite(item, consOf(item), ...keep, vowel);
 }
 
@@ -211,7 +243,8 @@ function applyNaqis(
   if (lIdx < 0) return { slots, mutations: [] };
   const L = slots[lIdx];
   const original = ctx.root[2];
-  if (consOf(L) === ALEF || consOf(L) === ALEF_MAKSURA) return { slots, mutations: [] };
+  if (consOf(L) === ALEF || consOf(L) === ALEF_MAKSURA)
+    return { slots, mutations: [] };
   if (!isWeakLetter(consOf(L))) return { slots, mutations: [] };
 
   const from = surfaceOf(slots);
@@ -232,7 +265,9 @@ function applyNaqis(
       }
       if (hasSukun(L)) {
         next[lIdx] = rewrite(L, YEH, SUKUN);
-        note("ناقص مجهول: the last radical is ي when the ending is still (دُعِيتُ).");
+        note(
+          "ناقص مجهول: the last radical is ي when the ending is still (دُعِيتُ).",
+        );
         return { slots: next, mutations };
       }
       next[lIdx] = rewrite(L, YEH, FATHA);
@@ -242,24 +277,32 @@ function applyNaqis(
     if (ctx.person === "huwa") {
       const mater = ctx.form === 1 && original === WAW ? ALEF : ALEF_MAKSURA;
       next[lIdx] = rewrite(L, mater);
-      note("ناقص: in past هو the last radical becomes alif (ا) or alif maqṣūra (ى).");
+      note(
+        "ناقص: in past هو the last radical becomes alif (ا) or alif maqṣūra (ى).",
+      );
       return { slots: next, mutations };
     }
     if (ctx.person === "hiya" || ctx.person === "huma_f") {
       next.splice(lIdx, 1);
-      note("ناقص: before feminine ت the final weak letter drops (دَعَتْ / رَمَتْ).");
+      note(
+        "ناقص: before feminine ت the final weak letter drops (دَعَتْ / رَمَتْ).",
+      );
       return { slots: next, mutations };
     }
     if (ctx.person === "hum") {
       next[lIdx] = rewrite(L, WAW, SUKUN);
-      const suf = next.findIndex((item) => item.kind === "suffix" && consOf(item) === WAW);
+      const suf = next.findIndex(
+        (item) => item.kind === "suffix" && consOf(item) === WAW,
+      );
       if (suf >= 0) next.splice(suf, 1);
       note("ناقص: masculine plural past is …َوْا.");
       return { slots: next, mutations };
     }
     if (hasSukun(L)) {
       next[lIdx] = rewrite(L, original, SUKUN);
-      note("ناقص: when the last letter is still, the original و / ي returns (دَعَوْتُ / رَمَيْتُ).");
+      note(
+        "ناقص: when the last letter is still, the original و / ي returns (دَعَوْتُ / رَمَيْتُ).",
+      );
       return { slots: next, mutations };
     }
   }
@@ -276,7 +319,9 @@ function applyNaqis(
         ctx.person === "nahnu")
     ) {
       next.splice(lIdx, 1);
-      note("ناقص: in the jussive / command the final weak letter drops (يَدْعُ / يَرْمِ).");
+      note(
+        "ناقص: in the jussive / command the final weak letter drops (يَدْعُ / يَرْمِ).",
+      );
       return { slots: next, mutations };
     }
     if (still && (ctx.person === "hunna" || ctx.person === "antunna")) {
@@ -284,31 +329,43 @@ function applyNaqis(
       const v = prev >= 0 ? vowelOf(next[prev]) : null;
       const letter = v === KASRA ? YEH : WAW;
       next[lIdx] = rewrite(L, letter, SUKUN);
-      note("ناقص: before نَ the last radical is the matching glide (يَدْعُوْنَ / يَسْتَدْعِينَ).");
+      note(
+        "ناقص: before نَ the last radical is the matching glide (يَدْعُوْنَ / يَسْتَدْعِينَ).",
+      );
       return { slots: next, mutations };
     }
     if (suffixStartsWith(next, WAW)) {
       const prev = precedingIdx(next, lIdx);
       const prevV = prev >= 0 ? vowelOf(next[prev]) : null;
       next.splice(lIdx, 1);
-      if (prev >= 0 && prevV === KASRA) next[prev] = replaceVowel(next[prev], DAMMA);
+      if (prev >= 0 && prevV === KASRA)
+        next[prev] = replaceVowel(next[prev], DAMMA);
       if (prevV === FATHA) {
-        const suf = next.findIndex((item) => item.kind === "suffix" && consOf(item) === WAW);
+        const suf = next.findIndex(
+          (item) => item.kind === "suffix" && consOf(item) === WAW,
+        );
         if (suf >= 0) next[suf] = rewrite(next[suf], WAW, SUKUN);
       }
-      note("ناقص: before a و ending the last radical drops (يَدْعُونَ / يَرْمُونَ).");
+      note(
+        "ناقص: before a و ending the last radical drops (يَدْعُونَ / يَرْمُونَ).",
+      );
       return { slots: next, mutations };
     }
     if (suffixStartsWith(next, YEH)) {
       const prev = precedingIdx(next, lIdx);
       const prevV = prev >= 0 ? vowelOf(next[prev]) : null;
       next.splice(lIdx, 1);
-      if (prev >= 0 && prevV === DAMMA) next[prev] = replaceVowel(next[prev], KASRA);
+      if (prev >= 0 && prevV === DAMMA)
+        next[prev] = replaceVowel(next[prev], KASRA);
       if (prevV === FATHA) {
-        const suf = next.findIndex((item) => item.kind === "suffix" && consOf(item) === YEH);
+        const suf = next.findIndex(
+          (item) => item.kind === "suffix" && consOf(item) === YEH,
+        );
         if (suf >= 0) next[suf] = rewrite(next[suf], YEH, SUKUN);
       }
-      note("ناقص: before a ي ending the last radical drops (تَدْعِينَ / تَرْمِينَ).");
+      note(
+        "ناقص: before a ي ending the last radical drops (تَدْعِينَ / تَرْمِينَ).",
+      );
       return { slots: next, mutations };
     }
     if (suffixStartsWith(next, ALEF) && !still) {
@@ -316,7 +373,9 @@ function applyNaqis(
       const v = prev >= 0 ? vowelOf(next[prev]) : null;
       const letter = v === DAMMA ? WAW : YEH;
       next[lIdx] = rewrite(L, letter, FATHA);
-      note("ناقص: in the dual the last radical is a vowelled glide (يَدْعُوَانِ / يَسْتَدْعِيَانِ).");
+      note(
+        "ناقص: in the dual the last radical is a vowelled glide (يَدْعُوَانِ / يَسْتَدْعِيَانِ).",
+      );
       return { slots: next, mutations };
     }
     const hasSuffix = next.some((item) => item.kind === "suffix");
@@ -325,7 +384,9 @@ function applyNaqis(
       const v = (prev >= 0 ? vowelOf(next[prev]) : null) ?? vowelOf(L);
       const mater = v === DAMMA ? WAW : v === KASRA ? YEH : ALEF_MAKSURA;
       next[lIdx] = rewrite(L, mater);
-      note("ناقص: in the indicative the last radical is a long vowel letter (يَدْعُو / يَرْمِي / يُدْعَى).");
+      note(
+        "ناقص: in the indicative the last radical is a long vowel letter (يَدْعُو / يَرْمِي / يُدْعَى).",
+      );
       return { slots: next, mutations };
     }
   }
@@ -436,10 +497,20 @@ function seatRadicalHamzas(slots: MorphemeSlot[]): MorphemeSlot[] {
 
 function applyMahmuz(
   slots: MorphemeSlot[],
-  ctx: { tense: Tense; person: PersonId; root: [string, string, string]; form: FormId; voice: Voice },
+  ctx: {
+    tense: Tense;
+    person: PersonId;
+    root: [string, string, string];
+    form: FormId;
+    voice: Voice;
+  },
 ): { slots: MorphemeSlot[]; mutations: Mutation[] } {
   const key = ctx.root.join("");
-  if (ctx.form === 1 && ctx.tense === "imperative" && IMPERATIVE_EXCEPTIONS[key]?.[ctx.person]) {
+  if (
+    ctx.form === 1 &&
+    ctx.tense === "imperative" &&
+    IMPERATIVE_EXCEPTIONS[key]?.[ctx.person]
+  ) {
     const to = IMPERATIVE_EXCEPTIONS[key][ctx.person];
     if (!to) return { slots, mutations: [] };
     return {
@@ -510,7 +581,8 @@ export function applyFormVIIIIdgham(slots: MorphemeSlot[]): {
   if (extraIdx < 0) return { slots, mutations: [] };
   const F = slots[fIdx];
   const fCons = consOf(F);
-  if (!FORM_VIII_IDGHAM.has(fCons) && !isHamzaLetter(fCons)) return { slots, mutations: [] };
+  if (!FORM_VIII_IDGHAM.has(fCons) && !isHamzaLetter(fCons))
+    return { slots, mutations: [] };
 
   const from = surfaceOf(slots);
   const vowel = vowelOf(slots[extraIdx]) ?? FATHA;

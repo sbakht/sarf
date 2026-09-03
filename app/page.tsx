@@ -35,11 +35,16 @@ export default function Home() {
   return (
     <div className="flex flex-col gap-10">
       <section className="max-w-2xl">
-        <p className="text-sm uppercase tracking-[0.2em] text-accent">Arabic morphology</p>
-        <h1 className="mt-2 font-arabic text-5xl leading-tight text-ink">تدريب الصرف</h1>
+        <p className="text-sm uppercase tracking-[0.2em] text-accent">
+          Arabic morphology
+        </p>
+        <h1 className="mt-2 font-arabic text-5xl leading-tight text-ink">
+          تدريب الصرف
+        </h1>
         <p className="mt-4 text-lg leading-8 text-ink-soft">
-          Learn to see the pattern inside the verb. Extra letters stay indigo, root letters stay
-          teal / amber / rose, and person affixes stay stone — the same colors in every mode.
+          Learn to see the pattern inside the verb. Extra letters stay indigo,
+          root letters stay teal / amber / rose, and person affixes stay stone —
+          the same colors in every mode.
         </p>
       </section>
       <section className="grid gap-4 md:grid-cols-2">
@@ -50,12 +55,18 @@ export default function Home() {
             className="group rounded-3xl border border-rule bg-card p-6 transition hover:-translate-y-0.5 hover:border-accent"
           >
             <div className="flex items-start justify-between gap-3">
-              <p className="text-xs uppercase tracking-[0.18em] text-accent">{mode.kicker}</p>
-              <span className="font-arabic text-2xl text-ink-soft">{mode.arabic}</span>
+              <p className="text-xs uppercase tracking-[0.18em] text-accent">
+                {mode.kicker}
+              </p>
+              <span className="font-arabic text-2xl text-ink-soft">
+                {mode.arabic}
+              </span>
             </div>
             <h2 className="mt-3 text-2xl font-semibold">{mode.title}</h2>
             <p className="mt-2 text-ink-soft leading-7">{mode.body}</p>
-            <p className="mt-4 text-sm text-accent group-hover:underline">Open {mode.title}</p>
+            <p className="mt-4 text-sm text-accent group-hover:underline">
+              Open {mode.title}
+            </p>
           </Link>
         ))}
       </section>

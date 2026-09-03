@@ -3,7 +3,9 @@ import { conjugate } from "./conjugate";
 import { stripHarakat } from "./harakat";
 import type { ConjugateInput } from "./types";
 
-function form(overrides: Partial<ConjugateInput> & Pick<ConjugateInput, "root">): string {
+function form(
+  overrides: Partial<ConjugateInput> & Pick<ConjugateInput, "root">,
+): string {
   return conjugate({
     form: 1,
     formIBab: "nasara",
@@ -34,32 +36,52 @@ describe("sound Form I كتب", () => {
 
   it("conjugates present indicative", () => {
     expect(form({ root, tense: "present", person: "huwa" })).toBe("يَكْتُبُ");
-    expect(form({ root, tense: "present", person: "huma_m" })).toBe("يَكْتُبَانِ");
+    expect(form({ root, tense: "present", person: "huma_m" })).toBe(
+      "يَكْتُبَانِ",
+    );
     expect(form({ root, tense: "present", person: "hum" })).toBe("يَكْتُبُونَ");
     expect(form({ root, tense: "present", person: "hiya" })).toBe("تَكْتُبُ");
-    expect(form({ root, tense: "present", person: "hunna" })).toBe("يَكْتُبْنَ");
+    expect(form({ root, tense: "present", person: "hunna" })).toBe(
+      "يَكْتُبْنَ",
+    );
     expect(form({ root, tense: "present", person: "anta" })).toBe("تَكْتُبُ");
-    expect(form({ root, tense: "present", person: "anti" })).toBe("تَكْتُبِينَ");
+    expect(form({ root, tense: "present", person: "anti" })).toBe(
+      "تَكْتُبِينَ",
+    );
     expect(form({ root, tense: "present", person: "ana" })).toBe("أَكْتُبُ");
     expect(form({ root, tense: "present", person: "nahnu" })).toBe("نَكْتُبُ");
   });
 
   it("conjugates jussive and subjunctive", () => {
-    expect(form({ root, tense: "present", mood: "jussive", person: "huwa" })).toBe("يَكْتُبْ");
-    expect(form({ root, tense: "present", mood: "subjunctive", person: "huwa" })).toBe("يَكْتُبَ");
-    expect(form({ root, tense: "present", mood: "jussive", person: "hum" })).toBe("يَكْتُبُوا");
+    expect(
+      form({ root, tense: "present", mood: "jussive", person: "huwa" }),
+    ).toBe("يَكْتُبْ");
+    expect(
+      form({ root, tense: "present", mood: "subjunctive", person: "huwa" }),
+    ).toBe("يَكْتُبَ");
+    expect(
+      form({ root, tense: "present", mood: "jussive", person: "hum" }),
+    ).toBe("يَكْتُبُوا");
   });
 
   it("conjugates imperative", () => {
-    expect(form({ root, tense: "imperative", person: "anta" })).toBe("اُكْتُبْ");
-    expect(form({ root, tense: "imperative", person: "anti" })).toBe("اُكْتُبِي");
-    expect(form({ root, tense: "imperative", person: "antum" })).toBe("اُكْتُبُوا");
+    expect(form({ root, tense: "imperative", person: "anta" })).toBe(
+      "اُكْتُبْ",
+    );
+    expect(form({ root, tense: "imperative", person: "anti" })).toBe(
+      "اُكْتُبِي",
+    );
+    expect(form({ root, tense: "imperative", person: "antum" })).toBe(
+      "اُكْتُبُوا",
+    );
     expect(form({ root, tense: "imperative", person: "huwa" })).toBe("—");
   });
 
   it("conjugates passive", () => {
     expect(form({ root, voice: "passive", person: "huwa" })).toBe("كُتِبَ");
-    expect(form({ root, tense: "present", voice: "passive", person: "huwa" })).toBe("يُكْتَبُ");
+    expect(
+      form({ root, tense: "present", voice: "passive", person: "huwa" }),
+    ).toBe("يُكْتَبُ");
   });
 
   it("tags ف ع ل slots", () => {
@@ -80,12 +102,20 @@ describe("sound Form I كتب", () => {
 
 describe("Form I abwab", () => {
   it("uses the six theme-vowel patterns", () => {
-    expect(form({ root: ["ض", "ر", "ب"], formIBab: "daraba", tense: "present" })).toBe("يَضْرِبُ");
-    expect(form({ root: ["ف", "ت", "ح"], formIBab: "fataha", tense: "present" })).toBe("يَفْتَحُ");
+    expect(
+      form({ root: ["ض", "ر", "ب"], formIBab: "daraba", tense: "present" }),
+    ).toBe("يَضْرِبُ");
+    expect(
+      form({ root: ["ف", "ت", "ح"], formIBab: "fataha", tense: "present" }),
+    ).toBe("يَفْتَحُ");
     expect(form({ root: ["ف", "ر", "ح"], formIBab: "fariha" })).toBe("فَرِحَ");
-    expect(form({ root: ["ف", "ر", "ح"], formIBab: "fariha", tense: "present" })).toBe("يَفْرَحُ");
+    expect(
+      form({ root: ["ف", "ر", "ح"], formIBab: "fariha", tense: "present" }),
+    ).toBe("يَفْرَحُ");
     expect(form({ root: ["ك", "ر", "م"], formIBab: "karuma" })).toBe("كَرُمَ");
-    expect(form({ root: ["ح", "س", "ب"], formIBab: "hasiba", tense: "present" })).toBe("يَحْسِبُ");
+    expect(
+      form({ root: ["ح", "س", "ب"], formIBab: "hasiba", tense: "present" }),
+    ).toBe("يَحْسِبُ");
   });
 });
 
@@ -112,24 +142,43 @@ describe("derived forms", () => {
     expect(form({ root: ftH, form: 7, tense: "present" })).toBe("يَنْفَتِحُ");
     expect(form({ root: jm3, form: 8 })).toBe("اِجْتَمَعَ");
     expect(form({ root: jm3, form: 8, tense: "present" })).toBe("يَجْتَمِعُ");
-    expect(form({ root: jm3, form: 8, tense: "present", voice: "passive" })).toBe("يُجْتَمَعُ");
+    expect(
+      form({ root: jm3, form: 8, tense: "present", voice: "passive" }),
+    ).toBe("يُجْتَمَعُ");
     expect(form({ root: ["ح", "م", "ر"], form: 9 })).toBe("اِحْمَرَّ");
-    expect(form({ root: ["ح", "م", "ر"], form: 9, tense: "present" })).toBe("يَحْمَرُّ");
-    expect(form({ root: ["ح", "م", "ر"], form: 9, voice: "passive" })).toBe("—");
+    expect(form({ root: ["ح", "م", "ر"], form: 9, tense: "present" })).toBe(
+      "يَحْمَرُّ",
+    );
+    expect(form({ root: ["ح", "م", "ر"], form: 9, voice: "passive" })).toBe(
+      "—",
+    );
     expect(form({ root: xrj, form: 10 })).toBe("اِسْتَخْرَجَ");
-    expect(form({ root: xrj, form: 10, tense: "present" })).toBe("يَسْتَخْرِجُ");
+    expect(form({ root: xrj, form: 10, tense: "present" })).toBe(
+      "يَسْتَخْرِجُ",
+    );
   });
 
   it("Form IV and X imperatives", () => {
-    expect(form({ root: krm, form: 4, tense: "imperative", person: "anta" })).toBe("أَكْرِمْ");
-    expect(form({ root: xrj, form: 10, tense: "imperative", person: "anta" })).toBe("اِسْتَخْرِجْ");
-    expect(form({ root: ilm, form: 2, tense: "imperative", person: "anta" })).toBe("عَلِّمْ");
+    expect(
+      form({ root: krm, form: 4, tense: "imperative", person: "anta" }),
+    ).toBe("أَكْرِمْ");
+    expect(
+      form({ root: xrj, form: 10, tense: "imperative", person: "anta" }),
+    ).toBe("اِسْتَخْرِجْ");
+    expect(
+      form({ root: ilm, form: 2, tense: "imperative", person: "anta" }),
+    ).toBe("عَلِّمْ");
   });
 
   it("Form I daraba imperative uses kasra wasl", () => {
-    expect(form({ root: ["ض", "ر", "ب"], formIBab: "daraba", tense: "imperative", person: "anta" })).toBe(
-      "اِضْرِبْ",
-    );
+    expect(
+      form({
+        root: ["ض", "ر", "ب"],
+        formIBab: "daraba",
+        tense: "imperative",
+        person: "anta",
+      }),
+    ).toBe("اِضْرِبْ");
   });
 
   it("Form VIII طلب assimilates ت into ط", () => {
@@ -137,11 +186,21 @@ describe("derived forms", () => {
     expect(form({ root: tlb, form: 8 })).toBe("اِطَّلَبَ");
     expect(form({ root: tlb, form: 8, voice: "passive" })).toBe("اُطُّلِبَ");
     expect(form({ root: tlb, form: 8, tense: "present" })).toBe("يَطَّلِبُ");
-    expect(form({ root: tlb, form: 8, tense: "present", voice: "passive" })).toBe("يُطَّلَبُ");
-    expect(form({ root: tlb, form: 8, tense: "present", voice: "passive", person: "antunna" })).toBe(
-      "تُطَّلَبْنَ",
-    );
-    expect(form({ root: tlb, form: 8, tense: "imperative", person: "anta" })).toBe("اِطَّلِبْ");
+    expect(
+      form({ root: tlb, form: 8, tense: "present", voice: "passive" }),
+    ).toBe("يُطَّلَبُ");
+    expect(
+      form({
+        root: tlb,
+        form: 8,
+        tense: "present",
+        voice: "passive",
+        person: "antunna",
+      }),
+    ).toBe("تُطَّلَبْنَ");
+    expect(
+      form({ root: tlb, form: 8, tense: "imperative", person: "anta" }),
+    ).toBe("اِطَّلِبْ");
     expect(
       conjugate({
         root: tlb,
@@ -168,28 +227,63 @@ describe("أجوف قال / باع / خاف", () => {
   });
 
   it("قال present lengthens and shortens in jussive", () => {
-    expect(form({ root: qwl, tense: "present", person: "huwa" })).toBe("يَقُولُ");
-    expect(form({ root: qwl, tense: "present", person: "hunna" })).toBe("يَقُلْنَ");
-    expect(form({ root: qwl, tense: "present", mood: "jussive", person: "huwa" })).toBe("يَقُلْ");
-    expect(form({ root: qwl, tense: "imperative", person: "anta" })).toBe("قُلْ");
-    expect(form({ root: qwl, tense: "imperative", person: "anti" })).toBe("قُولِي");
-    expect(form({ root: qwl, tense: "imperative", person: "antum" })).toBe("قُولُوا");
+    expect(form({ root: qwl, tense: "present", person: "huwa" })).toBe(
+      "يَقُولُ",
+    );
+    expect(form({ root: qwl, tense: "present", person: "hunna" })).toBe(
+      "يَقُلْنَ",
+    );
+    expect(
+      form({ root: qwl, tense: "present", mood: "jussive", person: "huwa" }),
+    ).toBe("يَقُلْ");
+    expect(form({ root: qwl, tense: "imperative", person: "anta" })).toBe(
+      "قُلْ",
+    );
+    expect(form({ root: qwl, tense: "imperative", person: "anti" })).toBe(
+      "قُولِي",
+    );
+    expect(form({ root: qwl, tense: "imperative", person: "antum" })).toBe(
+      "قُولُوا",
+    );
   });
 
   it("قال past مجهول shortens with kasra on still endings", () => {
-    expect(form({ root: qwl, voice: "passive", person: "hunna" })).toBe("قِلْنَ");
+    expect(form({ root: qwl, voice: "passive", person: "hunna" })).toBe(
+      "قِلْنَ",
+    );
     expect(form({ root: qwl, voice: "passive", person: "ana" })).toBe("قِلْتُ");
   });
 
   it("باع and خاف follow yeh / fariha quality", () => {
-    expect(form({ root: by3, formIBab: "daraba", person: "huwa" })).toBe("بَاعَ");
-    expect(form({ root: by3, formIBab: "daraba", person: "ana" })).toBe("بِعْتُ");
-    expect(form({ root: by3, formIBab: "daraba", tense: "present" })).toBe("يَبِيعُ");
-    expect(form({ root: by3, formIBab: "daraba", tense: "imperative", person: "anti" })).toBe("بِيعِي");
-    expect(form({ root: xwf, formIBab: "fariha", person: "huwa" })).toBe("خَافَ");
-    expect(form({ root: xwf, formIBab: "fariha", voice: "passive" })).toBe("خِيفَ");
-    expect(form({ root: xwf, formIBab: "fariha", person: "ana" })).toBe("خِفْتُ");
-    expect(form({ root: xwf, formIBab: "fariha", tense: "present" })).toBe("يَخَافُ");
+    expect(form({ root: by3, formIBab: "daraba", person: "huwa" })).toBe(
+      "بَاعَ",
+    );
+    expect(form({ root: by3, formIBab: "daraba", person: "ana" })).toBe(
+      "بِعْتُ",
+    );
+    expect(form({ root: by3, formIBab: "daraba", tense: "present" })).toBe(
+      "يَبِيعُ",
+    );
+    expect(
+      form({
+        root: by3,
+        formIBab: "daraba",
+        tense: "imperative",
+        person: "anti",
+      }),
+    ).toBe("بِيعِي");
+    expect(form({ root: xwf, formIBab: "fariha", person: "huwa" })).toBe(
+      "خَافَ",
+    );
+    expect(form({ root: xwf, formIBab: "fariha", voice: "passive" })).toBe(
+      "خِيفَ",
+    );
+    expect(form({ root: xwf, formIBab: "fariha", person: "ana" })).toBe(
+      "خِفْتُ",
+    );
+    expect(form({ root: xwf, formIBab: "fariha", tense: "present" })).toBe(
+      "يَخَافُ",
+    );
   });
 
   it("Form IV أجوف أراد", () => {
@@ -198,17 +292,35 @@ describe("أجوف قال / باع / خاف", () => {
     expect(form({ root: rwd, form: 4, person: "ana" })).toBe("أَرَدْتُ");
     expect(form({ root: rwd, form: 4, tense: "present" })).toBe("يُرِيدُ");
     expect(form({ root: rwd, form: 4, voice: "passive" })).toBe("أُرِيدَ");
-    expect(form({ root: rwd, form: 4, tense: "imperative", person: "anta" })).toBe("أَرِدْ");
-    expect(form({ root: rwd, form: 4, tense: "imperative", person: "anti" })).toBe("أَرِيدِي");
+    expect(
+      form({ root: rwd, form: 4, tense: "imperative", person: "anta" }),
+    ).toBe("أَرِدْ");
+    expect(
+      form({ root: rwd, form: 4, tense: "imperative", person: "anti" }),
+    ).toBe("أَرِيدِي");
   });
 
   it("Form IV / X أجوف command keeps the form prefix", () => {
     const qwm = ["ق", "و", "م"] as [string, string, string];
     const xwf = ["خ", "و", "ف"] as [string, string, string];
-    expect(form({ root: qwm, form: 4, tense: "imperative", person: "anta" })).toBe("أَقِمْ");
-    expect(form({ root: qwm, form: 4, tense: "imperative", person: "anti" })).toBe("أَقِيمِي");
-    expect(form({ root: xwf, form: 4, formIBab: "fariha", tense: "imperative", person: "anta" })).toBe("أَخِفْ");
-    expect(form({ root: qwm, form: 10, tense: "imperative", person: "anti" })).toBe("اِسْتَقِيمِي");
+    expect(
+      form({ root: qwm, form: 4, tense: "imperative", person: "anta" }),
+    ).toBe("أَقِمْ");
+    expect(
+      form({ root: qwm, form: 4, tense: "imperative", person: "anti" }),
+    ).toBe("أَقِيمِي");
+    expect(
+      form({
+        root: xwf,
+        form: 4,
+        formIBab: "fariha",
+        tense: "imperative",
+        person: "anta",
+      }),
+    ).toBe("أَخِفْ");
+    expect(
+      form({ root: qwm, form: 10, tense: "imperative", person: "anti" }),
+    ).toBe("اِسْتَقِيمِي");
   });
 });
 
@@ -217,8 +329,12 @@ describe("other weakness types", () => {
     const root = ["و", "ع", "د"] as [string, string, string];
     expect(form({ root, formIBab: "daraba" })).toBe("وَعَدَ");
     expect(form({ root, formIBab: "daraba", tense: "present" })).toBe("يَعِدُ");
-    expect(form({ root, formIBab: "daraba", tense: "imperative", person: "anta" })).toBe("عِدْ");
-    expect(form({ root, formIBab: "daraba", tense: "present", voice: "passive" })).toBe("يُوْعَدُ");
+    expect(
+      form({ root, formIBab: "daraba", tense: "imperative", person: "anta" }),
+    ).toBe("عِدْ");
+    expect(
+      form({ root, formIBab: "daraba", tense: "present", voice: "passive" }),
+    ).toBe("يُوْعَدُ");
   });
 
   it("ناقص دعا / رمى", () => {
@@ -227,29 +343,63 @@ describe("other weakness types", () => {
     expect(form({ root: d3w, person: "huwa" })).toBe("دَعَا");
     expect(form({ root: d3w, person: "hiya" })).toBe("دَعَتْ");
     expect(form({ root: d3w, person: "ana" })).toBe("دَعَوْتُ");
-    expect(form({ root: rmy, formIBab: "daraba", person: "huwa" })).toBe("رَمَى");
-    expect(form({ root: rmy, formIBab: "daraba", tense: "present" })).toBe("يَرْمِي");
+    expect(form({ root: rmy, formIBab: "daraba", person: "huwa" })).toBe(
+      "رَمَى",
+    );
+    expect(form({ root: rmy, formIBab: "daraba", tense: "present" })).toBe(
+      "يَرْمِي",
+    );
     expect(form({ root: d3w, tense: "present" })).toBe("يَدْعُو");
-    expect(form({ root: d3w, tense: "present", mood: "jussive" })).toBe("يَدْعُ");
-    expect(form({ root: d3w, tense: "present", person: "hum" })).toBe("يَدْعُونَ");
-    expect(form({ root: d3w, tense: "present", person: "anti" })).toBe("تَدْعِينَ");
+    expect(form({ root: d3w, tense: "present", mood: "jussive" })).toBe(
+      "يَدْعُ",
+    );
+    expect(form({ root: d3w, tense: "present", person: "hum" })).toBe(
+      "يَدْعُونَ",
+    );
+    expect(form({ root: d3w, tense: "present", person: "anti" })).toBe(
+      "تَدْعِينَ",
+    );
     expect(form({ root: d3w, voice: "passive" })).toBe("دُعِيَ");
-    expect(form({ root: d3w, tense: "present", voice: "passive" })).toBe("يُدْعَى");
-    expect(form({ root: rmy, formIBab: "daraba", tense: "present", person: "hum" })).toBe("يَرْمُونَ");
-    expect(form({ root: rmy, formIBab: "daraba", tense: "present", person: "anti" })).toBe("تَرْمِينَ");
-    expect(form({ root: rmy, formIBab: "daraba", voice: "passive" })).toBe("رُمِيَ");
+    expect(form({ root: d3w, tense: "present", voice: "passive" })).toBe(
+      "يُدْعَى",
+    );
+    expect(
+      form({ root: rmy, formIBab: "daraba", tense: "present", person: "hum" }),
+    ).toBe("يَرْمُونَ");
+    expect(
+      form({ root: rmy, formIBab: "daraba", tense: "present", person: "anti" }),
+    ).toBe("تَرْمِينَ");
+    expect(form({ root: rmy, formIBab: "daraba", voice: "passive" })).toBe(
+      "رُمِيَ",
+    );
     expect(form({ root: d3w, form: 10 })).toBe("اِسْتَدْعَى");
     expect(form({ root: d3w, form: 10, tense: "present" })).toBe("يَسْتَدْعِي");
     expect(form({ root: rmy, form: 4 })).toBe("أَرْمَى");
     expect(form({ root: rmy, form: 4, tense: "present" })).toBe("يُرْمِي");
-    expect(form({ root: d3w, tense: "imperative", person: "anta" })).toBe("اُدْعُ");
-    expect(form({ root: d3w, tense: "imperative", person: "anti" })).toBe("اُدْعِي");
-    expect(form({ root: d3w, voice: "passive", person: "hiya" })).toBe("دُعِيَتْ");
-    expect(form({ root: d3w, tense: "present", voice: "passive", person: "hum" })).toBe("يُدْعَوْنَ");
-    expect(form({ root: d3w, tense: "present", voice: "passive", person: "anti" })).toBe("تُدْعَيْنَ");
-    expect(form({ root: d3w, form: 10, tense: "present", person: "hunna" })).toBe("يَسْتَدْعِيْنَ");
-    expect(form({ root: d3w, form: 10, tense: "present", person: "huma_m" })).toBe("يَسْتَدْعِيَانِ");
-    expect(form({ root: d3w, tense: "present", person: "huma_m" })).toBe("يَدْعُوَانِ");
+    expect(form({ root: d3w, tense: "imperative", person: "anta" })).toBe(
+      "اُدْعُ",
+    );
+    expect(form({ root: d3w, tense: "imperative", person: "anti" })).toBe(
+      "اُدْعِي",
+    );
+    expect(form({ root: d3w, voice: "passive", person: "hiya" })).toBe(
+      "دُعِيَتْ",
+    );
+    expect(
+      form({ root: d3w, tense: "present", voice: "passive", person: "hum" }),
+    ).toBe("يُدْعَوْنَ");
+    expect(
+      form({ root: d3w, tense: "present", voice: "passive", person: "anti" }),
+    ).toBe("تُدْعَيْنَ");
+    expect(
+      form({ root: d3w, form: 10, tense: "present", person: "hunna" }),
+    ).toBe("يَسْتَدْعِيْنَ");
+    expect(
+      form({ root: d3w, form: 10, tense: "present", person: "huma_m" }),
+    ).toBe("يَسْتَدْعِيَانِ");
+    expect(form({ root: d3w, tense: "present", person: "huma_m" })).toBe(
+      "يَدْعُوَانِ",
+    );
   });
 
   it("مضاعف مدّ assimilates when vowelled", () => {
@@ -276,16 +426,22 @@ describe("other weakness types", () => {
     const root = ["أ", "خ", "ذ"] as [string, string, string];
     expect(form({ root, form: 8 })).toBe("اِتَّخَذَ");
     expect(form({ root, form: 8, tense: "present" })).toBe("يَتَّخِذُ");
-    expect(form({ root, form: 8, tense: "imperative", person: "anta" })).toBe("اِتَّخِذْ");
+    expect(form({ root, form: 8, tense: "imperative", person: "anta" })).toBe(
+      "اِتَّخِذْ",
+    );
   });
 
   it("seats hamza on yeh after kasra and on the line after alif", () => {
     const qrA = ["ق", "ر", "أ"] as [string, string, string];
     const sAl = ["س", "أ", "ل"] as [string, string, string];
-    expect(form({ root: qrA, formIBab: "fataha", voice: "passive" })).toBe("قُرِئَ");
+    expect(form({ root: qrA, formIBab: "fataha", voice: "passive" })).toBe(
+      "قُرِئَ",
+    );
     expect(form({ root: qrA, form: 4, tense: "present" })).toBe("يُقْرِئُ");
     expect(form({ root: sAl, formIBab: "fataha", form: 6 })).toBe("تَسَاءَلَ");
-    expect(form({ root: sAl, formIBab: "fataha", voice: "passive" })).toBe("سُئِلَ");
+    expect(form({ root: sAl, formIBab: "fataha", voice: "passive" })).toBe(
+      "سُئِلَ",
+    );
     expect(form({ root: ["أ", "خ", "ذ"], voice: "passive" })).toBe("أُخِذَ");
   });
 });

@@ -30,7 +30,11 @@ export function parseAffix(value: string, kind: SlotKind): MorphemeSlot[] {
   return slots;
 }
 
-export function findKind(slots: MorphemeSlot[], kind: SlotKind, from = 0): number {
+export function findKind(
+  slots: MorphemeSlot[],
+  kind: SlotKind,
+  from = 0,
+): number {
   return slots.findIndex((item, i) => i >= from && item.kind === kind);
 }
 

@@ -107,7 +107,10 @@ export function SpotterFilters({
   onSelectAllPersons: () => void;
 }) {
   return (
-    <section data-spotter-filters className="flex flex-col gap-4 rounded-2xl border border-rule bg-card p-4">
+    <section
+      data-spotter-filters
+      className="flex flex-col gap-4 rounded-2xl border border-rule bg-card p-4"
+    >
       <p className="text-xs uppercase tracking-wider text-ink-soft">Quiz on</p>
       <FilterGroup
         label="Questions"
@@ -139,7 +142,9 @@ export function SpotterFilters({
               title={formLabel(form.id, labelMode)}
               onClick={() => onToggleForm(form.id)}
             >
-              {labelMode === "form" ? `Form ${FORM_BY_ID[form.id].roman}` : FORM_BY_ID[form.id].waznPast}
+              {labelMode === "form"
+                ? `Form ${FORM_BY_ID[form.id].roman}`
+                : FORM_BY_ID[form.id].waznPast}
             </Chip>
           ))}
         </div>
@@ -185,18 +190,25 @@ export function SpotterFilters({
       >
         <div className="flex flex-col gap-2">
           {PERSON_GROUPS.map((group) => (
-            <div key={group.label} className="flex flex-wrap items-center gap-2">
+            <div
+              key={group.label}
+              className="flex flex-wrap items-center gap-2"
+            >
               <p className="w-8 text-xs text-ink-soft">{group.label}</p>
               {group.ids
                 .filter((id) => quizPersonKey(id) === id)
                 .map((id) => (
                   <Chip
                     key={id}
-                    selected={linkedPersons(id).every((person) => enabledPersons.includes(person))}
+                    selected={linkedPersons(id).every((person) =>
+                      enabledPersons.includes(person),
+                    )}
                     title={personQuizEnglish(id)}
                     onClick={() => onTogglePerson(id)}
                   >
-                    <span className="font-arabic">{PERSON_BY_ID[id].arabic}</span>
+                    <span className="font-arabic">
+                      {PERSON_BY_ID[id].arabic}
+                    </span>
                   </Chip>
                 ))}
             </div>

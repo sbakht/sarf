@@ -16,7 +16,8 @@ const NAV = [
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const { showHarakat, setShowHarakat, labelMode, setLabelMode } = useSettings();
+  const { showHarakat, setShowHarakat, labelMode, setLabelMode } =
+    useSettings();
 
   return (
     <div className="min-h-full flex flex-col">
@@ -24,7 +25,9 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3">
           <Link href="/" className="flex items-baseline gap-2">
             <span className="font-arabic text-2xl text-accent">صرف</span>
-            <span className="text-sm font-medium tracking-wide text-ink-soft">Sarf Trainer</span>
+            <span className="text-sm font-medium tracking-wide text-ink-soft">
+              Sarf Trainer
+            </span>
           </Link>
           <nav className="flex flex-wrap gap-1">
             {NAV.map((item) => {
@@ -54,7 +57,9 @@ export function AppShell({ children }: { children: ReactNode }) {
             </button>
             <button
               type="button"
-              onClick={() => setLabelMode(labelMode === "form" ? "wazn" : "form")}
+              onClick={() =>
+                setLabelMode(labelMode === "form" ? "wazn" : "form")
+              }
               className="rounded-full border border-rule px-3 py-1.5 text-ink-soft hover:border-accent"
             >
               Labels: {labelMode === "form" ? "Form I–X" : "وزن"}
@@ -62,7 +67,9 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
         </div>
       </header>
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">{children}</main>
+      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
+        {children}
+      </main>
       <footer className="border-t border-rule px-4 py-3">
         <div className="mx-auto flex max-w-6xl justify-end">
           <ColorLegend compact />

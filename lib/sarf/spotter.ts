@@ -10,7 +10,14 @@ import {
   quizPersonKey,
   uniqueOptions,
 } from "./quiz";
-import type { FormId, LabelMode, PersonId, RootEntry, Tense, Voice } from "./types";
+import type {
+  FormId,
+  LabelMode,
+  PersonId,
+  RootEntry,
+  Tense,
+  Voice,
+} from "./types";
 
 export type QuestionId = "root" | "form" | "tense" | "voice" | "person";
 
@@ -50,7 +57,13 @@ export const ALL_FORMS: FormId[] = FORMS.map((form) => form.id);
 export const ALL_PERSON_IDS: PersonId[] = PERSONS.map((person) => person.id);
 export const ALL_VOICES: Voice[] = ["active", "passive"];
 export const ALL_TENSES: Tense[] = ["past", "present", "imperative"];
-export const ALL_QUESTIONS: QuestionId[] = ["root", "form", "tense", "voice", "person"];
+export const ALL_QUESTIONS: QuestionId[] = [
+  "root",
+  "form",
+  "tense",
+  "voice",
+  "person",
+];
 
 export const TENSE_LABEL: Record<Tense, string> = {
   past: "ماضي",
@@ -93,8 +106,12 @@ export function eligibleTenses(
 ): Tense[] {
   const secondPersons = enabledPersons.filter(isSecondPerson);
   const canImperative =
-    secondPersons.length > 0 && enabledVoices.includes("active") && enabledTenses.includes("imperative");
-  const pastPresent = (["past", "present"] as const).filter((tense) => enabledTenses.includes(tense));
+    secondPersons.length > 0 &&
+    enabledVoices.includes("active") &&
+    enabledTenses.includes("imperative");
+  const pastPresent = (["past", "present"] as const).filter((tense) =>
+    enabledTenses.includes(tense),
+  );
   if (quizVoice && pastPresent.length > 0) return [...pastPresent];
   return canImperative ? [...pastPresent, "imperative"] : [...pastPresent];
 }
@@ -110,7 +127,12 @@ export function makePrompt(
 ): Prompt | null {
   const formSet = new Set(enabledForms);
   const secondPersons = enabledPersons.filter(isSecondPerson);
-  const tenses = eligibleTenses(enabledPersons, enabledVoices, quizVoice, enabledTenses);
+  const tenses = eligibleTenses(
+    enabledPersons,
+    enabledVoices,
+    quizVoice,
+    enabledTenses,
+  );
   const pool = (includeWeak ? ROOTS : soundRoots()).filter((root) =>
     root.forms.some((form) => formSet.has(form)),
   );
@@ -139,7 +161,10 @@ export function makePrompt(
     } else {
       voice = pick(enabledVoices, rng);
     }
-    const person = tense === "imperative" ? pick(secondPersons, rng) : pick(enabledPersons, rng);
+    const person =
+      tense === "imperative"
+        ? pick(secondPersons, rng)
+        : pick(enabledPersons, rng);
     const result = conjugate({
       root: root.letters,
       form,
@@ -166,7 +191,13 @@ export function buildSpotterSteps(
   const seed = promptSeed(prompt);
   const secondPersons = filters.enabledPersons.filter(isSecondPerson);
   const rootPool = filters.includeWeak ? ROOTS : soundRoots();
-  const rootChoices = uniqueOptions(prompt.root, rootPool, 4, seed, (root) => root.id);
+  const rootChoices = uniqueOptions(
+    prompt.root,
+    rootPool,
+    4,
+    seed,
+    (root) => root.id,
+  );
   const formChoices = uniqueOptions(
     prompt.form,
     filters.enabledForms,

@@ -12,7 +12,8 @@ export function SpotterStep({
   total: number;
   onAnswer: (choice: SpotterChoice) => void;
 }) {
-  const arabicClass = current.id === "root" ? "font-arabic text-2xl" : "font-arabic text-xl";
+  const arabicClass =
+    current.id === "root" ? "font-arabic text-2xl" : "font-arabic text-xl";
 
   return (
     <section className="rounded-2xl border border-rule bg-card p-5">
@@ -28,7 +29,9 @@ export function SpotterStep({
             className="relative flex flex-col items-center gap-1 rounded-2xl border border-rule bg-paper px-4 py-3 hover:border-accent"
             onClick={() => onAnswer(choice)}
           >
-            <span className="absolute start-3 top-2 text-xs text-ink-soft">{index + 1}</span>
+            <span className="absolute start-3 top-2 text-xs text-ink-soft">
+              {index + 1}
+            </span>
             {choice.arabic ? (
               <span dir="rtl" className={arabicClass}>
                 {choice.primary}
@@ -36,7 +39,9 @@ export function SpotterStep({
             ) : (
               choice.primary
             )}
-            {choice.secondary ? <span className="text-sm text-ink-soft">{choice.secondary}</span> : null}
+            {choice.secondary ? (
+              <span className="text-sm text-ink-soft">{choice.secondary}</span>
+            ) : null}
           </button>
         ))}
       </div>

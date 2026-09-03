@@ -7,8 +7,8 @@ import { useSpotterQuiz } from "./useSpotterQuiz";
 import type { ReactNode } from "react";
 
 function NextButton({
-label,
-hint,
+  label,
+  hint,
   onClick,
 }: {
   label: string;
@@ -16,7 +16,11 @@ hint,
   onClick: () => void;
 }) {
   return (
-    <button type="button" className="self-start rounded-full bg-accent px-5 py-2 text-paper" onClick={onClick}>
+    <button
+      type="button"
+      className="self-start rounded-full bg-accent px-5 py-2 text-paper"
+      onClick={onClick}
+    >
       {label}
       {hint ? <span className="text-xs opacity-80">{hint}</span> : null}
     </button>
@@ -37,7 +41,13 @@ function RoundControls({ quiz }: { quiz: ReturnType<typeof useSpotterQuiz> }) {
       />
     );
   }
-  return <NextButton label="Next verb " hint="(Enter / Space)" onClick={quiz.nextPrompt} />;
+  return (
+    <NextButton
+      label="Next verb "
+      hint="(Enter / Space)"
+      onClick={quiz.nextPrompt}
+    />
+  );
 }
 
 export function SpotterView() {
@@ -46,7 +56,9 @@ export function SpotterView() {
   return (
     <div className="flex flex-col gap-6">
       <header>
-        <p className="text-sm uppercase tracking-[0.2em] text-accent">Pattern Spotter</p>
+        <p className="text-sm uppercase tracking-[0.2em] text-accent">
+          Pattern Spotter
+        </p>
         <h1 className="mt-1 text-3xl font-semibold">Name what you see</h1>
       </header>
 

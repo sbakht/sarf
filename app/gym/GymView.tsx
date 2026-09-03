@@ -24,7 +24,9 @@ export function GymView() {
   const [voice, setVoice] = useState<Voice>("active");
   const [mood, setMood] = useState<Mood>("indicative");
   const [mode, setMode] = useState<"study" | "quiz">("study");
-  const [revealedPersons, setRevealedPersons] = useState<Partial<Record<PersonId, boolean>>>({});
+  const [revealedPersons, setRevealedPersons] = useState<
+    Partial<Record<PersonId, boolean>>
+  >({});
   const [selected, setSelected] = useState<PersonId>("huwa");
 
   const root = ROOTS.find((item) => item.id === rootId) ?? ROOTS[0];
@@ -52,7 +54,9 @@ export function GymView() {
   return (
     <div className="flex flex-col gap-6">
       <header>
-        <p className="text-sm uppercase tracking-[0.2em] text-accent">Conjugation Gym</p>
+        <p className="text-sm uppercase tracking-[0.2em] text-accent">
+          Conjugation Gym
+        </p>
         <h1 className="mt-1 text-3xl font-semibold">Produce the table</h1>
       </header>
 
@@ -62,7 +66,8 @@ export function GymView() {
             className="block rounded-xl border border-rule bg-paper px-3 py-2 text-ink"
             value={root.id}
             onChange={(e) => {
-              const next = ROOTS.find((item) => item.id === e.target.value) ?? ROOTS[0];
+              const next =
+                ROOTS.find((item) => item.id === e.target.value) ?? ROOTS[0];
               setRootId(next.id);
               setForm(next.forms[0]);
               resetCovers();
@@ -163,7 +168,9 @@ export function GymView() {
           {rootArabic(root)}
         </span>
         <span>({root.gloss})</span>
-        {mode === "quiz" ? <span>Tap a cell to reveal it. Tap again to hide.</span> : null}
+        {mode === "quiz" ? (
+          <span>Tap a cell to reveal it. Tap again to hide.</span>
+        ) : null}
       </div>
 
       <ParadigmTable
@@ -177,10 +184,15 @@ export function GymView() {
 
       <section className="rounded-2xl border border-rule bg-card p-5">
         <p className="text-xs uppercase tracking-wider text-ink-soft">
-          Breakdown · {PERSON_BY_ID[selected].english} ({PERSON_BY_ID[selected].arabic})
+          Breakdown · {PERSON_BY_ID[selected].english} (
+          {PERSON_BY_ID[selected].arabic})
         </p>
         <div className="mt-2">
-          <ArabicWord slots={breakdown.slots} surface={breakdown.surface} size="lg" />
+          <ArabicWord
+            slots={breakdown.slots}
+            surface={breakdown.surface}
+            size="lg"
+          />
         </div>
         {breakdown.available ? (
           <ul className="mt-3 flex flex-wrap gap-2">
@@ -194,7 +206,9 @@ export function GymView() {
             ))}
           </ul>
         ) : (
-          <p className="mt-2 text-sm text-ink-soft">No command form for this person.</p>
+          <p className="mt-2 text-sm text-ink-soft">
+            No command form for this person.
+          </p>
         )}
       </section>
     </div>

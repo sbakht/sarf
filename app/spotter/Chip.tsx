@@ -18,7 +18,9 @@ export function Chip({
       aria-pressed={selected}
       onClick={onClick}
       className={`rounded-full border px-3 py-1 text-sm ${
-        selected ? "border-accent bg-accent-soft text-ink" : "border-rule bg-paper text-ink-soft"
+        selected
+          ? "border-accent bg-accent-soft text-ink"
+          : "border-rule bg-paper text-ink-soft"
       }`}
     >
       {children}

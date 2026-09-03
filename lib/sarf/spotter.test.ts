@@ -25,7 +25,14 @@ const defaultFilters: SpotterFilters = {
 };
 
 function samplePrompt(): Prompt {
-  const prompt = makePrompt(false, ALL_FORMS, ALL_PERSON_IDS, ALL_VOICES, true, seededRng(1));
+  const prompt = makePrompt(
+    false,
+    ALL_FORMS,
+    ALL_PERSON_IDS,
+    ALL_VOICES,
+    true,
+    seededRng(1),
+  );
   if (!prompt) throw new Error("expected a prompt");
   return prompt;
 }
@@ -46,15 +53,24 @@ describe("toggleItem", () => {
 
 describe("eligibleTenses", () => {
   it("omits imperative when voice is a quiz step", () => {
-    expect(eligibleTenses(ALL_PERSON_IDS, ALL_VOICES, true)).toEqual(["past", "present"]);
+    expect(eligibleTenses(ALL_PERSON_IDS, ALL_VOICES, true)).toEqual([
+      "past",
+      "present",
+    ]);
   });
 
   it("omits imperative when no second person is enabled", () => {
-    expect(eligibleTenses(["huwa", "hiya"], ALL_VOICES, false)).toEqual(["past", "present"]);
+    expect(eligibleTenses(["huwa", "hiya"], ALL_VOICES, false)).toEqual([
+      "past",
+      "present",
+    ]);
   });
 
   it("omits imperative when active voice is off", () => {
-    expect(eligibleTenses(ALL_PERSON_IDS, ["passive"], false)).toEqual(["past", "present"]);
+    expect(eligibleTenses(ALL_PERSON_IDS, ["passive"], false)).toEqual([
+      "past",
+      "present",
+    ]);
   });
 
   it("includes imperative when second persons and active voice are on and voice is not quizzed", () => {
@@ -66,34 +82,56 @@ describe("eligibleTenses", () => {
   });
 
   it("keeps only enabled tenses", () => {
-    expect(eligibleTenses(ALL_PERSON_IDS, ALL_VOICES, false, ["past"])).toEqual(["past"]);
-    expect(eligibleTenses(ALL_PERSON_IDS, ALL_VOICES, false, ["past", "present"])).toEqual([
-      "past",
-      "present",
-    ]);
-    expect(eligibleTenses(ALL_PERSON_IDS, ALL_VOICES, false, ["imperative"])).toEqual(["imperative"]);
+    expect(eligibleTenses(ALL_PERSON_IDS, ALL_VOICES, false, ["past"])).toEqual(
+      ["past"],
+    );
+    expect(
+      eligibleTenses(ALL_PERSON_IDS, ALL_VOICES, false, ["past", "present"]),
+    ).toEqual(["past", "present"]);
+    expect(
+      eligibleTenses(ALL_PERSON_IDS, ALL_VOICES, false, ["imperative"]),
+    ).toEqual(["imperative"]);
   });
 
   it("drops an enabled tense that the other filters cannot produce", () => {
-    expect(eligibleTenses(["huwa"], ALL_VOICES, false, ["imperative"])).toEqual([]);
-    expect(eligibleTenses(ALL_PERSON_IDS, ["passive"], false, ["imperative"])).toEqual([]);
+    expect(eligibleTenses(["huwa"], ALL_VOICES, false, ["imperative"])).toEqual(
+      [],
+    );
+    expect(
+      eligibleTenses(ALL_PERSON_IDS, ["passive"], false, ["imperative"]),
+    ).toEqual([]);
   });
 
   it("still allows أمر when it is the only enabled tense, even if voice is quizzed", () => {
-    expect(eligibleTenses(ALL_PERSON_IDS, ALL_VOICES, true, ["imperative"])).toEqual(["imperative"]);
+    expect(
+      eligibleTenses(ALL_PERSON_IDS, ALL_VOICES, true, ["imperative"]),
+    ).toEqual(["imperative"]);
   });
 });
 
 describe("makePrompt", () => {
   it("returns null when the pool is empty", () => {
-    expect(makePrompt(false, [], ALL_PERSON_IDS, ALL_VOICES, true, seededRng(1))).toBeNull();
-    expect(makePrompt(false, ALL_FORMS, [], ALL_VOICES, true, seededRng(1))).toBeNull();
-    expect(makePrompt(false, ALL_FORMS, ALL_PERSON_IDS, [], true, seededRng(1))).toBeNull();
+    expect(
+      makePrompt(false, [], ALL_PERSON_IDS, ALL_VOICES, true, seededRng(1)),
+    ).toBeNull();
+    expect(
+      makePrompt(false, ALL_FORMS, [], ALL_VOICES, true, seededRng(1)),
+    ).toBeNull();
+    expect(
+      makePrompt(false, ALL_FORMS, ALL_PERSON_IDS, [], true, seededRng(1)),
+    ).toBeNull();
   });
 
   it("never picks imperative when voice is a quiz question", () => {
     for (let seed = 1; seed <= 20; seed += 1) {
-      const prompt = makePrompt(false, ALL_FORMS, ALL_PERSON_IDS, ALL_VOICES, true, seededRng(seed));
+      const prompt = makePrompt(
+        false,
+        ALL_FORMS,
+        ALL_PERSON_IDS,
+        ALL_VOICES,
+        true,
+        seededRng(seed),
+      );
       expect(prompt).not.toBeNull();
       expect(prompt!.tense).not.toBe("imperative");
     }
@@ -117,7 +155,14 @@ describe("makePrompt", () => {
   it("stays within the enabled filters", () => {
     const forms = [1, 2] as const;
     const persons = ["huwa", "anta"] as const;
-    const prompt = makePrompt(false, [...forms], [...persons], ["active"], true, seededRng(3));
+    const prompt = makePrompt(
+      false,
+      [...forms],
+      [...persons],
+      ["active"],
+      true,
+      seededRng(3),
+    );
     expect(prompt).not.toBeNull();
     expect(forms).toContain(prompt!.form);
     expect(persons).toContain(prompt!.person);
@@ -127,9 +172,15 @@ describe("makePrompt", () => {
 
   it("returns null when no enabled tense is eligible", () => {
     expect(
-      makePrompt(false, ALL_FORMS, ["huwa", "hiya"], ALL_VOICES, false, seededRng(1), [
-        "imperative",
-      ]),
+      makePrompt(
+        false,
+        ALL_FORMS,
+        ["huwa", "hiya"],
+        ALL_VOICES,
+        false,
+        seededRng(1),
+        ["imperative"],
+      ),
     ).toBeNull();
   });
 
@@ -180,10 +231,19 @@ describe("makePrompt", () => {
   });
 
   it("can draw weak roots when includeWeak is on", () => {
-    const weakIds = new Set(ROOTS.filter((root) => root.weakness !== "sound").map((root) => root.id));
+    const weakIds = new Set(
+      ROOTS.filter((root) => root.weakness !== "sound").map((root) => root.id),
+    );
     let foundWeak = false;
     for (let seed = 1; seed <= 40; seed += 1) {
-      const prompt = makePrompt(true, ALL_FORMS, ALL_PERSON_IDS, ALL_VOICES, true, seededRng(seed));
+      const prompt = makePrompt(
+        true,
+        ALL_FORMS,
+        ALL_PERSON_IDS,
+        ALL_VOICES,
+        true,
+        seededRng(seed),
+      );
       expect(prompt).not.toBeNull();
       if (weakIds.has(prompt!.root.id)) {
         foundWeak = true;
@@ -224,17 +284,28 @@ describe("buildSpotterSteps", () => {
   it("offers only enabled tenses on the tense step", () => {
     const steps = buildSpotterSteps(
       { ...prompt, tense: "past" },
-      { ...defaultFilters, enabledTenses: ["past", "present"], enabledQuestions: ["tense"] },
+      {
+        ...defaultFilters,
+        enabledTenses: ["past", "present"],
+        enabledQuestions: ["tense"],
+      },
       "form",
     );
     expect(steps).toHaveLength(1);
-    expect(steps[0]!.choices.map((choice) => choice.id)).toEqual(["past", "present"]);
+    expect(steps[0]!.choices.map((choice) => choice.id)).toEqual([
+      "past",
+      "present",
+    ]);
   });
 
   it("drops the tense step when only one tense is enabled", () => {
     const steps = buildSpotterSteps(
       { ...prompt, tense: "past" },
-      { ...defaultFilters, enabledTenses: ["past"], enabledQuestions: ["tense"] },
+      {
+        ...defaultFilters,
+        enabledTenses: ["past"],
+        enabledQuestions: ["tense"],
+      },
       "form",
     );
     expect(steps).toEqual([]);

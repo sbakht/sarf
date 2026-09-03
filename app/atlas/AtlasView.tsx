@@ -25,8 +25,11 @@ const TEMPLATE: [string, string, string] = ["ف", "ع", "ل"];
 function exampleRoot(form: FormId, bab?: FormIBab): RootEntry {
   const match = ROOTS.find((root) => {
     if (!root.forms.includes(form)) return false;
-    if (form === 1 && bab) return root.formIBab === bab && root.weakness === "sound";
-    return root.weakness === "sound" || (form !== 1 && root.forms.includes(form));
+    if (form === 1 && bab)
+      return root.formIBab === bab && root.weakness === "sound";
+    return (
+      root.weakness === "sound" || (form !== 1 && root.forms.includes(form))
+    );
   });
   return match ?? ROOTS[0];
 }
@@ -47,7 +50,10 @@ export function AtlasView() {
     [form, bab],
   );
 
-  const selectedRoot = rootsForForm.find((r) => r.id === rootId) ?? rootsForForm[0] ?? exampleRoot(form, bab);
+  const selectedRoot =
+    rootsForForm.find((r) => r.id === rootId) ??
+    rootsForForm[0] ??
+    exampleRoot(form, bab);
   const formIBab = form === 1 ? bab : selectedRoot.formIBab;
 
   const showPassive = hasMorphologicalPassive(form);
@@ -101,10 +107,13 @@ export function AtlasView() {
   return (
     <div className="flex flex-col gap-8">
       <header>
-        <p className="text-sm uppercase tracking-[0.2em] text-accent">Form Atlas</p>
+        <p className="text-sm uppercase tracking-[0.2em] text-accent">
+          Form Atlas
+        </p>
         <h1 className="mt-1 text-3xl font-semibold">The map of الأوزان</h1>
         <p className="mt-2 max-w-2xl text-ink-soft">
-          Each card is a pattern, not a word. Open one, then drop a real root through it.
+          Each card is a pattern, not a word. Open one, then drop a real root
+          through it.
         </p>
       </header>
 
@@ -127,14 +136,20 @@ export function AtlasView() {
               type="button"
               onClick={() => setForm(item.id)}
               className={`rounded-2xl border p-4 text-left transition ${
-                active ? "border-accent bg-accent-soft" : "border-rule bg-card hover:border-accent"
+                active
+                  ? "border-accent bg-accent-soft"
+                  : "border-rule bg-card hover:border-accent"
               }`}
             >
-              <p className="text-xs text-ink-soft">{formLabel(item.id, labelMode)}</p>
+              <p className="text-xs text-ink-soft">
+                {formLabel(item.id, labelMode)}
+              </p>
               <div className="mt-2">
                 <ArabicWord slots={preview.slots} size="lg" />
               </div>
-              <p className="mt-2 text-xs leading-5 text-ink-soft">{item.meaning}</p>
+              <p className="mt-2 text-xs leading-5 text-ink-soft">
+                {item.meaning}
+              </p>
             </button>
           );
         })}
@@ -142,7 +157,9 @@ export function AtlasView() {
 
       {form === 1 ? (
         <div>
-          <h2 className="mb-3 text-sm uppercase tracking-wider text-ink-soft">Form I abwab</h2>
+          <h2 className="mb-3 text-sm uppercase tracking-wider text-ink-soft">
+            Form I abwab
+          </h2>
           <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
             {FORM_I_ABWAB.map((item) => (
               <button
@@ -150,11 +167,15 @@ export function AtlasView() {
                 type="button"
                 onClick={() => {
                   setBab(item.id);
-                  const next = ROOTS.find((r) => r.forms.includes(1) && r.formIBab === item.id);
+                  const next = ROOTS.find(
+                    (r) => r.forms.includes(1) && r.formIBab === item.id,
+                  );
                   if (next) setRootId(next.id);
                 }}
                 className={`rounded-2xl border px-4 py-3 text-left ${
-                  bab === item.id ? "border-accent bg-card" : "border-rule bg-card/70"
+                  bab === item.id
+                    ? "border-accent bg-card"
+                    : "border-rule bg-card/70"
                 }`}
               >
                 <p className="font-arabic text-lg">{item.nameAr}</p>
@@ -195,23 +216,47 @@ export function AtlasView() {
         </div>
 
         <div className="mt-6 grid gap-4 md:grid-cols-3">
-          <MorphCard english="past" title="ماضي معلوم · هو" result={samples.past} />
-          <MorphCard english="present" title="مضارع معلوم · هو" result={samples.present} />
-          <MorphCard english="imperative" title="أمر · أنتَ" result={samples.command} />
+          <MorphCard
+            english="past"
+            title="ماضي معلوم · هو"
+            result={samples.past}
+          />
+          <MorphCard
+            english="present"
+            title="مضارع معلوم · هو"
+            result={samples.present}
+          />
+          <MorphCard
+            english="imperative"
+            title="أمر · أنتَ"
+            result={samples.command}
+          />
         </div>
 
         {showPassive ? (
           <div className="mt-4 grid gap-4 md:grid-cols-3">
-            <MorphCard english="past" title="ماضي مجهول · هو" result={samples.pastPassive} />
-            <MorphCard english="present" title="مضارع مجهول · هو" result={samples.presentPassive} />
+            <MorphCard
+              english="past"
+              title="ماضي مجهول · هو"
+              result={samples.pastPassive}
+            />
+            <MorphCard
+              english="present"
+              title="مضارع مجهول · هو"
+              result={samples.presentPassive}
+            />
             <div className="rounded-2xl bg-paper p-4">
-              <p className="text-xs uppercase tracking-wider text-ink-soft">imperative</p>
+              <p className="text-xs uppercase tracking-wider text-ink-soft">
+                imperative
+              </p>
               <p className="mt-1 text-xs text-ink-soft">أمر · مجهول</p>
               <p className="mt-2 text-sm text-ink-soft">أمر has no مجهول.</p>
             </div>
           </div>
         ) : (
-          <p className="mt-4 text-sm text-ink-soft">Form IX has no useful morphological مجهول.</p>
+          <p className="mt-4 text-sm text-ink-soft">
+            Form IX has no useful morphological مجهول.
+          </p>
         )}
       </section>
 
@@ -231,7 +276,9 @@ function MorphCard({
 }>) {
   return (
     <div className="rounded-2xl bg-paper p-4">
-      <p className="text-xs uppercase tracking-wider text-ink-soft">{english}</p>
+      <p className="text-xs uppercase tracking-wider text-ink-soft">
+        {english}
+      </p>
       <p className="mt-1 text-xs text-ink-soft">{title}</p>
       <div className="mt-2">
         <ArabicWord slots={result.slots} surface={result.surface} size="lg" />

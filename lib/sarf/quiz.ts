@@ -20,11 +20,16 @@ export function quizPersonGroup(person: PersonId, tense?: Tense): string {
 }
 
 export function linkedPersons(person: PersonId): PersonId[] {
-  if (person === "antuma_m" || person === "antuma_f") return ["antuma_m", "antuma_f"];
+  if (person === "antuma_m" || person === "antuma_f")
+    return ["antuma_m", "antuma_f"];
   return [person];
 }
 
-export function isCorrectQuizPerson(answer: PersonId, prompt: PersonId, tense?: Tense): boolean {
+export function isCorrectQuizPerson(
+  answer: PersonId,
+  prompt: PersonId,
+  tense?: Tense,
+): boolean {
   return quizPersonGroup(answer, tense) === quizPersonGroup(prompt, tense);
 }
 
@@ -65,7 +70,9 @@ export function uniqueOptions<T>(
   }
   rest.sort((a, b) => hash(seed + key(a)) - hash(seed + key(b)));
   const picked = [correct, ...rest.slice(0, Math.max(0, count - 1))];
-  picked.sort((a, b) => hash(`${seed}:order:${key(a)}`) - hash(`${seed}:order:${key(b)}`));
+  picked.sort(
+    (a, b) => hash(`${seed}:order:${key(a)}`) - hash(`${seed}:order:${key(b)}`),
+  );
   return picked;
 }
 

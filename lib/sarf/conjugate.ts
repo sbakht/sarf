@@ -1,12 +1,13 @@
 import { PERSONS } from "./persons";
-import { buildSoundPresent, buildSoundVerb, hasMorphologicalPassive, toImperative } from "./sound";
+import {
+  buildSoundPresent,
+  buildSoundVerb,
+  hasMorphologicalPassive,
+  toImperative,
+} from "./sound";
 import { surfaceOf } from "./slots";
 import { applyFormVIIIIdgham, applyWeakness, inferWeakness } from "./weak";
-import type {
-  ConjugateInput,
-  ConjugateResult,
-  PersonId,
-} from "./types";
+import type { ConjugateInput, ConjugateResult, PersonId } from "./types";
 
 function unavailable(weakness: ConjugateResult["weakness"]): ConjugateResult {
   return {
@@ -25,7 +26,10 @@ function withFormVIII(
   input: ConjugateInput,
   weakness: ConjugateResult["weakness"],
 ): ConjugateResult {
-  const idgham = input.asSoundAnalog || input.form !== 8 ? { slots, mutations: [] } : applyFormVIIIIdgham(slots);
+  const idgham =
+    input.asSoundAnalog || input.form !== 8
+      ? { slots, mutations: [] }
+      : applyFormVIIIIdgham(slots);
   const surface = surfaceOf(idgham.slots);
   return {
     surface,
@@ -41,7 +45,10 @@ export function conjugate(input: ConjugateInput): ConjugateResult {
   const weakness = input.weakness ?? inferWeakness(input.root);
   const bab = input.formIBab ?? "nasara";
 
-  if (input.voice === "passive" && !hasMorphologicalPassive(input.form, input.tense)) {
+  if (
+    input.voice === "passive" &&
+    !hasMorphologicalPassive(input.form, input.tense)
+  ) {
     return unavailable(weakness);
   }
 
@@ -108,7 +115,9 @@ export function conjugate(input: ConjugateInput): ConjugateResult {
   return withFormVIII(weak.slots, weak.mutations, analog, input, weakness);
 }
 
-export function paradigm(input: Omit<ConjugateInput, "person">): Record<PersonId, ConjugateResult> {
+export function paradigm(
+  input: Omit<ConjugateInput, "person">,
+): Record<PersonId, ConjugateResult> {
   const out = {} as Record<PersonId, ConjugateResult>;
   for (const person of PERSONS) {
     out[person.id] = conjugate({ ...input, person: person.id });

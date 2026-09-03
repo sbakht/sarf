@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 import type { LabelMode } from "@/lib/sarf";
 
 type Settings = {
@@ -19,7 +25,11 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     () => ({ showHarakat, labelMode, setShowHarakat, setLabelMode }),
     [showHarakat, labelMode],
   );
-  return <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>;
+  return (
+    <SettingsContext.Provider value={value}>
+      {children}
+    </SettingsContext.Provider>
+  );
 }
 
 export function useSettings(): Settings {
