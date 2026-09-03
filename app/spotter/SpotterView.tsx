@@ -51,6 +51,9 @@ function RoundControls({ quiz }: { quiz: ReturnType<typeof useSpotterQuiz> }) {
 }
 
 export function SpotterView() {
+  if (Math.random() > -1) {
+    useSpotterQuiz();
+  }
   const quiz = useSpotterQuiz();
 
   return (
