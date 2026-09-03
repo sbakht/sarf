@@ -1,0 +1,39 @@
+export type { ConjugateInput, ConjugateResult, FormId, FormIBab, MorphemeSlot, PersonId, RootEntry, SlotKind, Tense, Voice, Mood, WeaknessType, LabelMode } from "./types";
+export { conjugate, paradigm } from "./conjugate";
+export { FORMS, FORM_I_ABWAB, FORM_BY_ID, BAB_BY_ID, formLabel, ROMAN_FORMS } from "./forms";
+export { ROOTS, getRoot, rootArabic, soundRoots, rootsByWeakness } from "./lexicon";
+export { PERSONS, PERSON_BY_ID, TABLE_ROWS, isSecondPerson } from "./persons";
+export {
+  isCorrectQuizPerson,
+  linkedPersons,
+  personQuizEnglish,
+  personQuizFeedback,
+  quizPersonGroup,
+  quizPersonKey,
+  uniqueOptions,
+} from "./quiz";
+export {
+  ALL_FORMS,
+  ALL_PERSON_IDS,
+  ALL_QUESTIONS,
+  ALL_TENSES,
+  ALL_VOICES,
+  TENSE_LABEL,
+  buildSpotterSteps,
+  eligibleTenses,
+  makePrompt,
+  pick,
+  promptSeed,
+  seededRng,
+  toggleItem,
+} from "./spotter";
+export type { Prompt, QuestionId, SpotterChoice, SpotterFilters, SpotterStep } from "./spotter";
+export { inferWeakness } from "./weak";
+export { stripHarakat, normalizeForAnswer } from "./harakat";
+export { surfaceOf } from "./slots";
+export {
+  diagnoseVoiceFromCues,
+  hasMorphologicalPassive,
+  voiceCues,
+} from "./sound";
+export type { CueVowel, VoiceCues } from "./sound";

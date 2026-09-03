@@ -1,0 +1,92 @@
+services:
+  db:
+    image: postgres:17
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-sarf}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-sarf}
+      POSTGRES_DB: ${POSTGRES_DB:-sarf}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-sarf} -d ${POSTGRES_DB:-sarf}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  web:
+    build: .
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-sarf}:${POSTGRES_PASSWORD:-sarf}@db:5432/${POSTGRES_DB:-sarf}
+      # REDIS_URL: redis://redis:6379
+    ports:
+      - "${APP_PORT:-3002}:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    profiles: [redis]
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # migrate:
+  #   build: .
+  #   command: ["node", "-e", "console.log('replace with: drizzle-kit migrate | prisma migrate deploy')"]
+  #   env_file:
+  #     - path: .env
+  #       required: false
+  #   environment:
+  #     DATABASE_URL: postgresql://${POSTGRES_USER:-sarf}:${POSTGRES_PASSWORD:-sarf}@db:5432/${POSTGRES_DB:-sarf}
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
+
+  # worker:
+  #   build: .
+  #   command: ["node", "worker.js"]
+  #   env_file:
+  #     - path: .env
+  #       required: false
+  #   environment:
+  #     DATABASE_URL: postgresql://${POSTGRES_USER:-sarf}:${POSTGRES_PASSWORD:-sarf}@db:5432/${POSTGRES_DB:-sarf}
+  #     # REDIS_URL: redis://redis:6379
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
+
+  # proxy:
+  #   image: caddy:2-alpine
+  #   restart: unless-stopped
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+  #   depends_on:
+  #     web:
+  #       condition: service_healthy
+
+volumes:
+  postgres_data:
+  redis_data:

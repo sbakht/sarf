@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sarf Trainer
 
-## Getting Started
+Recognize and memorize Arabic sarf patterns — Forms I–X, abwab, and weak verbs.
 
-First, run the development server:
+The trainer logic runs in-process. Postgres is in Compose so a database client can be wired later; the app does not query it yet.
+
+## Local development
 
 ```bash
+npm install
+cp .env.example .env
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3002](http://localhost:3002).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+To run Postgres (and later the app against it) while keeping Next.js hot-reload on the host:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+docker compose up db
+npm run dev
+```
 
-## Learn More
+`DATABASE_URL` in `.env` points at `localhost:5432` for this workflow.
 
-To learn more about Next.js, take a look at the following resources:
+## Docker
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Full stack (production image + Postgres):
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+cp .env.example .env
+docker compose up --build
+```
 
-## Deploy on Vercel
+Then open [http://localhost:3002](http://localhost:3002). Health: [http://localhost:3002/api/health](http://localhost:3002/api/health).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Redis is defined but not started by default:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+docker compose --profile redis up --build
+```
+
+## Tests
+
+```bash
+npm test
+```

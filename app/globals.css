@@ -1,26 +1,46 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f3ead8;
+  --foreground: #1f1710;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-paper: #f3ead8;
+  --color-paper-deep: #e7d9bf;
+  --color-ink: #1f1710;
+  --color-ink-soft: #5c4e3f;
+  --color-card: #fffaf1;
+  --color-rule: #d9cbb3;
+  --color-accent: #6b2d2d;
+  --color-accent-soft: #f0ddd0;
+  --color-ok: #1f7a4d;
+  --color-no: #b42318;
+  --color-fa: #0072b2;
+  --color-ayn: #e69f00;
+  --color-lam: #cc79a7;
+  --color-extra: #111827;
+  --color-affix: #4b5563;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-arabic: var(--font-naskh);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  background-image:
+    radial-gradient(circle at 12% 8%, rgba(107, 45, 45, 0.06), transparent 28%),
+    radial-gradient(circle at 88% 0%, rgba(0, 114, 178, 0.07), transparent 32%);
+}
+
+.font-arabic {
+  font-family: var(--font-arabic), "Noto Naskh Arabic", serif;
+}
+
+::selection {
+  background: #e4c9a8;
 }
