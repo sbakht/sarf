@@ -55,11 +55,11 @@ export function SpotterView() {
 
   return (
     <div className="flex flex-col gap-6">
-  <header>
-    <p className="text-sm uppercase tracking-[0.2em] text-accent">
-      Pattern Spotter
-    </p>
-    <h1 className="mt-1 text-3xl font-semibold">Name what you see</h1>
+<header>
+  <p className="text-sm uppercase tracking-[0.2em] text-accent">
+    Pattern Spotter
+  </p>
+  <h1 className="mt-1 text-3xl font-semibold">Name what you see</h1>
       </header>
 
       <div className="flex flex-wrap gap-3 text-sm">
