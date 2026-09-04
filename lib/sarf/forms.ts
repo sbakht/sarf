@@ -181,8 +181,11 @@ export const BAB_BY_ID: Record<FormIBab, BabMeta> = Object.fromEntries(
   FORM_I_ABWAB.map((bab) => [bab.id, bab]),
 ) as Record<FormIBab, BabMeta>;
 
-export function formLabel(form: FormId, primary: "form" | "wazn"): string {
+export function formLabel(
+  form: FormId,
+  primary: "form" | "wazn" | "both",
+): string {
   const meta = FORM_BY_ID[form];
-  if (primary === "form") return `Form ${meta.roman} · ${meta.waznPast}`;
-  return `${meta.waznPast} · Form ${meta.roman}`;
+  if (primary === "wazn") return `${meta.waznPast} · Form ${meta.roman}`;
+  return `Form ${meta.roman} · ${meta.waznPast}`;
 }

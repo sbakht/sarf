@@ -21,7 +21,7 @@ const SettingsContext = createContext<Settings | null>(null);
 export function SettingsProvider({
   children,
   initialShowHarakat = true,
-  initialLabelMode = "form",
+  initialLabelMode = "both",
 }: {
   children: ReactNode;
   initialShowHarakat?: boolean;

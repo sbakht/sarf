@@ -10,6 +10,7 @@ import {
   ALL_VOICES,
   toggleItem,
   type FormId,
+  type LabelMode,
   type PersonId,
   type QuestionId,
   type Tense,
@@ -17,18 +18,21 @@ import {
 } from "@/lib/sarf";
 
 function FiltersDemo({
+  initialLabelMode = "both",
   initialQuestions = [...ALL_QUESTIONS],
   initialForms = [...ALL_FORMS],
   initialTenses = [...ALL_TENSES],
   initialVoices = [...ALL_VOICES],
   initialPersons = [...ALL_PERSON_IDS],
 }: {
+  initialLabelMode?: LabelMode;
   initialQuestions?: QuestionId[];
   initialForms?: FormId[];
   initialTenses?: Tense[];
   initialVoices?: Voice[];
   initialPersons?: PersonId[];
 }) {
+  const [labelMode, setLabelMode] = useState(initialLabelMode);
   const [enabledQuestions, setQuestions] = useState(initialQuestions);
   const [enabledForms, setForms] = useState(initialForms);
   const [enabledTenses, setTenses] = useState(initialTenses);
@@ -37,12 +41,13 @@ function FiltersDemo({
 
   return (
     <SpotterFilters
-      labelMode="form"
+      labelMode={labelMode}
       enabledQuestions={enabledQuestions}
       enabledForms={enabledForms}
       enabledTenses={enabledTenses}
       enabledVoices={enabledVoices}
       enabledPersons={enabledPersons}
+      onLabelModeChange={setLabelMode}
       onToggleQuestion={(q) => {
         const next = toggleItem(enabledQuestions, q);
         if (next) setQuestions(next);
@@ -86,6 +91,27 @@ export const AllSelected: StoryObj = {
     await expect(
       canvas.getByRole("button", { name: "Root" }),
     ).toHaveAttribute("aria-pressed", "true");
+  },
+};
+
+export const WaznLabels: StoryObj = {
+  render: () => <FiltersDemo initialLabelMode="wazn" />,
+  play: async ({ canvas }) => {
+    await expect(
+      canvas.getByRole("button", { name: "وزن" }),
+    ).toHaveAttribute("aria-pressed", "true");
+    await expect(canvas.getByText("فَعَلَ")).toBeVisible();
+  },
+};
+
+export const BothLabels: StoryObj = {
+  render: () => <FiltersDemo initialLabelMode="both" />,
+  play: async ({ canvas }) => {
+    await expect(
+      canvas.getByRole("button", { name: "Both" }),
+    ).toHaveAttribute("aria-pressed", "true");
+    await expect(canvas.getByText("Form I")).toBeVisible();
+    await expect(canvas.getByText("فَعَلَ")).toBeVisible();
   },
 };
 

@@ -78,6 +78,7 @@ export function SpotterFilters({
   enabledTenses,
   enabledVoices,
   enabledPersons,
+  onLabelModeChange,
   onToggleQuestion,
   onToggleForm,
   onToggleTense,
@@ -95,6 +96,7 @@ export function SpotterFilters({
   enabledTenses: Tense[];
   enabledVoices: Voice[];
   enabledPersons: PersonId[];
+  onLabelModeChange: (mode: LabelMode) => void;
   onToggleQuestion: (question: QuestionId) => void;
   onToggleForm: (form: FormId) => void;
   onToggleTense: (tense: Tense) => void;
@@ -129,26 +131,68 @@ export function SpotterFilters({
           ))}
         </div>
       </FilterGroup>
-      <FilterGroup
-        label="Forms"
-        allSelected={enabledForms.length === ALL_FORMS.length}
-        onSelectAll={onSelectAllForms}
-      >
-        <div className="flex flex-wrap gap-2">
-          {FORMS.map((form) => (
-            <Chip
-              key={form.id}
-              selected={enabledForms.includes(form.id)}
-              title={formLabel(form.id, labelMode)}
-              onClick={() => onToggleForm(form.id)}
-            >
-              {labelMode === "form"
-                ? `Form ${FORM_BY_ID[form.id].roman}`
-                : FORM_BY_ID[form.id].waznPast}
-            </Chip>
-          ))}
+      <div className="flex flex-col gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <p className="text-sm font-medium">Forms</p>
+          <Chip
+            selected={enabledForms.length === ALL_FORMS.length}
+            onClick={onSelectAllForms}
+          >
+            All
+          </Chip>
+          <span className="mx-1 h-4 w-px bg-rule" aria-hidden />
+          <Chip
+            selected={labelMode === "form"}
+            onClick={() => onLabelModeChange("form")}
+          >
+            Form #
+          </Chip>
+          <Chip
+            selected={labelMode === "wazn"}
+            onClick={() => onLabelModeChange("wazn")}
+            title="Show ف ع ل patterns"
+          >
+            <span dir="rtl" className="font-arabic">
+              وزن
+            </span>
+          </Chip>
+          <Chip
+            selected={labelMode === "both"}
+            onClick={() => onLabelModeChange("both")}
+            title="Show Form number and ف ع ل pattern"
+          >
+            Both
+          </Chip>
         </div>
-      </FilterGroup>
+        <div className="flex flex-wrap gap-2">
+          {FORMS.map((form) => {
+            const meta = FORM_BY_ID[form.id];
+            return (
+              <Chip
+                key={form.id}
+                selected={enabledForms.includes(form.id)}
+                title={formLabel(form.id, labelMode)}
+                onClick={() => onToggleForm(form.id)}
+              >
+                {labelMode === "form" ? (
+                  `Form ${meta.roman}`
+                ) : labelMode === "wazn" ? (
+                  <span dir="rtl" className="font-arabic text-base">
+                    {meta.waznPast}
+                  </span>
+                ) : (
+                  <span className="inline-flex items-baseline gap-1.5">
+                    <span>Form {meta.roman}</span>
+                    <span dir="rtl" className="font-arabic text-base">
+                      {meta.waznPast}
+                    </span>
+                  </span>
+                )}
+              </Chip>
+            );
+          })}
+        </div>
+      </div>
       <FilterGroup
         label="Tense"
         allSelected={enabledTenses.length === ALL_TENSES.length}

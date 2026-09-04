@@ -58,11 +58,22 @@ export function AppShell({ children }: { children: ReactNode }) {
             <button
               type="button"
               onClick={() =>
-                setLabelMode(labelMode === "form" ? "wazn" : "form")
+                setLabelMode(
+                  labelMode === "form"
+                    ? "wazn"
+                    : labelMode === "wazn"
+                      ? "both"
+                      : "form",
+                )
               }
               className="rounded-full border border-rule px-3 py-1.5 text-ink-soft hover:border-accent"
             >
-              Labels: {labelMode === "form" ? "Form I–X" : "وزن"}
+              Labels:{" "}
+              {labelMode === "form"
+                ? "Form I–X"
+                : labelMode === "wazn"
+                  ? "وزن"
+                  : "Both"}
             </button>
           </div>
         </div>

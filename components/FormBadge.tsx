@@ -6,21 +6,34 @@ import { useSettings } from "./SettingsProvider";
 export function FormBadge({ form }: { form: FormId }) {
   const { labelMode } = useSettings();
   const meta = FORM_BY_ID[form];
+
+  const formLabel = (
+    <span className={labelMode === "wazn" ? "text-ink-soft" : "font-semibold"}>
+      Form {meta.roman}
+    </span>
+  );
+  const waznLabel = (
+    <span
+      dir="rtl"
+      className={`font-arabic ${
+        labelMode === "form" ? "text-lg text-ink-soft" : "text-xl"
+      }`}
+    >
+      {meta.waznPast}
+    </span>
+  );
+
   return (
     <span className="inline-flex items-baseline gap-2">
-      {labelMode === "form" ? (
+      {labelMode === "wazn" ? (
         <>
-          <span className="font-semibold">Form {meta.roman}</span>
-          <span dir="rtl" className="font-arabic text-lg text-ink-soft">
-            {meta.waznPast}
-          </span>
+          {waznLabel}
+          {formLabel}
         </>
       ) : (
         <>
-          <span dir="rtl" className="font-arabic text-xl">
-            {meta.waznPast}
-          </span>
-          <span className="text-ink-soft">Form {meta.roman}</span>
+          {formLabel}
+          {waznLabel}
         </>
       )}
     </span>

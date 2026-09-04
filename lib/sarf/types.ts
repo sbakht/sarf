@@ -76,4 +76,4 @@ export type RootEntry = {
   forms: FormId[];
 };
 
-export type LabelMode = "form" | "wazn";
+export type LabelMode = "form" | "wazn" | "both";

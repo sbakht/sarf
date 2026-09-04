@@ -1,5 +1,6 @@
 "use client";
 
+import { useSettings } from "@/components/SettingsProvider";
 import { SpotterCard } from "./SpotterCard";
 import { SpotterFilters } from "./SpotterFilters";
 import { SpotterStep } from "./SpotterStep";
@@ -51,6 +52,7 @@ function RoundControls({ quiz }: { quiz: ReturnType<typeof useSpotterQuiz> }) {
 
 export function SpotterView() {
   const quiz = useSpotterQuiz();
+  const { setLabelMode } = useSettings();
 
   return (
     <div className="flex flex-col gap-6">
@@ -82,6 +84,7 @@ export function SpotterView() {
         enabledTenses={quiz.enabledTenses}
         enabledVoices={quiz.enabledVoices}
         enabledPersons={quiz.enabledPersons}
+        onLabelModeChange={setLabelMode}
         onToggleQuestion={quiz.toggleQuestion}
         onToggleForm={quiz.toggleForm}
         onToggleTense={quiz.toggleTense}
