@@ -18,9 +18,17 @@ type Settings = {
 
 const SettingsContext = createContext<Settings | null>(null);
 
-export function SettingsProvider({ children }: { children: ReactNode }) {
-  const [showHarakat, setShowHarakat] = useState(true);
-  const [labelMode, setLabelMode] = useState<LabelMode>("form");
+export function SettingsProvider({
+  children,
+  initialShowHarakat = true,
+  initialLabelMode = "form",
+}: {
+  children: ReactNode;
+  initialShowHarakat?: boolean;
+  initialLabelMode?: LabelMode;
+}) {
+  const [showHarakat, setShowHarakat] = useState(initialShowHarakat);
+  const [labelMode, setLabelMode] = useState<LabelMode>(initialLabelMode);
   const value = useMemo(
     () => ({ showHarakat, labelMode, setShowHarakat, setLabelMode }),
     [showHarakat, labelMode],

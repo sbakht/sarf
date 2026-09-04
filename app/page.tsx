@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { ModeCard } from "@/components/ModeCard";
 
 const MODES = [
   {
@@ -49,25 +49,7 @@ export default function Home() {
       </section>
       <section className="grid gap-4 md:grid-cols-2">
         {MODES.map((mode) => (
-          <Link
-            key={mode.href}
-            href={mode.href}
-            className="group rounded-3xl border border-rule bg-card p-6 transition hover:-translate-y-0.5 hover:border-accent"
-          >
-            <div className="flex items-start justify-between gap-3">
-              <p className="text-xs uppercase tracking-[0.18em] text-accent">
-                {mode.kicker}
-              </p>
-              <span className="font-arabic text-2xl text-ink-soft">
-                {mode.arabic}
-              </span>
-            </div>
-            <h2 className="mt-3 text-2xl font-semibold">{mode.title}</h2>
-            <p className="mt-2 text-ink-soft leading-7">{mode.body}</p>
-            <p className="mt-4 text-sm text-accent group-hover:underline">
-              Open {mode.title}
-            </p>
-          </Link>
+          <ModeCard key={mode.href} {...mode} />
         ))}
       </section>
     </div>
