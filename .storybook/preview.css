@@ -1,0 +1,8 @@
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap");
+
+.storybook-root {
+  --font-geist-sans: "Geist", system-ui, sans-serif;
+  --font-geist-mono: "Geist Mono", ui-monospace, monospace;
+  --font-naskh: "Noto Naskh Arabic", serif;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}

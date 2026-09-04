@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { ArabicWord } from "@/components/ArabicWord";
 import { FormBadge } from "@/components/FormBadge";
+import { MorphCard } from "@/components/MorphCard";
 import { VoiceKey } from "@/components/VoiceKey";
 import { useSettings } from "@/components/SettingsProvider";
 import {
@@ -14,7 +15,6 @@ import {
   formLabel,
   hasMorphologicalPassive,
   rootArabic,
-  type ConjugateResult,
   type FormIBab,
   type FormId,
   type RootEntry,
@@ -261,28 +261,6 @@ export function AtlasView() {
       </section>
 
       <VoiceKey form={form} formIBab={formIBab} />
-    </div>
-  );
-}
-
-function MorphCard({
-  english,
-  title,
-  result,
-}: Readonly<{
-  english: string;
-  title: string;
-  result: ConjugateResult;
-}>) {
-  return (
-    <div className="rounded-2xl bg-paper p-4">
-      <p className="text-xs uppercase tracking-wider text-ink-soft">
-        {english}
-      </p>
-      <p className="mt-1 text-xs text-ink-soft">{title}</p>
-      <div className="mt-2">
-        <ArabicWord slots={result.slots} surface={result.surface} size="lg" />
-      </div>
     </div>
   );
 }
