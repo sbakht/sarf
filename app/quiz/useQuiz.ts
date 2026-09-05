@@ -73,10 +73,7 @@ function filtersOf(state: QuizState): QuizFilters {
   };
 }
 
-function rollPrompt(
-  filters: QuizFilters,
-  rng?: () => number,
-): Prompt | null {
+function rollPrompt(filters: QuizFilters, rng?: () => number): Prompt | null {
   return makePrompt(
     filters.includeWeak,
     filters.enabledForms,

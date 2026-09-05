@@ -173,32 +173,30 @@ export function LessonQuiz<P>({
             </p>
             <h2 className="mt-1 text-xl font-semibold">{quiz.current.title}</h2>
             <div className="mt-4 grid gap-2 sm:grid-cols-2">
-              {quiz.current.choices.map(
-                (choice: QuizChoice, index: number) => (
-                  <Button
-                    key={choice.id}
-                    variant="outline"
-                    className="relative h-auto flex-col items-center gap-1 whitespace-normal rounded-xl bg-muted px-4 py-3 hover:border-primary"
-                    onClick={() => quiz.answer(choice)}
-                  >
-                    <span className="absolute start-3 top-2 text-xs text-muted-foreground">
-                      {index + 1}
+              {quiz.current.choices.map((choice: QuizChoice, index: number) => (
+                <Button
+                  key={choice.id}
+                  variant="outline"
+                  className="relative h-auto flex-col items-center gap-1 whitespace-normal rounded-xl bg-muted px-4 py-3 hover:border-primary"
+                  onClick={() => quiz.answer(choice)}
+                >
+                  <span className="absolute start-3 top-2 text-xs text-muted-foreground">
+                    {index + 1}
+                  </span>
+                  {choice.arabic ? (
+                    <span dir="rtl" className="font-arabic text-2xl">
+                      {choice.primary}
                     </span>
-                    {choice.arabic ? (
-                      <span dir="rtl" className="font-arabic text-2xl">
-                        {choice.primary}
-                      </span>
-                    ) : (
-                      choice.primary
-                    )}
-                    {choice.secondary ? (
-                      <span className="text-sm text-muted-foreground">
-                        {choice.secondary}
-                      </span>
-                    ) : null}
-                  </Button>
-                ),
-              )}
+                  ) : (
+                    choice.primary
+                  )}
+                  {choice.secondary ? (
+                    <span className="text-sm text-muted-foreground">
+                      {choice.secondary}
+                    </span>
+                  ) : null}
+                </Button>
+              ))}
             </div>
           </CardContent>
         </Card>
