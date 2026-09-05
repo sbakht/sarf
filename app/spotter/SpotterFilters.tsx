@@ -1,20 +1,16 @@
+"use client";
+
 import type { ReactNode } from "react";
 import { Chip } from "./Chip";
 import {
   ALL_FORMS,
-  ALL_PERSON_IDS,
   ALL_QUESTIONS,
-  ALL_TENSES,
-  ALL_VOICES,
   FORM_BY_ID,
-  FORMS,
   PERSON_BY_ID,
-  PERSONS,
+  TABLE_ROWS,
   TENSE_LABEL,
-  formLabel,
   linkedPersons,
   personQuizEnglish,
-  quizPersonKey,
   type FormId,
   type LabelMode,
   type PersonId,
@@ -22,6 +18,7 @@ import {
   type Tense,
   type Voice,
 } from "@/lib/sarf";
+import { cn } from "@/lib/utils";
 
 const QUESTION_CHIPS: { id: QuestionId; label: string }[] = [
   { id: "root", label: "Root" },
@@ -36,36 +33,12 @@ const VOICE_CHIPS: { id: Voice; label: string }[] = [
   { id: "passive", label: "مجهول" },
 ];
 
-const TENSE_CHIPS: { id: Tense; label: string }[] = ALL_TENSES.map((id) => ({
-  id,
-  label: TENSE_LABEL[id],
-}));
+const COLS = ["Singular", "Dual", "Plural"] as const;
 
-const PERSON_GROUPS: { label: string; ids: PersonId[] }[] = [
-  { label: "3rd", ids: PERSONS.filter((p) => p.person === 3).map((p) => p.id) },
-  { label: "2nd", ids: PERSONS.filter((p) => p.person === 2).map((p) => p.id) },
-  { label: "1st", ids: PERSONS.filter((p) => p.person === 1).map((p) => p.id) },
-];
-
-function FilterGroup({
-  label,
-  allSelected,
-  onSelectAll,
-  children,
-}: {
-  label: string;
-  allSelected: boolean;
-  onSelectAll: () => void;
-  children: ReactNode;
-}) {
+function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex flex-wrap items-center gap-2">
-        <p className="text-sm font-medium">{label}</p>
-        <Chip selected={allSelected} onClick={onSelectAll}>
-          All
-        </Chip>
-      </div>
+    <div>
+      <p className="mb-2 text-sm font-medium">{label}</p>
       {children}
     </div>
   );
@@ -84,10 +57,8 @@ export function SpotterFilters({
   onToggleTense,
   onToggleVoice,
   onTogglePerson,
+  onTogglePersonSet,
   onSelectAllQuestions,
-  onSelectAllForms,
-  onSelectAllTenses,
-  onSelectAllVoices,
   onSelectAllPersons,
 }: {
   labelMode: LabelMode;
@@ -102,26 +73,26 @@ export function SpotterFilters({
   onToggleTense: (tense: Tense) => void;
   onToggleVoice: (voice: Voice) => void;
   onTogglePerson: (person: PersonId) => void;
+  onTogglePersonSet: (persons: PersonId[]) => void;
   onSelectAllQuestions: () => void;
-  onSelectAllForms: () => void;
-  onSelectAllTenses: () => void;
-  onSelectAllVoices: () => void;
   onSelectAllPersons: () => void;
 }) {
   return (
-    <section
+    <aside
       data-spotter-filters
-      className="flex flex-col gap-4 rounded-xl border border-border bg-card p-4 ring-1 ring-foreground/10"
+      className="flex flex-col gap-5 rounded-xl border border-border bg-card p-4 ring-1 ring-foreground/10 lg:sticky lg:top-20 lg:self-start"
     >
       <p className="text-xs uppercase tracking-wider text-muted-foreground">
         Quiz on
       </p>
-      <FilterGroup
-        label="Questions"
-        allSelected={enabledQuestions.length === ALL_QUESTIONS.length}
-        onSelectAll={onSelectAllQuestions}
-      >
+      <Field label="Ask about">
         <div className="flex flex-wrap gap-2">
+          <Chip
+            selected={enabledQuestions.length === ALL_QUESTIONS.length}
+            onClick={onSelectAllQuestions}
+          >
+            All
+          </Chip>
           {QUESTION_CHIPS.map((question) => (
             <Chip
               key={question.id}
@@ -132,17 +103,9 @@ export function SpotterFilters({
             </Chip>
           ))}
         </div>
-      </FilterGroup>
-      <div className="flex flex-col gap-2">
-        <div className="flex flex-wrap items-center gap-2">
-          <p className="text-sm font-medium">Forms</p>
-          <Chip
-            selected={enabledForms.length === ALL_FORMS.length}
-            onClick={onSelectAllForms}
-          >
-            All
-          </Chip>
-          <span className="mx-1 h-4 w-px bg-border" aria-hidden />
+      </Field>
+      <Field label="Forms">
+        <div className="flex flex-wrap gap-2">
           <Chip
             selected={labelMode === "form"}
             onClick={() => onLabelModeChange("form")}
@@ -166,57 +129,48 @@ export function SpotterFilters({
             Both
           </Chip>
         </div>
-        <div className="flex flex-wrap gap-2">
-          {FORMS.map((form) => {
-            const meta = FORM_BY_ID[form.id];
+        <div className="mt-2 grid grid-cols-5 gap-1.5">
+          {ALL_FORMS.map((form) => {
+            const meta = FORM_BY_ID[form];
+            const selected = enabledForms.includes(form);
             return (
-              <Chip
-                key={form.id}
-                selected={enabledForms.includes(form.id)}
-                title={formLabel(form.id, labelMode)}
-                onClick={() => onToggleForm(form.id)}
+              <button
+                key={form}
+                type="button"
+                title={meta.waznPast}
+                onClick={() => onToggleForm(form)}
+                className={cn(
+                  "flex flex-col items-center justify-center rounded-lg border px-1 py-1.5 text-xs",
+                  selected
+                    ? "border-primary bg-primary/10"
+                    : "border-border bg-muted text-muted-foreground",
+                )}
               >
-                {labelMode === "form" ? (
-                  `Form ${meta.roman}`
-                ) : labelMode === "wazn" ? (
-                  <span dir="rtl" className="font-arabic text-base">
+                {meta.roman}
+                {labelMode !== "form" ? (
+                  <span dir="rtl" className="font-arabic text-[11px] leading-tight">
                     {meta.waznPast}
                   </span>
-                ) : (
-                  <span className="inline-flex items-baseline gap-1.5">
-                    <span>Form {meta.roman}</span>
-                    <span dir="rtl" className="font-arabic text-base">
-                      {meta.waznPast}
-                    </span>
-                  </span>
-                )}
-              </Chip>
+                ) : null}
+              </button>
             );
           })}
         </div>
-      </div>
-      <FilterGroup
-        label="Tense"
-        allSelected={enabledTenses.length === ALL_TENSES.length}
-        onSelectAll={onSelectAllTenses}
-      >
+      </Field>
+      <Field label="Tense">
         <div className="flex flex-wrap gap-2">
-          {TENSE_CHIPS.map((tense) => (
+          {(["past", "present", "imperative"] as Tense[]).map((tense) => (
             <Chip
-              key={tense.id}
-              selected={enabledTenses.includes(tense.id)}
-              onClick={() => onToggleTense(tense.id)}
+              key={tense}
+              selected={enabledTenses.includes(tense)}
+              onClick={() => onToggleTense(tense)}
             >
-              <span className="font-arabic">{tense.label}</span>
+              <span className="font-arabic">{TENSE_LABEL[tense]}</span>
             </Chip>
           ))}
         </div>
-      </FilterGroup>
-      <FilterGroup
-        label="Voice"
-        allSelected={enabledVoices.length === ALL_VOICES.length}
-        onSelectAll={onSelectAllVoices}
-      >
+      </Field>
+      <Field label="Voice">
         <div className="flex flex-wrap gap-2">
           {VOICE_CHIPS.map((voice) => (
             <Chip
@@ -228,39 +182,112 @@ export function SpotterFilters({
             </Chip>
           ))}
         </div>
-      </FilterGroup>
-      <FilterGroup
-        label="Persons"
-        allSelected={enabledPersons.length === ALL_PERSON_IDS.length}
-        onSelectAll={onSelectAllPersons}
+      </Field>
+      <Field label="Persons">
+        <PronounGrid
+          enabled={enabledPersons}
+          onToggle={onTogglePerson}
+          onToggleSet={onTogglePersonSet}
+          onSelectAll={onSelectAllPersons}
+        />
+      </Field>
+    </aside>
+  );
+}
+
+function PronounGrid({
+  enabled,
+  onToggle,
+  onToggleSet,
+  onSelectAll,
+}: {
+  enabled: PersonId[];
+  onToggle: (person: PersonId) => void;
+  onToggleSet: (persons: PersonId[]) => void;
+  onSelectAll: () => void;
+}) {
+  return (
+    <div className="grid grid-cols-4 gap-1 text-center">
+      <button
+        type="button"
+        className="p-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground"
+        onClick={onSelectAll}
       >
-        <div className="flex flex-col gap-2">
-          {PERSON_GROUPS.map((group) => (
-            <div
-              key={group.label}
-              className="flex flex-wrap items-center gap-2"
-            >
-              <p className="w-8 text-xs text-muted-foreground">{group.label}</p>
-              {group.ids
-                .filter((id) => quizPersonKey(id) === id)
-                .map((id) => (
-                  <Chip
-                    key={id}
-                    selected={linkedPersons(id).every((person) =>
-                      enabledPersons.includes(person),
-                    )}
-                    title={personQuizEnglish(id)}
-                    onClick={() => onTogglePerson(id)}
-                  >
-                    <span className="font-arabic">
-                      {PERSON_BY_ID[id].arabic}
-                    </span>
-                  </Chip>
-                ))}
-            </div>
-          ))}
-        </div>
-      </FilterGroup>
-    </section>
+        All
+      </button>
+      {COLS.map((col) => (
+        <p
+          key={col}
+          className="p-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground"
+        >
+          {col}
+        </p>
+      ))}
+      {TABLE_ROWS.map((row) => {
+        const cells: (PersonId | null)[] =
+          row.label === "1st" ? ["ana", null, "nahnu"] : row.cells;
+        return (
+          <Row
+            key={row.label}
+            label={row.label}
+            ids={row.cells}
+            cells={cells}
+            enabled={enabled}
+            onToggle={onToggle}
+            onToggleSet={onToggleSet}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+function Row({
+  label,
+  ids,
+  cells,
+  enabled,
+  onToggle,
+  onToggleSet,
+}: {
+  label: string;
+  ids: PersonId[];
+  cells: (PersonId | null)[];
+  enabled: PersonId[];
+  onToggle: (person: PersonId) => void;
+  onToggleSet: (persons: PersonId[]) => void;
+}) {
+  return (
+    <>
+      <button
+        type="button"
+        className="p-1 text-xs font-medium text-muted-foreground hover:text-foreground"
+        onClick={() => onToggleSet(ids)}
+      >
+        {label}
+      </button>
+      {cells.map((id, index) =>
+        id ? (
+          <button
+            key={id}
+            type="button"
+            title={personQuizEnglish(id)}
+            onClick={() => onToggle(id)}
+            className={cn(
+              "w-full rounded-md border px-1 py-1.5 font-arabic text-sm",
+              linkedPersons(id).every((person) => enabled.includes(person))
+                ? "border-primary bg-primary/10"
+                : "border-transparent bg-muted text-muted-foreground",
+            )}
+          >
+            {PERSON_BY_ID[id].arabic}
+          </button>
+        ) : (
+          <p key={index} className="p-0.5 text-muted-foreground">
+            —
+          </p>
+        ),
+      )}
+    </>
   );
 }

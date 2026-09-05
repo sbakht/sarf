@@ -49,7 +49,7 @@ type Action =
   | { type: "selectAllVoices" }
   | { type: "selectAllTenses" }
   | { type: "selectAllQuestions" }
-  | { type: "applyFilters"; patch: Partial<SpotterFilters> }
+  | { type: "togglePersonSet"; persons: PersonId[] }
   | { type: "answer"; ok: boolean; label: string }
   | { type: "nextPrompt" };
 
@@ -104,6 +104,19 @@ function applyFilters(
   patch: Partial<SpotterFilters>,
 ): QuizState {
   return resetRound(state, { ...filtersOf(state), ...patch });
+}
+
+function nextPersonSet(
+  enabled: PersonId[],
+  ids: PersonId[],
+): PersonId[] | null {
+  const allOn = ids.every((id) => enabled.includes(id));
+  if (allOn) {
+    const next = enabled.filter((id) => !ids.includes(id));
+    return next.length === 0 ? null : next;
+  }
+  const set = new Set([...enabled, ...ids]);
+  return ALL_PERSON_IDS.filter((id) => set.has(id));
 }
 
 function nextPersons(enabled: PersonId[], person: PersonId): PersonId[] | null {
@@ -175,8 +188,10 @@ function reducer(state: QuizState, action: Action): QuizState {
       return state.enabledQuestions.length === ALL_QUESTIONS.length
         ? state
         : applyFilters(state, { enabledQuestions: ALL_QUESTIONS });
-    case "applyFilters":
-      return applyFilters(state, action.patch);
+    case "togglePersonSet": {
+      const next = nextPersonSet(state.enabledPersons, action.persons);
+      return next ? applyFilters(state, { enabledPersons: next }) : state;
+    }
     case "answer":
       return {
         ...state,
@@ -294,8 +309,8 @@ export function useSpotterQuiz() {
     selectAllVoices: () => dispatch({ type: "selectAllVoices" }),
     selectAllTenses: () => dispatch({ type: "selectAllTenses" }),
     selectAllQuestions: () => dispatch({ type: "selectAllQuestions" }),
-    applyFilters: (patch: Partial<SpotterFilters>) =>
-      dispatch({ type: "applyFilters", patch }),
+    togglePersonSet: (persons: PersonId[]) =>
+      dispatch({ type: "togglePersonSet", persons }),
     answer,
     nextPrompt: () => dispatch({ type: "nextPrompt" }),
   };

@@ -68,10 +68,16 @@ function FiltersDemo({
         const next = toggleItem(enabledPersons, p);
         if (next) setPersons(next);
       }}
+      onTogglePersonSet={(ids) => {
+        const allOn = ids.every((id) => enabledPersons.includes(id));
+        if (allOn) {
+          const next = enabledPersons.filter((id) => !ids.includes(id));
+          if (next.length) setPersons(next);
+        } else {
+          setPersons([...new Set([...enabledPersons, ...ids])]);
+        }
+      }}
       onSelectAllQuestions={() => setQuestions([...ALL_QUESTIONS])}
-      onSelectAllForms={() => setForms([...ALL_FORMS])}
-      onSelectAllTenses={() => setTenses([...ALL_TENSES])}
-      onSelectAllVoices={() => setVoices([...ALL_VOICES])}
       onSelectAllPersons={() => setPersons([...ALL_PERSON_IDS])}
     />
   );
@@ -110,7 +116,7 @@ export const BothLabels: StoryObj = {
     await expect(
       canvas.getByRole("button", { name: "Both" }),
     ).toHaveAttribute("aria-pressed", "true");
-    await expect(canvas.getByText("Form I")).toBeVisible();
+    await expect(canvas.getByText("I")).toBeVisible();
     await expect(canvas.getByText("فَعَلَ")).toBeVisible();
   },
 };
