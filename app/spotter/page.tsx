@@ -1,5 +1,10 @@
+import { Suspense } from "react";
 import { SpotterView } from "./SpotterView";
 
 export default function SpotterPage() {
-  return <SpotterView />;
+  return (
+    <Suspense>
+      <SpotterView />
+    </Suspense>
+  );
 }

@@ -49,6 +49,7 @@ type Action =
   | { type: "selectAllVoices" }
   | { type: "selectAllTenses" }
   | { type: "selectAllQuestions" }
+  | { type: "applyFilters"; patch: Partial<SpotterFilters> }
   | { type: "answer"; ok: boolean; label: string }
   | { type: "nextPrompt" };
 
@@ -174,6 +175,8 @@ function reducer(state: QuizState, action: Action): QuizState {
       return state.enabledQuestions.length === ALL_QUESTIONS.length
         ? state
         : applyFilters(state, { enabledQuestions: ALL_QUESTIONS });
+    case "applyFilters":
+      return applyFilters(state, action.patch);
     case "answer":
       return {
         ...state,
@@ -291,6 +294,8 @@ export function useSpotterQuiz() {
     selectAllVoices: () => dispatch({ type: "selectAllVoices" }),
     selectAllTenses: () => dispatch({ type: "selectAllTenses" }),
     selectAllQuestions: () => dispatch({ type: "selectAllQuestions" }),
+    applyFilters: (patch: Partial<SpotterFilters>) =>
+      dispatch({ type: "applyFilters", patch }),
     answer,
     nextPrompt: () => dispatch({ type: "nextPrompt" }),
   };
