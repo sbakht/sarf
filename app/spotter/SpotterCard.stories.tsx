@@ -68,9 +68,13 @@ export const RevealedWithColors: Story = {
   args: {
     prompt,
     result,
-    feedback: { ok: true, text: "Done" },
+    feedback: { ok: false, text: "Not quite — Form I" },
     showColors: true,
     done: true,
+    onContinue: () => {},
+  },
+  play: async ({ canvas }) => {
+    await expect(canvas.getByText("Tap the verb to continue")).toBeVisible();
   },
 };
 

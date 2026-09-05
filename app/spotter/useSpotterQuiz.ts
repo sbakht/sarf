@@ -50,7 +50,7 @@ type Action =
   | { type: "selectAllTenses" }
   | { type: "selectAllQuestions" }
   | { type: "togglePersonSet"; persons: PersonId[] }
-  | { type: "answer"; ok: boolean; label: string }
+  | { type: "answer"; ok: boolean; label: string; finishRound: boolean }
   | { type: "nextPrompt" };
 
 const DEFAULT_FILTERS: SpotterFilters = {
@@ -192,13 +192,21 @@ function reducer(state: QuizState, action: Action): QuizState {
       const next = nextPersonSet(state.enabledPersons, action.persons);
       return next ? applyFilters(state, { enabledPersons: next }) : state;
     }
-    case "answer":
+    case "answer": {
+      const score = {
+        correct: state.score.correct + (action.ok ? 1 : 0),
+        total: state.score.total + 1,
+      };
+      // Correct on the last step: skip the reveal dwell and roll the next verb.
+      if (action.finishRound && action.ok) {
+        return {
+          ...resetRound(state, filtersOf(state)),
+          score,
+        };
+      }
       return {
         ...state,
-        score: {
-          correct: state.score.correct + (action.ok ? 1 : 0),
-          total: state.score.total + 1,
-        },
+        score,
         feedback: {
           ok: action.ok,
           text: action.ok
@@ -208,6 +216,7 @@ function reducer(state: QuizState, action: Action): QuizState {
         showColors: action.ok ? state.showColors : true,
         step: state.step + 1,
       };
+    }
     case "nextPrompt":
       return resetRound(state, filtersOf(state));
   }
@@ -245,6 +254,16 @@ export function useSpotterQuiz() {
       })
     : null;
 
+  function submitAnswer(choice: SpotterChoice) {
+    const finishRound = state.step >= steps.length - 1;
+    dispatch({
+      type: "answer",
+      ok: choice.correct,
+      label: choice.feedback,
+      finishRound,
+    });
+  }
+
   const onKey = useEffectEvent((event: KeyboardEvent) => {
     if (isTypingTarget(event.target)) return;
     if (
@@ -263,7 +282,7 @@ export function useSpotterQuiz() {
     const choice = current?.choices[index];
     if (!choice) return;
     event.preventDefault();
-    dispatch({ type: "answer", ok: choice.correct, label: choice.feedback });
+    submitAnswer(choice);
   });
 
   useEffect(() => {
@@ -275,7 +294,7 @@ export function useSpotterQuiz() {
   }, []);
 
   function answer(choice: SpotterChoice) {
-    dispatch({ type: "answer", ok: choice.correct, label: choice.feedback });
+    submitAnswer(choice);
   }
 
   return {

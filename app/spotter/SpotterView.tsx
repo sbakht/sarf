@@ -8,47 +8,26 @@ import { SpotterFilters } from "./SpotterFilters";
 import { SpotterStep } from "./SpotterStep";
 import { useSpotterQuiz } from "./useSpotterQuiz";
 
-function NextButton({
-  label,
-  hint,
-  onClick,
-}: {
-  label: string;
-  hint?: string;
-  onClick: () => void;
-}) {
-  return (
-    <Button
-      variant="energy"
-      size="lg"
-      className="self-start rounded-full px-5"
-      onClick={onClick}
-    >
-      {label}
-      {hint ? <span className="text-xs opacity-80">{hint}</span> : null}
-    </Button>
-  );
-}
-
 function RoundControls({ quiz }: { quiz: ReturnType<typeof useSpotterQuiz> }) {
   if (!quiz.prompt) {
-    return <NextButton label="Try again" onClick={quiz.nextPrompt} />;
-  }
-  if (!quiz.done && quiz.current) {
     return (
-      <SpotterStep
-        current={quiz.current}
-        step={quiz.step}
-        total={quiz.steps.length}
-        onAnswer={quiz.answer}
-      />
+      <Button
+        variant="energy"
+        size="lg"
+        className="self-start rounded-full px-5"
+        onClick={quiz.nextPrompt}
+      >
+        Try again
+      </Button>
     );
   }
+  if (quiz.done || !quiz.current) return null;
   return (
-    <NextButton
-      label="Next verb "
-      hint="(Enter / Space)"
-      onClick={quiz.nextPrompt}
+    <SpotterStep
+      current={quiz.current}
+      step={quiz.step}
+      total={quiz.steps.length}
+      onAnswer={quiz.answer}
     />
   );
 }
@@ -106,6 +85,7 @@ export function SpotterView() {
             feedback={quiz.feedback}
             showColors={quiz.showColors}
             done={quiz.done}
+            onContinue={quiz.done && quiz.prompt ? quiz.nextPrompt : undefined}
           />
 
           <RoundControls quiz={quiz} />

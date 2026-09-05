@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTheme } from "next-themes";
 import { ColorLegend } from "./ArabicWord";
 import { useSettings } from "./SettingsProvider";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -21,8 +22,9 @@ const NAV = [
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const { showHarakat, setShowHarakat, labelMode, setLabelMode, setTheme } =
+  const { showHarakat, setShowHarakat, labelMode, setLabelMode } =
     useSettings();
+  const { resolvedTheme, setTheme } = useTheme();
 
   return (
     <div className="min-h-full flex flex-col">
@@ -60,17 +62,13 @@ export function AppShell({ children }: { children: ReactNode }) {
               size="sm"
               className="rounded-full px-3"
               onClick={() =>
-                setTheme(
-                  document.documentElement.classList.contains("dark")
-                    ? "light"
-                    : "dark",
-                )
+                setTheme(resolvedTheme === "dark" ? "light" : "dark")
               }
-              aria-label="Toggle night mode"
+              aria-label="Toggle dark mode"
             >
               <Sun className="size-3.5 dark:hidden" />
               <Moon className="hidden size-3.5 dark:block" />
-              Night{" "}
+              Dark{" "}
               <span className="dark:hidden">off</span>
               <span className="hidden dark:inline">on</span>
             </Button>

@@ -57,23 +57,28 @@ export function SpotterCard({
   feedback,
   showColors,
   done,
+  onContinue,
 }: {
   prompt: Prompt | null;
   result: ConjugateResult | null;
   feedback: { ok: boolean; text: string } | null;
   showColors: boolean;
   done: boolean;
+  onContinue?: () => void;
 }) {
   const cardTone = cardToneClass(feedback);
+  const continueHint = done && onContinue;
 
-  return (
-    <Card className={`px-6 py-10 text-center ${cardTone}`}>
+  const body = (
+    <>
       <p className="text-xs uppercase tracking-wider text-muted-foreground">
-        Identify this verb
+        {continueHint ? "Tap the verb to continue" : "Identify this verb"}
       </p>
       {prompt && result ? (
         <>
-          <div className="mt-4">
+          <div
+            className={`mt-4 ${continueHint ? "transition group-hover:scale-[1.03]" : ""}`}
+          >
             {showColors || done ? (
               <ArabicWord
                 slots={result.slots}
@@ -106,12 +111,29 @@ export function SpotterCard({
                 {rootArabic(prompt.root)} · {prompt.tense} · {prompt.voice} ·{" "}
                 {personQuizFeedback(prompt.person, prompt.tense)}
               </p>
+              {continueHint ? (
+                <p className="text-sm">or press Enter / Space</p>
+              ) : null}
             </div>
           ) : null}
         </>
       ) : (
         <p className="mt-4 text-muted-foreground">No verbs match these filters</p>
       )}
-    </Card>
+    </>
   );
+
+  if (continueHint) {
+    return (
+      <button
+        type="button"
+        onClick={onContinue}
+        className={`group w-full rounded-xl border-2 border-dashed border-energy/60 bg-card px-6 py-10 text-center transition hover:border-energy hover:bg-energy/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-energy ${cardTone}`}
+      >
+        {body}
+      </button>
+    );
+  }
+
+  return <Card className={`px-6 py-10 text-center ${cardTone}`}>{body}</Card>;
 }
