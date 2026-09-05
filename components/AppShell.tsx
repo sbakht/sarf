@@ -21,6 +21,14 @@ const NAV = [
   { href: "/lab", label: "Lab" },
 ];
 
+const BARE_ROUTES = ["/quiz"];
+
+function isBareRoute(pathname: string): boolean {
+  return BARE_ROUTES.some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`),
+  );
+}
+
 function navActive(href: string, pathname: string): boolean {
   if (href === "/") return pathname === "/";
   return pathname === href || pathname.startsWith(`${href}/`);
@@ -31,6 +39,10 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { showHarakat, setShowHarakat, labelMode, setLabelMode } =
     useSettings();
   const { resolvedTheme, setTheme } = useTheme();
+
+  if (isBareRoute(pathname)) {
+    return <>{children}</>;
+  }
 
   return (
     <div className="min-h-full flex flex-col">
