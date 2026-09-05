@@ -94,18 +94,20 @@ export const AllSelected: StoryObj = {
   render: () => <FiltersDemo />,
   play: async ({ canvas }) => {
     await expect(canvas.getByText("Quiz on")).toBeVisible();
-    await expect(
-      canvas.getByRole("button", { name: "Root" }),
-    ).toHaveAttribute("aria-pressed", "true");
+    await expect(canvas.getByRole("button", { name: "Root" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
   },
 };
 
 export const WaznLabels: StoryObj = {
   render: () => <FiltersDemo initialLabelMode="wazn" />,
   play: async ({ canvas }) => {
-    await expect(
-      canvas.getByRole("button", { name: "وزن" }),
-    ).toHaveAttribute("aria-pressed", "true");
+    await expect(canvas.getByRole("button", { name: "وزن" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
     await expect(canvas.getByText("فَعَلَ")).toBeVisible();
   },
 };
@@ -113,9 +115,10 @@ export const WaznLabels: StoryObj = {
 export const BothLabels: StoryObj = {
   render: () => <FiltersDemo initialLabelMode="both" />,
   play: async ({ canvas }) => {
-    await expect(
-      canvas.getByRole("button", { name: "Both" }),
-    ).toHaveAttribute("aria-pressed", "true");
+    await expect(canvas.getByRole("button", { name: "Both" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
     await expect(canvas.getByText("I")).toBeVisible();
     await expect(canvas.getByText("فَعَلَ")).toBeVisible();
   },
@@ -132,11 +135,13 @@ export const SparseSelection: StoryObj = {
     />
   ),
   play: async ({ canvas }) => {
-    await expect(
-      canvas.getByRole("button", { name: "Root" }),
-    ).toHaveAttribute("aria-pressed", "true");
-    await expect(
-      canvas.getByRole("button", { name: "Tense" }),
-    ).toHaveAttribute("aria-pressed", "false");
+    await expect(canvas.getByRole("button", { name: "Root" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    await expect(canvas.getByRole("button", { name: "Tense" })).toHaveAttribute(
+      "aria-pressed",
+      "false",
+    );
   },
 };

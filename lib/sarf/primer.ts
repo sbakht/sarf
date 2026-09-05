@@ -3,12 +3,7 @@ import { rootArabic, soundRoots } from "./lexicon";
 import { PERSON_BY_ID } from "./persons";
 import { uniqueOptions } from "./quiz";
 import { pick, type SpotterChoice } from "./spotter";
-import type {
-  ConjugateResult,
-  FormId,
-  PersonId,
-  RootEntry,
-} from "./types";
+import type { ConjugateResult, FormId, PersonId, RootEntry } from "./types";
 
 export const PRIMER_ROUNDS = 6;
 export const PRIMER_PERSONS: PersonId[] = ["huwa", "hiya"];
@@ -56,9 +51,7 @@ export function makeRootGenderPrompt(
   return { root, person };
 }
 
-export function conjugateRootGender(
-  prompt: RootGenderPrompt,
-): ConjugateResult {
+export function conjugateRootGender(prompt: RootGenderPrompt): ConjugateResult {
   return conjugate({
     root: prompt.root.letters,
     form: 1,

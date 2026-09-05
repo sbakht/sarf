@@ -86,8 +86,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             >
               <Sun className="size-3.5 dark:hidden" />
               <Moon className="hidden size-3.5 dark:block" />
-              Dark{" "}
-              <span className="dark:hidden">off</span>
+              Dark <span className="dark:hidden">off</span>
               <span className="hidden dark:inline">on</span>
             </Button>
             <Toggle
@@ -123,7 +122,9 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
         </div>
       </header>
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">{children}</main>
+      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
+        {children}
+      </main>
       <footer className="px-4 py-3">
         <Separator className="mb-3" />
         <div className="mx-auto flex max-w-6xl justify-end">

@@ -38,7 +38,9 @@ describe("2nd dual quiz identity", () => {
     );
     expect(duals).toHaveLength(1);
     expect(
-      choices.map(personQuizEnglish).filter((label) => label === "you dual (m/f)"),
+      choices
+        .map(personQuizEnglish)
+        .filter((label) => label === "you dual (m/f)"),
     ).toHaveLength(1);
   });
 });

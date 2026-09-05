@@ -71,9 +71,7 @@ export function LessonView({ slug }: { slug: string }) {
         <LessonSession
           key={slug}
           mod={mod}
-          nextLesson={
-            next ? { slug: next.slug, title: next.title } : null
-          }
+          nextLesson={next ? { slug: next.slug, title: next.title } : null}
         />
       </div>
     </div>

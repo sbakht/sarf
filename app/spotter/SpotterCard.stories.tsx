@@ -87,6 +87,8 @@ export const NoMatches: Story = {
     done: false,
   },
   play: async ({ canvas }) => {
-    await expect(canvas.getByText("No verbs match these filters")).toBeVisible();
+    await expect(
+      canvas.getByText("No verbs match these filters"),
+    ).toBeVisible();
   },
 };

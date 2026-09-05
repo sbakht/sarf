@@ -78,7 +78,8 @@ export function GymView() {
               }))}
               onValueChange={(value) => {
                 if (!value) return;
-                const next = ROOTS.find((item) => item.id === value) ?? ROOTS[0];
+                const next =
+                  ROOTS.find((item) => item.id === value) ?? ROOTS[0];
                 setRootId(next.id);
                 setForm(next.forms[0]);
                 resetCovers();

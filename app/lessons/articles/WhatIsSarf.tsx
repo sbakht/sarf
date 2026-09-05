@@ -37,11 +37,7 @@ function WordCard({
         {label}
       </p>
       <div className="mt-2">
-        <ArabicWord
-          slots={result.slots}
-          surface={result.surface}
-          size="lg"
-        />
+        <ArabicWord slots={result.slots} surface={result.surface} size="lg" />
       </div>
       {note ? (
         <p className="mt-2 text-xs leading-5 text-muted-foreground">{note}</p>
@@ -112,8 +108,8 @@ export function WhatIsSarfArticle() {
         <h2 className="text-xl font-semibold">Contents and container</h2>
         <p className="leading-7 text-muted-foreground">
           Almost every word you will train here is{" "}
-          <span className="text-foreground">مشتق</span> — it follows a
-          pattern and can be reshaped. A few words are{" "}
+          <span className="text-foreground">مشتق</span> — it follows a pattern
+          and can be reshaped. A few words are{" "}
           <span className="text-foreground">جامد</span> — fixed shapes you
           cannot “do sarf” on. We focus on مشتق words.
         </p>
@@ -136,8 +132,8 @@ export function WhatIsSarfArticle() {
           </li>
         </ul>
         <p className="leading-7 text-muted-foreground">
-          Pour the same contents into different containers and the meanings
-          stay related. The root{" "}
+          Pour the same contents into different containers and the meanings stay
+          related. The root{" "}
           <span dir="rtl" className="font-arabic text-lg text-foreground">
             ع ل م
           </span>{" "}
@@ -162,8 +158,7 @@ export function WhatIsSarfArticle() {
               <span dir="rtl" className="font-arabic text-foreground">
                 ف ع ل
               </span>
-              :{" "}
-              <span className="text-foreground">فاء الكلمة</span>,{" "}
+              : <span className="text-foreground">فاء الكلمة</span>,{" "}
               <span className="text-foreground">عين الكلمة</span>,{" "}
               <span className="text-foreground">لام الكلمة</span>. For{" "}
               <span dir="rtl" className="font-arabic text-foreground">
@@ -189,8 +184,8 @@ export function WhatIsSarfArticle() {
           <span dir="rtl" className="font-arabic text-foreground">
             الصيغة
           </span>
-          ) — past, present, command, the idea of the action, the doer, and
-          so on. Members look different from family to family, but within one
+          ) — past, present, command, the idea of the action, the doer, and so
+          on. Members look different from family to family, but within one
           family a given member always keeps the same shape.
         </p>
         <div className="overflow-x-auto rounded-xl border border-border">
@@ -221,8 +216,8 @@ export function WhatIsSarfArticle() {
           </table>
         </div>
         <p className="text-sm leading-6 text-muted-foreground">
-          What makes families different is a shared trait in the container —
-          an extra shadda, an extra alif, an extra ت, and so on. You will meet
+          What makes families different is a shared trait in the container — an
+          extra shadda, an extra alif, an extra ت, and so on. You will meet
           those traits as Forms II–X in this app.
         </p>
       </section>
@@ -238,9 +233,9 @@ export function WhatIsSarfArticle() {
               <h3 className="font-arabic text-xl">المجرد</h3>
               <p className="text-sm leading-6 text-muted-foreground">
                 In the past “he” form, the container has{" "}
-                <span className="text-foreground">no extra letters</span> —
-                only the three root letters plus vowels. Families are told
-                apart by those vowels alone.
+                <span className="text-foreground">no extra letters</span> — only
+                the three root letters plus vowels. Families are told apart by
+                those vowels alone.
               </p>
               <WordCard label="نَصَرَ · help" result={nasara} />
             </CardContent>
@@ -263,8 +258,8 @@ export function WhatIsSarfArticle() {
         </div>
         <p className="leading-7 text-muted-foreground">
           A quick test for the past “he” form: if you only see the three root
-          letters, it is مجرد. If you see anything else (أ، ت، ا، سـت، …), it
-          is مزيد فيه.
+          letters, it is مجرد. If you see anything else (أ، ت، ا، سـت، …), it is
+          مزيد فيه.
         </p>
       </section>
 
@@ -272,8 +267,8 @@ export function WhatIsSarfArticle() {
         <h2 className="text-xl font-semibold">Try it</h2>
         <p className="mt-2 leading-7 text-muted-foreground">
           A past-tense “he” verb will appear. Name its three root letters
-          (الجذر), then say whether the family is مجرد or مزيد فيه. Misses
-          turn the colors on so the extras stand out.
+          (الجذر), then say whether the family is مجرد or مزيد فيه. Misses turn
+          the colors on so the extras stand out.
         </p>
       </section>
     </article>

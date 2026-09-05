@@ -118,7 +118,9 @@ export function SpotterCard({
           ) : null}
         </>
       ) : (
-        <p className="mt-4 text-muted-foreground">No verbs match these filters</p>
+        <p className="mt-4 text-muted-foreground">
+          No verbs match these filters
+        </p>
       )}
     </>
   );

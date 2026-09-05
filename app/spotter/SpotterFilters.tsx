@@ -148,7 +148,10 @@ export function SpotterFilters({
               >
                 {meta.roman}
                 {labelMode !== "form" ? (
-                  <span dir="rtl" className="font-arabic text-[11px] leading-tight">
+                  <span
+                    dir="rtl"
+                    className="font-arabic text-[11px] leading-tight"
+                  >
                     {meta.waznPast}
                   </span>
                 ) : null}
