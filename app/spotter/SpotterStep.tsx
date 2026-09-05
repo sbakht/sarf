@@ -1,11 +1,5 @@
-import { VoiceKey } from "@/components/VoiceKey";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import type { SpotterChoice, SpotterStep } from "@/lib/sarf";
 
 export function SpotterStep({
@@ -55,16 +49,6 @@ export function SpotterStep({
             </Button>
           ))}
         </div>
-        {current.id === "voice" ? (
-          <Collapsible className="mt-4 rounded-xl border border-border bg-muted/50 px-4 py-3 text-start">
-            <CollapsibleTrigger className="cursor-pointer text-sm text-muted-foreground hover:text-foreground">
-              Voice key — how to tell معلوم from مجهول
-            </CollapsibleTrigger>
-            <CollapsibleContent className="mt-3">
-              <VoiceKey compact />
-            </CollapsibleContent>
-          </Collapsible>
-        ) : null}
       </CardContent>
     </Card>
   );

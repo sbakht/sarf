@@ -96,10 +96,7 @@ export const Form: Story = {
 
 export const Voice: Story = {
   args: { current: voiceStep, step: 3 },
-  play: async ({ canvas, userEvent }) => {
-    await userEvent.click(
-      canvas.getByText("Voice key — how to tell معلوم from مجهول"),
-    );
+  play: async ({ canvas }) => {
     await expect(canvas.getByText("معلوم or مجهول?")).toBeVisible();
   },
 };
