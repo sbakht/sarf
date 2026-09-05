@@ -6,7 +6,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import type { useLessonQuiz } from "./useLessonQuiz";
-import type { QuizChoice } from "@/lib/sarf";
+import { QuizStep } from "@/app/quiz/QuizStep";
 
 function CheckIcon() {
   return (
@@ -165,48 +165,12 @@ export function LessonQuiz<P>({
           Continue
         </Button>
       ) : quiz.current ? (
-        <Card>
-          <CardContent>
-            <p className="text-xs uppercase tracking-wider text-muted-foreground">
-              Step {quiz.step + 1} / {quiz.steps.length} · keys 1–
-              {quiz.current.choices.length}
-            </p>
-            <h2 className="mt-1 text-xl font-semibold">{quiz.current.title}</h2>
-            <div className="mt-4 grid gap-2 sm:grid-cols-2">
-              {quiz.current.choices.map((choice: QuizChoice, index: number) => (
-                <Button
-                  key={choice.id}
-                  variant="outline"
-                  className="relative h-auto flex-col items-center gap-1 whitespace-normal rounded-xl bg-muted px-4 py-3 hover:border-primary"
-                  onClick={() => quiz.answer(choice)}
-                >
-                  <span className="absolute start-3 top-2 text-xs text-muted-foreground">
-                    {index + 1}
-                  </span>
-                  {choice.arabic ? (
-                    <span dir="rtl" className="font-arabic text-2xl">
-                      {choice.primary}
-                    </span>
-                  ) : (
-                    choice.primary
-                  )}
-                  {choice.secondary ? (
-                    <span
-                      dir={choice.secondaryArabic ? "rtl" : undefined}
-                      className={
-                        choice.secondaryArabic
-                          ? "font-arabic text-sm text-muted-foreground"
-                          : "text-sm text-muted-foreground"
-                      }
-                    >
-                      {choice.secondary}
-                    </span>
-                  ) : null}
-                </Button>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+        <QuizStep
+          current={quiz.current}
+          step={quiz.step}
+          total={quiz.steps.length}
+          onAnswer={quiz.answer}
+        />
       ) : null}
     </div>
   );
