@@ -64,13 +64,24 @@ export type {
 export {
   PRIMER_PERSONS,
   PRIMER_ROUNDS,
+  INTRO_MAZEED_FORMS,
+  buildIntroSteps,
   buildRootGenderSteps,
+  conjugateIntro,
   conjugateRootGender,
+  familyKind,
+  makeIntroPrompt,
   makeRootGenderPrompt,
   primerRoots,
   promptSeed as primerPromptSeed,
+  introPromptSeed,
 } from "./primer";
-export type { LessonStep, RootGenderPrompt } from "./primer";
+export type {
+  FamilyKind,
+  IntroPrompt,
+  LessonStep,
+  RootGenderPrompt,
+} from "./primer";
 export { inferWeakness } from "./weak";
 export { stripHarakat, normalizeForAnswer } from "./harakat";
 export { surfaceOf } from "./slots";

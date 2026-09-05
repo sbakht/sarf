@@ -93,7 +93,7 @@ export function TheRootArticle() {
   return (
     <article className="flex max-w-2xl flex-col gap-8">
       <header>
-        <p className="kicker">Lesson 01</p>
+        <p className="kicker">Lesson 02</p>
         <h1 className="mt-1 text-3xl font-semibold">The three-letter root</h1>
         <p className="mt-2 text-lg leading-8 text-muted-foreground">
           Sarf is the system that changes an Arabic verb’s shape. You do not

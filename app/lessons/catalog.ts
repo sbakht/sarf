@@ -7,6 +7,13 @@ export type LessonMeta = {
 
 export const LESSONS: LessonMeta[] = [
   {
+    slug: "what-is-sarf",
+    title: "What is صرف?",
+    arabic: "ما هو الصرف؟",
+    summary:
+      "Contents vs container, families and members, and مجرد vs مزيد فيه.",
+  },
+  {
     slug: "the-root",
     title: "The three-letter root",
     arabic: "الجذر الثلاثي",

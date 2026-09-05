@@ -7,14 +7,22 @@ import { LESSON_MODULES, type LessonModule } from "./modules";
 import { useLessonQuiz } from "./useLessonQuiz";
 import { cn } from "@/lib/utils";
 
-function LessonSession({ mod }: { mod: LessonModule }) {
+function LessonSession({
+  mod,
+  nextLesson,
+}: {
+  mod: LessonModule;
+  nextLesson?: { slug: string; title: string } | null;
+}) {
   const quiz = useLessonQuiz(mod);
-  return <LessonQuiz quiz={quiz} />;
+  return <LessonQuiz quiz={quiz} nextLesson={nextLesson} />;
 }
 
 export function LessonView({ slug }: { slug: string }) {
-  const lesson = LESSONS.find((item) => item.slug === slug);
+  const lessonIndex = LESSONS.findIndex((item) => item.slug === slug);
+  const lesson = lessonIndex >= 0 ? LESSONS[lessonIndex] : undefined;
   const mod = LESSON_MODULES[slug];
+  const next = lessonIndex >= 0 ? LESSONS[lessonIndex + 1] : undefined;
 
   if (!lesson || !mod) {
     return <p className="text-muted-foreground">This lesson was not found.</p>;
@@ -60,7 +68,13 @@ export function LessonView({ slug }: { slug: string }) {
 
       <div className="flex flex-col gap-10">
         <Article />
-        <LessonSession key={slug} mod={mod} />
+        <LessonSession
+          key={slug}
+          mod={mod}
+          nextLesson={
+            next ? { slug: next.slug, title: next.title } : null
+          }
+        />
       </div>
     </div>
   );

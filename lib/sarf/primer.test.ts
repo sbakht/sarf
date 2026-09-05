@@ -2,8 +2,12 @@ import { describe, expect, it } from "vitest";
 import {
   PRIMER_PERSONS,
   PRIMER_ROUNDS,
+  buildIntroSteps,
   buildRootGenderSteps,
+  conjugateIntro,
   conjugateRootGender,
+  familyKind,
+  makeIntroPrompt,
   makeRootGenderPrompt,
   primerRoots,
 } from "./primer";
@@ -75,6 +79,49 @@ describe("buildRootGenderSteps", () => {
     expect(ids.sort()).toEqual(["hiya", "huwa"]);
     const correct = personStep?.choices.find((choice) => choice.correct);
     expect(correct?.id).toBe(prompt.person);
+  });
+});
+
+describe("makeIntroPrompt", () => {
+  it("returns past هو verbs that conjugate", () => {
+    for (const seed of [1, 2, 3, 99, 12345]) {
+      const prompt = makeIntroPrompt(seededRng(seed));
+      expect(prompt).not.toBeNull();
+      if (!prompt) continue;
+      expect(prompt.root.weakness).toBe("sound");
+      expect(prompt.root.forms).toContain(prompt.form);
+      const result = conjugateIntro(prompt);
+      expect(result.available).toBe(true);
+    }
+  });
+
+  it("is deterministic for a seed", () => {
+    expect(makeIntroPrompt(seededRng(7))).toEqual(
+      makeIntroPrompt(seededRng(7)),
+    );
+  });
+});
+
+describe("buildIntroSteps", () => {
+  it("asks root then مجرد / مزيد فيه", () => {
+    const prompt = makeIntroPrompt(seededRng(1));
+    if (!prompt) throw new Error("expected a prompt");
+    const steps = buildIntroSteps(prompt);
+    expect(steps).toHaveLength(2);
+    expect(steps[0]?.id).toBe("root");
+    expect(steps[1]?.id).toBe("family");
+    expect(steps[0]?.choices).toHaveLength(4);
+    expect(steps[1]?.choices).toHaveLength(2);
+  });
+
+  it("marks the correct family kind", () => {
+    for (const seed of [4, 8, 15, 42]) {
+      const prompt = makeIntroPrompt(seededRng(seed));
+      if (!prompt) throw new Error("expected a prompt");
+      const familyStep = buildIntroSteps(prompt)[1];
+      const correct = familyStep?.choices.find((choice) => choice.correct);
+      expect(correct?.id).toBe(familyKind(prompt.form));
+    }
   });
 });
 

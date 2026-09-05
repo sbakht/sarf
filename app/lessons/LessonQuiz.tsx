@@ -48,8 +48,10 @@ function XIcon() {
 
 export function LessonQuiz<P>({
   quiz,
+  nextLesson,
 }: {
   quiz: ReturnType<typeof useLessonQuiz<P>>;
+  nextLesson?: { slug: string; title: string } | null;
 }) {
   const showColors = quiz.showColors || quiz.complete || quiz.awaitingContinue;
 
@@ -115,8 +117,9 @@ export function LessonQuiz<P>({
         <Card>
           <CardContent className="flex flex-col gap-3">
             <p className="text-sm leading-6 text-muted-foreground">
-              You can keep drilling this sitting, or open the Atlas to see more
-              patterns built on the same three letters.
+              {nextLesson
+                ? "You can keep drilling this sitting, continue to the next lesson, or open the Atlas."
+                : "You can keep drilling this sitting, or open the Atlas to browse more patterns."}
             </p>
             <div className="flex flex-wrap gap-2">
               <Button
@@ -126,6 +129,17 @@ export function LessonQuiz<P>({
               >
                 Try again
               </Button>
+              {nextLesson ? (
+                <Link
+                  href={`/lessons/${nextLesson.slug}`}
+                  className={cn(
+                    buttonVariants({ variant: "outline" }),
+                    "rounded-full",
+                  )}
+                >
+                  Next: {nextLesson.title}
+                </Link>
+              ) : null}
               <Link
                 href="/atlas"
                 className={cn(
@@ -133,7 +147,7 @@ export function LessonQuiz<P>({
                   "rounded-full",
                 )}
               >
-                See more patterns in the Atlas
+                Atlas
               </Link>
             </div>
             <p className="text-xs text-muted-foreground">
@@ -159,30 +173,32 @@ export function LessonQuiz<P>({
             </p>
             <h2 className="mt-1 text-xl font-semibold">{quiz.current.title}</h2>
             <div className="mt-4 grid gap-2 sm:grid-cols-2">
-              {quiz.current.choices.map((choice: SpotterChoice, index: number) => (
-                <Button
-                  key={choice.id}
-                  variant="outline"
-                  className="relative h-auto flex-col items-center gap-1 whitespace-normal rounded-xl bg-muted px-4 py-3 hover:border-primary"
-                  onClick={() => quiz.answer(choice)}
-                >
-                  <span className="absolute start-3 top-2 text-xs text-muted-foreground">
-                    {index + 1}
-                  </span>
-                  {choice.arabic ? (
-                    <span dir="rtl" className="font-arabic text-2xl">
-                      {choice.primary}
+              {quiz.current.choices.map(
+                (choice: SpotterChoice, index: number) => (
+                  <Button
+                    key={choice.id}
+                    variant="outline"
+                    className="relative h-auto flex-col items-center gap-1 whitespace-normal rounded-xl bg-muted px-4 py-3 hover:border-primary"
+                    onClick={() => quiz.answer(choice)}
+                  >
+                    <span className="absolute start-3 top-2 text-xs text-muted-foreground">
+                      {index + 1}
                     </span>
-                  ) : (
-                    choice.primary
-                  )}
-                  {choice.secondary ? (
-                    <span className="text-sm text-muted-foreground">
-                      {choice.secondary}
-                    </span>
-                  ) : null}
-                </Button>
-              ))}
+                    {choice.arabic ? (
+                      <span dir="rtl" className="font-arabic text-2xl">
+                        {choice.primary}
+                      </span>
+                    ) : (
+                      choice.primary
+                    )}
+                    {choice.secondary ? (
+                      <span className="text-sm text-muted-foreground">
+                        {choice.secondary}
+                      </span>
+                    ) : null}
+                  </Button>
+                ),
+              )}
             </div>
           </CardContent>
         </Card>

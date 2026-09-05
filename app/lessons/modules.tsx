@@ -2,12 +2,18 @@
 
 import type { ComponentType } from "react";
 import { TheRootArticle } from "./articles/TheRoot";
+import { WhatIsSarfArticle } from "./articles/WhatIsSarf";
 import {
+  buildIntroSteps,
   buildRootGenderSteps,
+  conjugateIntro,
   conjugateRootGender,
+  makeIntroPrompt,
   makeRootGenderPrompt,
   type ConjugateResult,
+  type IntroPrompt,
   type LessonStep,
+  type RootGenderPrompt,
 } from "@/lib/sarf";
 
 export type LessonModule = {
@@ -18,12 +24,16 @@ export type LessonModule = {
 };
 
 export const LESSON_MODULES: Record<string, LessonModule> = {
+  "what-is-sarf": {
+    Article: WhatIsSarfArticle,
+    makePrompt: makeIntroPrompt,
+    buildSteps: (prompt) => buildIntroSteps(prompt as IntroPrompt),
+    toResult: (prompt) => conjugateIntro(prompt as IntroPrompt),
+  },
   "the-root": {
     Article: TheRootArticle,
     makePrompt: makeRootGenderPrompt,
-    buildSteps: (prompt) =>
-      buildRootGenderSteps(prompt as Parameters<typeof buildRootGenderSteps>[0]),
-    toResult: (prompt) =>
-      conjugateRootGender(prompt as Parameters<typeof conjugateRootGender>[0]),
+    buildSteps: (prompt) => buildRootGenderSteps(prompt as RootGenderPrompt),
+    toResult: (prompt) => conjugateRootGender(prompt as RootGenderPrompt),
   },
 };
