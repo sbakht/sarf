@@ -54,6 +54,8 @@ export {
   promptSeed,
   seededRng,
   toggleItem,
+  quizChoiceLabel,
+  quizWrongFeedback,
 } from "./quiz";
 export type {
   Prompt,

@@ -48,6 +48,15 @@ export type QuizChoice = {
   feedback: string;
 };
 
+export function quizChoiceLabel(choice: QuizChoice): string {
+  if (!choice.secondary) return choice.primary;
+  return `${choice.primary} · ${choice.secondary}`;
+}
+
+export function quizWrongFeedback(answer: string, correct: string): string {
+  return `Not quite — you said ${answer}; correct answer is ${correct}`;
+}
+
 export type QuizStep = {
   id: QuestionId;
   title: string;

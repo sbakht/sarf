@@ -12,6 +12,8 @@ import {
   conjugate,
   linkedPersons,
   makePrompt,
+  quizChoiceLabel,
+  quizWrongFeedback,
   seededRng,
   toggleItem,
   type FormId,
@@ -50,7 +52,13 @@ type Action =
   | { type: "selectAllTenses" }
   | { type: "selectAllQuestions" }
   | { type: "togglePersonSet"; persons: PersonId[] }
-  | { type: "answer"; ok: boolean; label: string; finishRound: boolean }
+  | {
+      type: "answer";
+      ok: boolean;
+      label: string;
+      answer: string;
+      finishRound: boolean;
+    }
   | { type: "nextPrompt" };
 
 const DEFAULT_FILTERS: QuizFilters = {
@@ -208,7 +216,7 @@ function reducer(state: QuizState, action: Action): QuizState {
           ok: action.ok,
           text: action.ok
             ? `Correct — ${action.label}`
-            : `Not quite — ${action.label}`,
+            : quizWrongFeedback(action.answer, action.label),
         },
         showColors: action.ok ? state.showColors : true,
         step: state.step + 1,
@@ -257,6 +265,7 @@ export function useQuiz() {
       type: "answer",
       ok: choice.correct,
       label: choice.feedback,
+      answer: quizChoiceLabel(choice),
       finishRound,
     });
   }

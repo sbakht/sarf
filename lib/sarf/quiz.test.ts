@@ -9,6 +9,8 @@ import {
   buildQuizSteps,
   eligibleTenses,
   makePrompt,
+  quizChoiceLabel,
+  quizWrongFeedback,
   seededRng,
   toggleItem,
   type Prompt,
@@ -359,5 +361,33 @@ describe("buildQuizSteps", () => {
     expect(bothStep.choices[0]?.primary).toBe("Form I");
     expect(bothStep.choices[0]?.secondary).toBe("فَعَلَ");
     expect(bothStep.choices[0]?.secondaryArabic).toBe(true);
+  });
+});
+
+describe("quiz feedback helpers", () => {
+  it("formats choice labels with optional secondary text", () => {
+    expect(
+      quizChoiceLabel({
+        id: "1",
+        primary: "Form I",
+        correct: false,
+        feedback: "Form I",
+      }),
+    ).toBe("Form I");
+    expect(
+      quizChoiceLabel({
+        id: "1",
+        primary: "Form I",
+        secondary: "فَعَلَ",
+        correct: false,
+        feedback: "Form I · فَعَلَ",
+      }),
+    ).toBe("Form I · فَعَلَ");
+  });
+
+  it("includes the selected answer in wrong feedback", () => {
+    expect(quizWrongFeedback("Form IV", "Form I")).toBe(
+      "Not quite — you said Form IV; correct answer is Form I",
+    );
   });
 });

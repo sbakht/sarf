@@ -7,6 +7,8 @@ import {
   type ConjugateResult,
   type LessonStep,
   type QuizChoice,
+  quizChoiceLabel,
+  quizWrongFeedback,
 } from "@/lib/sarf";
 
 type Feedback = {
@@ -25,7 +27,13 @@ type QuizState<P> = {
 };
 
 type Action =
-  | { type: "answer"; ok: boolean; label: string; finishRound: boolean }
+  | {
+      type: "answer";
+      ok: boolean;
+      label: string;
+      answer: string;
+      finishRound: boolean;
+    }
   | { type: "nextRound" }
   | { type: "restart" };
 
@@ -105,7 +113,7 @@ export function useLessonQuiz<P>(config: LessonQuizConfig<P>) {
               ok: action.ok,
               text: action.ok
                 ? `Correct — ${action.label}`
-                : `Not quite — ${action.label}`,
+                : quizWrongFeedback(action.answer, action.label),
             },
             showColors: action.ok ? current.showColors : true,
             step: current.step + 1,
@@ -158,6 +166,7 @@ export function useLessonQuiz<P>(config: LessonQuizConfig<P>) {
       type: "answer",
       ok: choice.correct,
       label: choice.feedback,
+      answer: quizChoiceLabel(choice),
       finishRound,
     });
   }
