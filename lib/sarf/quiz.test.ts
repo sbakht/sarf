@@ -332,4 +332,32 @@ describe("buildQuizSteps", () => {
       }
     }
   });
+
+  it("labels form choices by label mode", () => {
+    const formStep = buildQuizSteps(
+      prompt,
+      { ...defaultFilters, enabledQuestions: ["form"] },
+      "form",
+    )[0]!;
+    const waznStep = buildQuizSteps(
+      prompt,
+      { ...defaultFilters, enabledQuestions: ["form"] },
+      "wazn",
+    )[0]!;
+    const bothStep = buildQuizSteps(
+      prompt,
+      { ...defaultFilters, enabledQuestions: ["form"] },
+      "both",
+    )[0]!;
+
+    expect(formStep.choices[0]?.primary).toBe("Form I");
+    expect(formStep.choices[0]?.secondary).toBeUndefined();
+
+    expect(waznStep.choices[0]?.primary).toBe("فَعَلَ");
+    expect(waznStep.choices[0]?.arabic).toBe(true);
+
+    expect(bothStep.choices[0]?.primary).toBe("Form I");
+    expect(bothStep.choices[0]?.secondary).toBe("فَعَلَ");
+    expect(bothStep.choices[0]?.secondaryArabic).toBe(true);
+  });
 });

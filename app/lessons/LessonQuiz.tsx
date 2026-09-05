@@ -191,7 +191,14 @@ export function LessonQuiz<P>({
                     choice.primary
                   )}
                   {choice.secondary ? (
-                    <span className="text-sm text-muted-foreground">
+                    <span
+                      dir={choice.secondaryArabic ? "rtl" : undefined}
+                      className={
+                        choice.secondaryArabic
+                          ? "font-arabic text-sm text-muted-foreground"
+                          : "text-sm text-muted-foreground"
+                      }
+                    >
                       {choice.secondary}
                     </span>
                   ) : null}

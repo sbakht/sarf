@@ -183,9 +183,48 @@ export const BAB_BY_ID: Record<FormIBab, BabMeta> = Object.fromEntries(
 
 export function formLabel(
   form: FormId,
-  primary: "form" | "wazn" | "both",
+  mode: "form" | "wazn" | "both",
 ): string {
   const meta = FORM_BY_ID[form];
-  if (primary === "wazn") return `${meta.waznPast} · Form ${meta.roman}`;
-  return `Form ${meta.roman} · ${meta.waznPast}`;
+  switch (mode) {
+    case "form":
+      return `Form ${meta.roman}`;
+    case "wazn":
+      return meta.waznPast;
+    case "both":
+      return `Form ${meta.roman} · ${meta.waznPast}`;
+  }
+}
+
+export function formQuizChoice(
+  form: FormId,
+  mode: "form" | "wazn" | "both",
+): {
+  primary: string;
+  secondary?: string;
+  arabic?: boolean;
+  secondaryArabic?: boolean;
+  feedback: string;
+} {
+  const meta = FORM_BY_ID[form];
+  switch (mode) {
+    case "form":
+      return {
+        primary: `Form ${meta.roman}`,
+        feedback: `Form ${meta.roman}`,
+      };
+    case "wazn":
+      return {
+        primary: meta.waznPast,
+        arabic: true,
+        feedback: meta.waznPast,
+      };
+    case "both":
+      return {
+        primary: `Form ${meta.roman}`,
+        secondary: meta.waznPast,
+        secondaryArabic: true,
+        feedback: `Form ${meta.roman} · ${meta.waznPast}`,
+      };
+  }
 }

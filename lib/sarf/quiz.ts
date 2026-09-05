@@ -1,5 +1,5 @@
 import { conjugate } from "./conjugate";
-import { FORMS, formLabel } from "./forms";
+import { FORMS, formQuizChoice } from "./forms";
 import { ROOTS, rootArabic, soundRoots } from "./lexicon";
 import { PERSON_BY_ID, PERSONS, isSecondPerson } from "./persons";
 import {
@@ -43,6 +43,7 @@ export type QuizChoice = {
   primary: string;
   arabic?: boolean;
   secondary?: string;
+  secondaryArabic?: boolean;
   correct: boolean;
   feedback: string;
 };
@@ -232,12 +233,19 @@ export function buildQuizSteps(
     {
       id: "form" as const,
       title: "What is the form / وزن?",
-      choices: formChoices.map((form) => ({
-        id: String(form),
-        primary: formLabel(form, labelMode),
-        correct: form === prompt.form,
-        feedback: formLabel(prompt.form, labelMode),
-      })),
+      choices: formChoices.map((form) => {
+        const labels = formQuizChoice(form, labelMode);
+        const answer = formQuizChoice(prompt.form, labelMode);
+        return {
+          id: String(form),
+          primary: labels.primary,
+          secondary: labels.secondary,
+          arabic: labels.arabic,
+          secondaryArabic: labels.secondaryArabic,
+          correct: form === prompt.form,
+          feedback: answer.feedback,
+        };
+      }),
     },
     {
       id: "tense" as const,

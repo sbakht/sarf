@@ -20,6 +20,7 @@ export {
   FORM_BY_ID,
   BAB_BY_ID,
   formLabel,
+  formQuizChoice,
   ROMAN_FORMS,
 } from "./forms";
 export {
