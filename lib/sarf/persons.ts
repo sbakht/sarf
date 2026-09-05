@@ -22,7 +22,7 @@ export const PERSONS: PersonInfo[] = [
   {
     id: "huma_m",
     arabic: "هُمَا",
-    english: "they two (m)",
+    english: "they dual (m)",
     person: 3,
     number: "du",
     gender: "m",
@@ -46,7 +46,7 @@ export const PERSONS: PersonInfo[] = [
   {
     id: "huma_f",
     arabic: "هُمَا",
-    english: "they two (f)",
+    english: "they dual (f)",
     person: 3,
     number: "du",
     gender: "f",
@@ -70,7 +70,7 @@ export const PERSONS: PersonInfo[] = [
   {
     id: "antuma_m",
     arabic: "أَنْتُمَا",
-    english: "you two",
+    english: "you dual",
     person: 2,
     number: "du",
     gender: "c",
@@ -94,7 +94,7 @@ export const PERSONS: PersonInfo[] = [
   {
     id: "antuma_f",
     arabic: "أَنْتُمَا",
-    english: "you two",
+    english: "you dual",
     person: 2,
     number: "du",
     gender: "c",

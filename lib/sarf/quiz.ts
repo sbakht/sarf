@@ -35,7 +35,7 @@ export function isCorrectQuizPerson(
 
 export function personQuizEnglish(person: PersonId): string {
   const info = PERSON_BY_ID[quizPersonKey(person)];
-  if (info.person === 2 && info.number === "du") return "you (m/f)";
+  if (info.person === 2 && info.number === "du") return "you dual (m/f)";
   return info.english;
 }
 
@@ -44,7 +44,7 @@ export function personQuizFeedback(person: PersonId, tense?: Tense): string {
   if (tense === "present") {
     const key = quizPersonKey(person);
     if (key === "antuma_m" || person === "huma_f") {
-      return `${PERSON_BY_ID.antuma_m.arabic} / ${PERSON_BY_ID.huma_f.arabic} · ${personQuizEnglish("antuma_m")} or they two (f)`;
+      return `${PERSON_BY_ID.antuma_m.arabic} / ${PERSON_BY_ID.huma_f.arabic} · ${personQuizEnglish("antuma_m")} or ${personQuizEnglish("huma_f")}`;
     }
     if (person === "anta" || person === "hiya") {
       return `${PERSON_BY_ID.anta.arabic} / ${PERSON_BY_ID.hiya.arabic} · ${personQuizEnglish("anta")} or ${personQuizEnglish("hiya")}`;

@@ -26,8 +26,8 @@ describe("2nd dual quiz identity", () => {
   });
 
   it("labels 2nd dual without gender", () => {
-    expect(personQuizEnglish("antuma_m")).toBe("you (m/f)");
-    expect(personQuizEnglish("antuma_f")).toBe("you (m/f)");
+    expect(personQuizEnglish("antuma_m")).toBe("you dual (m/f)");
+    expect(personQuizEnglish("antuma_f")).toBe("you dual (m/f)");
   });
 
   it("never offers both 2nd dual genders as distinct choices", () => {
@@ -38,7 +38,7 @@ describe("2nd dual quiz identity", () => {
     );
     expect(duals).toHaveLength(1);
     expect(
-      choices.map(personQuizEnglish).filter((label) => label === "you (m/f)"),
+      choices.map(personQuizEnglish).filter((label) => label === "you dual (m/f)"),
     ).toHaveLength(1);
   });
 });
@@ -148,16 +148,16 @@ describe("mudari person homographs", () => {
 
   it("names both readings in present-tense feedback", () => {
     expect(personQuizFeedback("antuma_m", "present")).toBe(
-      "أَنْتُمَا / هُمَا · you (m/f) or they two (f)",
+      "أَنْتُمَا / هُمَا · you dual (m/f) or they dual (f)",
     );
     expect(personQuizFeedback("huma_f", "present")).toBe(
-      "أَنْتُمَا / هُمَا · you (m/f) or they two (f)",
+      "أَنْتُمَا / هُمَا · you dual (m/f) or they dual (f)",
     );
     expect(personQuizFeedback("anta", "present")).toBe(
       "أَنْتَ / هِيَ · you (m) or she",
     );
     expect(personQuizFeedback("antuma_m", "past")).toBe(
-      "أَنْتُمَا · you (m/f)",
+      "أَنْتُمَا · you dual (m/f)",
     );
   });
 });
