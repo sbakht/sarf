@@ -35,13 +35,11 @@ export default function Home() {
   return (
     <div className="flex flex-col gap-10">
       <section className="max-w-2xl">
-        <p className="text-sm uppercase tracking-[0.2em] text-accent">
-          Arabic morphology
-        </p>
-        <h1 className="mt-2 font-arabic text-5xl leading-tight text-ink">
+        <p className="kicker">Train the pattern</p>
+        <h1 className="mt-2 font-arabic text-5xl leading-tight text-foreground">
           تدريب الصرف
         </h1>
-        <p className="mt-4 text-lg leading-8 text-ink-soft">
+        <p className="mt-4 text-lg leading-8 text-muted-foreground">
           Learn to see the pattern inside the verb. Extra letters stay indigo,
           root letters stay teal / amber / rose, and person affixes stay stone —
           the same colors in every mode.

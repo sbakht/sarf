@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { ArabicWord } from "@/components/ArabicWord";
 import { useSettings } from "@/components/SettingsProvider";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   conjugate,
   formLabel,
@@ -58,8 +59,10 @@ function Example({
   voice: Voice;
 }) {
   return (
-    <div className="rounded-2xl bg-paper p-3">
-      <p className="text-xs uppercase tracking-wider text-ink-soft">{label}</p>
+    <div className="rounded-xl bg-muted p-3">
+      <p className="text-xs uppercase tracking-wider text-muted-foreground">
+        {label}
+      </p>
       <div className="mt-1">
         <ArabicWord
           slots={slots}
@@ -68,7 +71,7 @@ function Example({
           highlight={highlight}
         />
       </div>
-      <p className="mt-1 font-arabic text-sm text-ink-soft">
+      <p className="mt-1 font-arabic text-sm text-muted-foreground">
         {voice === "active" ? "معلوم" : "مجهول"}
       </p>
     </div>
@@ -77,7 +80,7 @@ function Example({
 
 function Branch({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <div className="rounded-2xl border border-rule bg-paper/60 p-4">
+    <div className="rounded-xl border border-border bg-muted/50 p-4">
       <h3 className="font-arabic text-xl">{title}</h3>
       {children}
     </div>
@@ -116,52 +119,48 @@ export function VoiceKey({
   const yuktabu = verb(KTB, 1, "present", "passive");
   const yuallimu = verb(ILM, 2, "present", "active");
 
-  return (
-    <section
-      className={compact ? "" : "rounded-3xl border border-rule bg-card p-6"}
-    >
-      <p className="text-sm uppercase tracking-[0.2em] text-accent">
-        Voice key
-      </p>
+  const body = (
+    <>
+      <p className="kicker">Voice key</p>
       <h2 className="mt-1 text-2xl font-semibold">معلوم or مجهول?</h2>
-      <p className="mt-2 max-w-2xl text-ink-soft leading-7">
+      <p className="mt-2 max-w-2xl text-muted-foreground leading-7">
         This reads morphological voice from vowels, not meaning. Form VII إنفعل
         can feel “passive” but is still معلوم here.
       </p>
 
       {!showHarakat ? (
-        <p className="mt-3 rounded-2xl border border-accent/40 bg-accent-soft px-4 py-3 text-sm text-accent">
+        <p className="mt-3 rounded-xl border border-energy/40 bg-energy/10 px-4 py-3 text-sm text-energy">
           Turn Harakat on. This key has nothing to read without vowels.
         </p>
       ) : null}
 
       <div className="mt-5 grid gap-4 md:grid-cols-2">
         <Branch title="مضارع">
-          <ol className="mt-3 list-decimal space-y-2 ps-5 text-sm leading-6 text-ink-soft">
+          <ol className="mt-3 list-decimal space-y-2 ps-5 text-sm leading-6 text-muted-foreground">
             <li>
               Look at the person prefix{" "}
               <span className="text-affix">(أ / ت / ي / ن)</span>.
             </li>
             <li>
-              <span className="font-arabic text-base text-ink">
+              <span className="font-arabic text-base text-foreground">
                 {CUE_NAME.fatha} َ
               </span>{" "}
               → معلوم
             </li>
             <li>
-              <span className="font-arabic text-base text-ink">
+              <span className="font-arabic text-base text-foreground">
                 {CUE_NAME.damma} ُ
               </span>{" "}
               → inspect <span className="font-arabic text-ayn">ع</span>
               <ul className="mt-1 list-disc space-y-1 ps-4">
                 <li>
-                  <span className="font-arabic text-base text-ink">
+                  <span className="font-arabic text-base text-foreground">
                     {CUE_NAME.kasra} ِ
                   </span>{" "}
                   → معلوم (II, III, IV)
                 </li>
                 <li>
-                  <span className="font-arabic text-base text-ink">
+                  <span className="font-arabic text-base text-foreground">
                     {CUE_NAME.fatha} َ
                   </span>{" "}
                   → مجهول
@@ -195,7 +194,7 @@ export function VoiceKey({
         </Branch>
 
         <Branch title="ماضي">
-          <ol className="mt-3 list-decimal space-y-2 ps-5 text-sm leading-6 text-ink-soft">
+          <ol className="mt-3 list-decimal space-y-2 ps-5 text-sm leading-6 text-muted-foreground">
             <li>
               Opening {CUE_NAME.damma} ُ and{" "}
               <span className="font-arabic text-ayn">ع</span> with{" "}
@@ -203,8 +202,8 @@ export function VoiceKey({
             </li>
             <li>Anything else → معلوم</li>
             <li>
-              باب فرح <span className="font-arabic text-ink">فَعِلَ</span> has
-              kasra on ع but fatha on the first letter — still معلوم.
+              باب فرح <span className="font-arabic text-foreground">فَعِلَ</span>{" "}
+              has kasra on ع but fatha on the first letter — still معلوم.
             </li>
           </ol>
           <div className="mt-3 grid gap-2 sm:grid-cols-2">
@@ -228,7 +227,7 @@ export function VoiceKey({
 
       {!compact && showPassive ? (
         <div className="mt-5">
-          <p className="text-xs uppercase tracking-wider text-ink-soft">
+          <p className="text-xs uppercase tracking-wider text-muted-foreground">
             This form · {formLabel(form, labelMode)}
           </p>
           <div className="mt-2 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
@@ -262,7 +261,7 @@ export function VoiceKey({
             />
           </div>
           {form === 3 || form === 6 ? (
-            <p className="mt-2 text-sm text-ink-soft">
+            <p className="mt-2 text-sm text-muted-foreground">
               Forms III and VI swap alif for wāw in past مجهول (
               <span className="font-arabic">فُوعِلَ / تُفُوعِلَ</span>
               ).
@@ -272,23 +271,31 @@ export function VoiceKey({
       ) : null}
 
       {!showPassive ? (
-        <p className="mt-4 text-sm text-ink-soft">
+        <p className="mt-4 text-sm text-muted-foreground">
           Form IX has no useful morphological مجهول.
         </p>
       ) : null}
 
-      <ul className="mt-4 space-y-1 text-sm text-ink-soft">
+      <ul className="mt-4 space-y-1 text-sm text-muted-foreground">
         <li>أمر has no مجهول.</li>
         <li>
           أجوف past مجهول does not keep the opening damma: analog{" "}
-          <span className="font-arabic text-ink">قُوِلَ</span> surfaces as{" "}
-          <span className="font-arabic text-ink">قِيلَ</span>. See{" "}
-          <Link href="/lab" className="text-accent underline">
+          <span className="font-arabic text-foreground">قُوِلَ</span> surfaces
+          as <span className="font-arabic text-foreground">قِيلَ</span>. See{" "}
+          <Link href="/lab" className="text-energy underline">
             Lab
           </Link>
           .
         </li>
       </ul>
-    </section>
+    </>
+  );
+
+  if (compact) return <section>{body}</section>;
+
+  return (
+    <Card>
+      <CardContent>{body}</CardContent>
+    </Card>
   );
 }

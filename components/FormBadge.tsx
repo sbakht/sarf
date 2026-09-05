@@ -2,13 +2,16 @@
 
 import { FORM_BY_ID, type FormId } from "@/lib/sarf";
 import { useSettings } from "./SettingsProvider";
+import { Badge } from "@/components/ui/badge";
 
 export function FormBadge({ form }: { form: FormId }) {
   const { labelMode } = useSettings();
   const meta = FORM_BY_ID[form];
 
   const formLabel = (
-    <span className={labelMode === "wazn" ? "text-ink-soft" : "font-semibold"}>
+    <span
+      className={labelMode === "wazn" ? "text-muted-foreground" : "font-semibold"}
+    >
       Form {meta.roman}
     </span>
   );
@@ -16,7 +19,7 @@ export function FormBadge({ form }: { form: FormId }) {
     <span
       dir="rtl"
       className={`font-arabic ${
-        labelMode === "form" ? "text-lg text-ink-soft" : "text-xl"
+        labelMode === "form" ? "text-lg text-muted-foreground" : "text-xl"
       }`}
     >
       {meta.waznPast}
@@ -24,7 +27,7 @@ export function FormBadge({ form }: { form: FormId }) {
   );
 
   return (
-    <span className="inline-flex items-baseline gap-2">
+    <Badge variant="outline" className="h-auto items-baseline gap-2 py-1">
       {labelMode === "wazn" ? (
         <>
           {waznLabel}
@@ -36,6 +39,6 @@ export function FormBadge({ form }: { form: FormId }) {
           {waznLabel}
         </>
       )}
-    </span>
+    </Badge>
   );
 }

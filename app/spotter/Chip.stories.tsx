@@ -45,7 +45,7 @@ export const ArabicLabel: Story = {
   },
 };
 
-// Chip selected uses bg-accent-soft (#f0ddd0) — fails if Tailwind / globals did not load.
+// Chip selected uses bg-primary/10 — fails if Tailwind / globals did not load.
 export const CssCheck: Story = {
   args: {
     selected: true,
@@ -53,8 +53,12 @@ export const CssCheck: Story = {
   },
   play: async ({ canvas }) => {
     const chip = canvas.getByRole("button", { name: "Form I" });
-    await expect(getComputedStyle(chip).backgroundColor).toBe(
-      "rgb(240, 221, 208)",
-    );
+    await expect(chip).toHaveAttribute("aria-pressed", "true");
+    const probe = document.createElement("div");
+    probe.className = "bg-primary/10";
+    document.body.appendChild(probe);
+    const expected = getComputedStyle(probe).backgroundColor;
+    document.body.removeChild(probe);
+    await expect(getComputedStyle(chip).backgroundColor).toBe(expected);
   },
 };

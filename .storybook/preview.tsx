@@ -23,7 +23,7 @@ const preview: Preview = {
   // AppShell is page chrome — omit so component stories stay isolated.
   decorators: [
     (Story) => (
-      <div className="storybook-root min-h-full antialiased text-ink bg-paper p-6">
+      <div className="storybook-root min-h-full antialiased text-foreground bg-background p-6">
         <SettingsProvider>
           <Story />
         </SettingsProvider>

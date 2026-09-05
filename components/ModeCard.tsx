@@ -1,4 +1,19 @@
 import Link from "next/link";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+
+const STRIPE: Record<string, string> = {
+  "/atlas": "bg-primary",
+  "/gym": "bg-energy",
+  "/spotter": "bg-fa",
+  "/lab": "bg-ayn",
+};
 
 export function ModeCard({
   href,
@@ -14,21 +29,25 @@ export function ModeCard({
   body: string;
 }) {
   return (
-    <Link
-      href={href}
-      className="group rounded-3xl border border-rule bg-card p-6 transition hover:-translate-y-0.5 hover:border-accent"
-    >
-      <div className="flex items-start justify-between gap-3">
-        <p className="text-xs uppercase tracking-[0.18em] text-accent">
-          {kicker}
-        </p>
-        <span className="font-arabic text-2xl text-ink-soft">{arabic}</span>
-      </div>
-      <h2 className="mt-3 text-2xl font-semibold">{title}</h2>
-      <p className="mt-2 text-ink-soft leading-7">{body}</p>
-      <p className="mt-4 text-sm text-accent group-hover:underline">
-        Open {title}
-      </p>
+    <Link href={href} className="group block h-full">
+      <Card className="h-full transition hover:-translate-y-0.5 hover:ring-primary/40">
+        <div className={cn("h-1", STRIPE[href] ?? "bg-primary")} />
+        <CardHeader>
+          <div className="flex items-start justify-between gap-3">
+            <p className="kicker">{kicker}</p>
+            <span className="font-arabic text-2xl text-muted-foreground">
+              {arabic}
+            </span>
+          </div>
+          <CardTitle className="mt-2 text-2xl font-semibold">{title}</CardTitle>
+          <CardDescription className="leading-7">{body}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-energy group-hover:underline">
+            Open {title}
+          </p>
+        </CardContent>
+      </Card>
     </Link>
   );
 }

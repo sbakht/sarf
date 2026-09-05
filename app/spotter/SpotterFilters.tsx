@@ -111,9 +111,11 @@ export function SpotterFilters({
   return (
     <section
       data-spotter-filters
-      className="flex flex-col gap-4 rounded-2xl border border-rule bg-card p-4"
+      className="flex flex-col gap-4 rounded-xl border border-border bg-card p-4 ring-1 ring-foreground/10"
     >
-      <p className="text-xs uppercase tracking-wider text-ink-soft">Quiz on</p>
+      <p className="text-xs uppercase tracking-wider text-muted-foreground">
+        Quiz on
+      </p>
       <FilterGroup
         label="Questions"
         allSelected={enabledQuestions.length === ALL_QUESTIONS.length}
@@ -140,7 +142,7 @@ export function SpotterFilters({
           >
             All
           </Chip>
-          <span className="mx-1 h-4 w-px bg-rule" aria-hidden />
+          <span className="mx-1 h-4 w-px bg-border" aria-hidden />
           <Chip
             selected={labelMode === "form"}
             onClick={() => onLabelModeChange("form")}
@@ -238,7 +240,7 @@ export function SpotterFilters({
               key={group.label}
               className="flex flex-wrap items-center gap-2"
             >
-              <p className="w-8 text-xs text-ink-soft">{group.label}</p>
+              <p className="w-8 text-xs text-muted-foreground">{group.label}</p>
               {group.ids
                 .filter((id) => quizPersonKey(id) === id)
                 .map((id) => (

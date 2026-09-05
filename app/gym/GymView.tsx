@@ -4,6 +4,15 @@ import { useState, type ReactNode } from "react";
 import { ArabicWord } from "@/components/ArabicWord";
 import { FormBadge } from "@/components/FormBadge";
 import { ParadigmTable } from "@/components/ParadigmTable";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
   FORM_BY_ID,
   PERSON_BY_ID,
@@ -54,117 +63,171 @@ export function GymView() {
   return (
     <div className="flex flex-col gap-6">
       <header>
-        <p className="text-sm uppercase tracking-[0.2em] text-accent">
-          Conjugation Gym
-        </p>
+        <p className="kicker">Conjugation Gym</p>
         <h1 className="mt-1 text-3xl font-semibold">Produce the table</h1>
       </header>
 
-      <div className="flex flex-wrap gap-3 rounded-2xl border border-rule bg-card p-4">
-        <Field label="Root">
-          <select
-            className="block rounded-xl border border-rule bg-paper px-3 py-2 text-ink"
-            value={root.id}
-            onChange={(e) => {
-              const next =
-                ROOTS.find((item) => item.id === e.target.value) ?? ROOTS[0];
-              setRootId(next.id);
-              setForm(next.forms[0]);
-              resetCovers();
-            }}
-          >
-            {ROOTS.map((item) => (
-              <option key={item.id} value={item.id}>
-                {rootArabic(item)} — {item.gloss}
-              </option>
-            ))}
-          </select>
-        </Field>
-        <Field label="Form">
-          <select
-            className="block rounded-xl border border-rule bg-paper px-3 py-2 text-ink"
-            value={activeForm}
-            onChange={(e) => {
-              setForm(Number(e.target.value) as FormId);
-              resetCovers();
-            }}
-          >
-            {forms.map((id) => (
-              <option key={id} value={id}>
-                Form {FORM_BY_ID[id].roman} · {FORM_BY_ID[id].waznPast}
-              </option>
-            ))}
-          </select>
-        </Field>
-        <Field label="Tense">
-          <select
-            className="block rounded-xl border border-rule bg-paper px-3 py-2 text-ink"
-            value={tense}
-            onChange={(e) => {
-              setTense(e.target.value as Tense);
-              resetCovers();
-            }}
-          >
-            <option value="past">ماضي</option>
-            <option value="present">مضارع</option>
-            <option value="imperative">أمر</option>
-          </select>
-        </Field>
-        {tense !== "imperative" ? (
-          <Field label="Voice">
-            <select
-              className="block rounded-xl border border-rule bg-paper px-3 py-2 text-ink"
-              value={voice}
-              onChange={(e) => {
-                setVoice(e.target.value as Voice);
+      <Card>
+        <CardContent className="flex flex-wrap items-end gap-3">
+          <Field label="Root">
+            <Select
+              value={root.id}
+              items={ROOTS.map((item) => ({
+                value: item.id,
+                label: `${rootArabic(item)} — ${item.gloss}`,
+              }))}
+              onValueChange={(value) => {
+                if (!value) return;
+                const next = ROOTS.find((item) => item.id === value) ?? ROOTS[0];
+                setRootId(next.id);
+                setForm(next.forms[0]);
                 resetCovers();
               }}
             >
-              <option value="active">معلوم</option>
-              <option value="passive">مجهول</option>
-            </select>
+              <SelectTrigger className="min-w-40 bg-muted">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {ROOTS.map((item) => (
+                  <SelectItem key={item.id} value={item.id}>
+                    {rootArabic(item)} — {item.gloss}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </Field>
-        ) : null}
-        {tense === "present" ? (
-          <Field label="Mood">
-            <select
-              className="block rounded-xl border border-rule bg-paper px-3 py-2 text-ink"
-              value={mood}
-              onChange={(e) => {
-                setMood(e.target.value as Mood);
+          <Field label="Form">
+            <Select
+              value={String(activeForm)}
+              items={forms.map((id) => ({
+                value: String(id),
+                label: `Form ${FORM_BY_ID[id].roman} · ${FORM_BY_ID[id].waznPast}`,
+              }))}
+              onValueChange={(value) => {
+                if (!value) return;
+                setForm(Number(value) as FormId);
                 resetCovers();
               }}
             >
-              <option value="indicative">مرفوع</option>
-              <option value="subjunctive">منصوب</option>
-              <option value="jussive">مجزوم</option>
-            </select>
+              <SelectTrigger className="min-w-36 bg-muted">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {forms.map((id) => (
+                  <SelectItem key={id} value={String(id)}>
+                    Form {FORM_BY_ID[id].roman} · {FORM_BY_ID[id].waznPast}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </Field>
-        ) : null}
-        <div className="ml-auto flex items-end gap-2">
-          <button
-            type="button"
-            className={`rounded-full px-4 py-2 text-sm ${mode === "study" ? "bg-accent text-paper" : "border border-rule"}`}
-            onClick={() => setMode("study")}
-          >
-            Study
-          </button>
-          <button
-            type="button"
-            className={`rounded-full px-4 py-2 text-sm ${mode === "quiz" ? "bg-accent text-paper" : "border border-rule"}`}
-            onClick={() => {
-              setMode("quiz");
-              resetCovers();
-            }}
-          >
-            Quiz
-          </button>
-        </div>
-      </div>
+          <Field label="Tense">
+            <Select
+              value={tense}
+              items={[
+                { value: "past", label: "ماضي" },
+                { value: "present", label: "مضارع" },
+                { value: "imperative", label: "أمر" },
+              ]}
+              onValueChange={(value) => {
+                if (!value) return;
+                setTense(value as Tense);
+                resetCovers();
+              }}
+            >
+              <SelectTrigger className="min-w-28 bg-muted">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="past">ماضي</SelectItem>
+                <SelectItem value="present">مضارع</SelectItem>
+                <SelectItem value="imperative">أمر</SelectItem>
+              </SelectContent>
+            </Select>
+          </Field>
+          {tense !== "imperative" ? (
+            <Field label="Voice">
+              <Select
+                value={voice}
+                items={[
+                  { value: "active", label: "معلوم" },
+                  { value: "passive", label: "مجهول" },
+                ]}
+                onValueChange={(value) => {
+                  if (!value) return;
+                  setVoice(value as Voice);
+                  resetCovers();
+                }}
+              >
+                <SelectTrigger className="min-w-28 bg-muted">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="active">معلوم</SelectItem>
+                  <SelectItem value="passive">مجهول</SelectItem>
+                </SelectContent>
+              </Select>
+            </Field>
+          ) : null}
+          {tense === "present" ? (
+            <Field label="Mood">
+              <Select
+                value={mood}
+                items={[
+                  { value: "indicative", label: "مرفوع" },
+                  { value: "subjunctive", label: "منصوب" },
+                  { value: "jussive", label: "مجزوم" },
+                ]}
+                onValueChange={(value) => {
+                  if (!value) return;
+                  setMood(value as Mood);
+                  resetCovers();
+                }}
+              >
+                <SelectTrigger className="min-w-28 bg-muted">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="indicative">مرفوع</SelectItem>
+                  <SelectItem value="subjunctive">منصوب</SelectItem>
+                  <SelectItem value="jussive">مجزوم</SelectItem>
+                </SelectContent>
+              </Select>
+            </Field>
+          ) : null}
+          <div className="ml-auto">
+            <ToggleGroup
+              value={[mode]}
+              onValueChange={(values) => {
+                const next = values[0] as "study" | "quiz" | undefined;
+                if (!next) return;
+                setMode(next);
+                if (next === "quiz") resetCovers();
+              }}
+              variant="outline"
+              spacing={0}
+              className="rounded-full"
+            >
+              <ToggleGroupItem
+                value="study"
+                className="rounded-full px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+              >
+                Study
+              </ToggleGroupItem>
+              <ToggleGroupItem
+                value="quiz"
+                className="rounded-full px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+              >
+                Quiz
+              </ToggleGroupItem>
+            </ToggleGroup>
+          </div>
+        </CardContent>
+      </Card>
 
-      <div className="flex flex-wrap items-center gap-3 text-sm text-ink-soft">
+      <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
         <FormBadge form={activeForm} />
-        <span dir="rtl" className="font-arabic text-lg text-ink">
+        <span dir="rtl" className="font-arabic text-lg text-foreground">
           {rootArabic(root)}
         </span>
         <span>({root.gloss})</span>
@@ -182,42 +245,45 @@ export function GymView() {
         onToggleReveal={toggleReveal}
       />
 
-      <section className="rounded-2xl border border-rule bg-card p-5">
-        <p className="text-xs uppercase tracking-wider text-ink-soft">
-          Breakdown · {PERSON_BY_ID[selected].english} (
-          {PERSON_BY_ID[selected].arabic})
-        </p>
-        <div className="mt-2">
-          <ArabicWord
-            slots={breakdown.slots}
-            surface={breakdown.surface}
-            size="lg"
-          />
-        </div>
-        {breakdown.available ? (
-          <ul className="mt-3 flex flex-wrap gap-2">
-            {breakdown.slots.map((slot, i) => (
-              <li
-                key={`${slot.kind}-${i}`}
-                className="rounded-full bg-paper px-3 py-1 font-arabic text-sm text-ink-soft"
-              >
-                <span className="text-ink">{slot.text}</span> · {slot.kind}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="mt-2 text-sm text-ink-soft">
-            No command form for this person.
+      <Card>
+        <CardContent>
+          <p className="text-xs uppercase tracking-wider text-muted-foreground">
+            Breakdown · {PERSON_BY_ID[selected].english} (
+            {PERSON_BY_ID[selected].arabic})
           </p>
-        )}
-      </section>
+          <div className="mt-2">
+            <ArabicWord
+              slots={breakdown.slots}
+              surface={breakdown.surface}
+              size="lg"
+            />
+          </div>
+          {breakdown.available ? (
+            <ul className="mt-3 flex flex-wrap gap-2">
+              {breakdown.slots.map((slot, i) => (
+                <li
+                  key={`${slot.kind}-${i}`}
+                  className="rounded-full bg-muted px-3 py-1 font-arabic text-sm text-muted-foreground"
+                >
+                  <span className="text-foreground">{slot.text}</span> ·{" "}
+                  {slot.kind}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="mt-2 text-sm text-muted-foreground">
+              No command form for this person.
+            </p>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <label className="text-xs text-ink-soft">
+    <label className="text-xs text-muted-foreground">
       {label}
       <div className="mt-1">{children}</div>
     </label>

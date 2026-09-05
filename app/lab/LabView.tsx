@@ -2,6 +2,9 @@
 
 import { useMemo, useState } from "react";
 import { ArabicWord } from "@/components/ArabicWord";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   PERSON_BY_ID,
   ROOTS,
@@ -11,6 +14,7 @@ import {
   type Tense,
   type WeaknessType,
 } from "@/lib/sarf";
+import { cn } from "@/lib/utils";
 
 type Kind = Extract<
   WeaknessType,
@@ -124,80 +128,82 @@ export function LabView() {
   return (
     <div className="flex flex-col gap-6">
       <header>
-        <p className="text-sm uppercase tracking-[0.2em] text-accent">
-          Weak Verb Lab
-        </p>
+        <p className="kicker">Weak Verb Lab</p>
         <h1 className="mt-1 text-3xl font-semibold">
           Sound analog vs what you actually say
         </h1>
-        <p className="mt-2 max-w-2xl text-ink-soft">
+        <p className="mt-2 max-w-2xl text-muted-foreground">
           Start from the regular template, then apply the mutation. أجوف is the
           most common; the other types use the same compare-and-drill layout.
         </p>
       </header>
 
-      <div className="flex flex-wrap gap-2 scroll-mt-28">
-        {KINDS.map((item) => (
-          <button
-            key={item.id}
-            type="button"
-            onClick={() => {
-              setKind(item.id);
-              setRootIndex(0);
-              setDrill(0);
-              setPicked(null);
-            }}
-            className={`rounded-full px-4 py-2 text-sm ${
-              kind === item.id
-                ? "bg-accent text-paper"
-                : "border border-rule bg-card"
-            }`}
-          >
-            <span className="font-arabic">{item.arabic}</span> · {item.title}
-          </button>
-        ))}
-      </div>
+      <Tabs
+        value={kind}
+        onValueChange={(value) => {
+          setKind(value as Kind);
+          setRootIndex(0);
+          setDrill(0);
+          setPicked(null);
+        }}
+        className="gap-0"
+      >
+        <TabsList className="flex h-auto flex-wrap">
+          {KINDS.map((item) => (
+            <TabsTrigger
+              key={item.id}
+              value={item.id}
+              className="rounded-full px-3"
+            >
+              <span className="font-arabic">{item.arabic}</span> · {item.title}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </Tabs>
 
       {root ? (
         <>
-          <section className="rounded-3xl border border-rule bg-card p-6">
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <div>
-                <h2 className="font-arabic text-3xl">{meta.arabic}</h2>
-                <p className="mt-2 max-w-2xl leading-7 text-ink-soft">
-                  {meta.blurb}
-                </p>
+          <Card>
+            <CardContent>
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div>
+                  <h2 className="font-arabic text-3xl">{meta.arabic}</h2>
+                  <p className="mt-2 max-w-2xl leading-7 text-muted-foreground">
+                    {meta.blurb}
+                  </p>
+                </div>
+                <div className="rounded-xl bg-muted px-4 py-3">
+                  <p className="text-xs uppercase tracking-wider text-muted-foreground">
+                    Example root
+                  </p>
+                  <p className="font-arabic text-2xl">
+                    {root.letters.join(" ")}{" "}
+                    <span className="text-base text-muted-foreground">
+                      ({root.gloss})
+                    </span>
+                  </p>
+                  {roots.length > 1 ? (
+                    <Button
+                      variant="link"
+                      size="sm"
+                      className="mt-1 h-auto px-0 text-energy"
+                      onClick={() => {
+                        setRootIndex((n) => n + 1);
+                        setPicked(null);
+                      }}
+                    >
+                      Another root
+                    </Button>
+                  ) : null}
+                </div>
               </div>
-              <div className="rounded-2xl bg-paper px-4 py-3">
-                <p className="text-xs uppercase tracking-wider text-ink-soft">
-                  Example root
-                </p>
-                <p className="font-arabic text-2xl">
-                  {root.letters.join(" ")}{" "}
-                  <span className="text-base text-ink-soft">
-                    ({root.gloss})
-                  </span>
-                </p>
-                {roots.length > 1 ? (
-                  <button
-                    type="button"
-                    className="mt-2 text-xs text-accent"
-                    onClick={() => {
-                      setRootIndex((n) => n + 1);
-                      setPicked(null);
-                    }}
-                  >
-                    Another root
-                  </button>
-                ) : null}
-              </div>
-            </div>
-          </section>
+            </CardContent>
+          </Card>
 
-          <section className="overflow-x-auto rounded-2xl border border-rule bg-card">
+          <Card className="overflow-x-auto py-0">
             <table className="w-full min-w-[40rem] text-center">
               <thead>
-                <tr className="bg-paper-deep/60 text-xs uppercase tracking-wider text-ink-soft">
+                <tr className="bg-muted/80 text-xs uppercase tracking-wider text-muted-foreground">
                   <th className="p-3 text-left">Cell</th>
                   <th className="p-3">Sound analog</th>
                   <th className="p-3">Actual</th>
@@ -208,11 +214,11 @@ export function LabView() {
                 {rows.map((row) => (
                   <tr
                     key={row.label}
-                    className="border-t border-rule align-top"
+                    className="border-t border-border align-top"
                   >
                     <th className="p-3 text-left text-sm font-medium">
                       {row.label}
-                      <div className="font-arabic text-xs font-normal text-ink-soft">
+                      <div className="font-arabic text-xs font-normal text-muted-foreground">
                         {PERSON_BY_ID[row.person].arabic}
                       </div>
                     </th>
@@ -228,7 +234,7 @@ export function LabView() {
                         surface={row.actual.surface}
                       />
                     </td>
-                    <td className="p-3 text-left text-sm text-ink-soft">
+                    <td className="p-3 text-left text-sm text-muted-foreground">
                       {row.actual.mutations[0]?.rule ??
                         (row.actual.surface === row.analog.surface
                           ? "No change in this cell."
@@ -238,68 +244,74 @@ export function LabView() {
                 ))}
               </tbody>
             </table>
-          </section>
+          </Card>
 
           {current ? (
-            <section className="rounded-2xl border border-rule bg-card p-6">
-              <p className="text-xs uppercase tracking-wider text-ink-soft">
-                Drill
-              </p>
-              <h3 className="mt-1 text-xl font-semibold">
-                What is the actual form for {current.label}?
-              </h3>
-              <p className="mt-1 text-sm text-ink-soft">
-                Sound analog:{" "}
-                <ArabicWord
-                  slots={current.analog.slots}
-                  surface={current.analog.surface}
-                  size="sm"
-                />
-              </p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {uniqueOptions.map((option) => {
-                  const right = option === current.actual.surface;
-                  const state =
-                    picked == null
-                      ? ""
-                      : right
-                        ? "border-fa bg-fa/10"
-                        : option === picked
-                          ? "border-lam bg-lam/10"
-                          : "";
-                  return (
-                    <button
-                      key={option}
-                      type="button"
-                      disabled={picked != null}
-                      onClick={() => setPicked(option)}
-                      className={`rounded-2xl border border-rule bg-paper px-4 py-3 font-arabic text-2xl ${state}`}
-                    >
-                      {option}
-                    </button>
-                  );
-                })}
-              </div>
-              {picked ? (
-                <div className="mt-4 flex items-center gap-3">
-                  <p className="text-sm text-ink-soft">
-                    {picked === current.actual.surface
-                      ? "Correct."
-                      : `The actual form is ${current.actual.surface}.`}
-                  </p>
-                  <button
-                    type="button"
-                    className="rounded-full bg-accent px-4 py-1.5 text-sm text-paper"
-                    onClick={() => {
-                      setDrill((n) => n + 1);
-                      setPicked(null);
-                    }}
-                  >
-                    Next cell
-                  </button>
+            <Card>
+              <CardContent>
+                <p className="text-xs uppercase tracking-wider text-muted-foreground">
+                  Drill
+                </p>
+                <h3 className="mt-1 text-xl font-semibold">
+                  What is the actual form for {current.label}?
+                </h3>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Sound analog:{" "}
+                  <ArabicWord
+                    slots={current.analog.slots}
+                    surface={current.analog.surface}
+                    size="sm"
+                  />
+                </p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {uniqueOptions.map((option) => {
+                    const right = option === current.actual.surface;
+                    const state =
+                      picked == null
+                        ? ""
+                        : right
+                          ? "border-ok bg-ok/10"
+                          : option === picked
+                            ? "border-no bg-no/10"
+                            : "";
+                    return (
+                      <Button
+                        key={option}
+                        variant="outline"
+                        disabled={picked != null}
+                        onClick={() => setPicked(option)}
+                        className={cn(
+                          "h-auto rounded-xl bg-muted px-4 py-3 font-arabic text-2xl",
+                          state,
+                        )}
+                      >
+                        {option}
+                      </Button>
+                    );
+                  })}
                 </div>
-              ) : null}
-            </section>
+                {picked ? (
+                  <div className="mt-4 flex items-center gap-3">
+                    <p className="text-sm text-muted-foreground">
+                      {picked === current.actual.surface
+                        ? "Correct."
+                        : `The actual form is ${current.actual.surface}.`}
+                    </p>
+                    <Button
+                      variant="energy"
+                      size="sm"
+                      className="rounded-full"
+                      onClick={() => {
+                        setDrill((n) => n + 1);
+                        setPicked(null);
+                      }}
+                    >
+                      Next cell
+                    </Button>
+                  </div>
+                ) : null}
+              </CardContent>
+            </Card>
           ) : null}
         </>
       ) : (

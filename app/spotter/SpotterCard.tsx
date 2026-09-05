@@ -1,5 +1,6 @@
 import { ArabicWord } from "@/components/ArabicWord";
 import { FormBadge } from "@/components/FormBadge";
+import { Card } from "@/components/ui/card";
 import {
   personQuizFeedback,
   rootArabic,
@@ -45,9 +46,9 @@ function XIcon() {
 }
 
 function cardToneClass(feedback: { ok: boolean } | null): string {
-  if (!feedback) return "border-rule";
-  if (feedback.ok) return "border-ok ring-2 ring-ok/30";
-  return "border-no ring-2 ring-no/30";
+  if (!feedback) return "";
+  if (feedback.ok) return "ring-ok/40";
+  return "ring-no/40";
 }
 
 export function SpotterCard({
@@ -66,10 +67,8 @@ export function SpotterCard({
   const cardTone = cardToneClass(feedback);
 
   return (
-    <section
-      className={`rounded-3xl border bg-card px-6 py-10 text-center ${cardTone}`}
-    >
-      <p className="text-xs uppercase tracking-wider text-ink-soft">
+    <Card className={`px-6 py-10 text-center ${cardTone}`}>
+      <p className="text-xs uppercase tracking-wider text-muted-foreground">
         Identify this verb
       </p>
       {prompt && result ? (
@@ -101,7 +100,7 @@ export function SpotterCard({
             ) : null}
           </div>
           {done ? (
-            <div className="mt-2 flex flex-col items-center gap-2 text-ink-soft">
+            <div className="mt-2 flex flex-col items-center gap-2 text-muted-foreground">
               <FormBadge form={prompt.form} />
               <p>
                 {rootArabic(prompt.root)} · {prompt.tense} · {prompt.voice} ·{" "}
@@ -111,8 +110,8 @@ export function SpotterCard({
           ) : null}
         </>
       ) : (
-        <p className="mt-4 text-ink-soft">No verbs match these filters</p>
+        <p className="mt-4 text-muted-foreground">No verbs match these filters</p>
       )}
-    </section>
+    </Card>
   );
 }

@@ -1,4 +1,8 @@
+"use client";
+
 import type { ReactNode } from "react";
+import { Toggle } from "@/components/ui/toggle";
+import { cn } from "@/lib/utils";
 
 export function Chip({
   selected,
@@ -12,18 +16,19 @@ export function Chip({
   children: ReactNode;
 }) {
   return (
-    <button
-      type="button"
+    <Toggle
+      pressed={selected}
+      onPressedChange={() => onClick()}
       title={title}
-      aria-pressed={selected}
-      onClick={onClick}
-      className={`rounded-full border px-3 py-1 text-sm ${
-        selected
-          ? "border-accent bg-accent-soft text-ink"
-          : "border-rule bg-paper text-ink-soft"
-      }`}
+      variant="outline"
+      size="sm"
+      className={cn(
+        "rounded-full bg-muted text-muted-foreground",
+        "aria-pressed:border-primary aria-pressed:bg-primary/10 aria-pressed:text-foreground",
+        "data-[state=on]:border-primary data-[state=on]:bg-primary/10 data-[state=on]:text-foreground",
+      )}
     >
       {children}
-    </button>
+    </Toggle>
   );
 }

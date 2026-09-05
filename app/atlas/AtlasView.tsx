@@ -6,6 +6,16 @@ import { FormBadge } from "@/components/FormBadge";
 import { MorphCard } from "@/components/MorphCard";
 import { VoiceKey } from "@/components/VoiceKey";
 import { useSettings } from "@/components/SettingsProvider";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 import {
   BAB_BY_ID,
   FORM_I_ABWAB,
@@ -107,11 +117,9 @@ export function AtlasView() {
   return (
     <div className="flex flex-col gap-8">
       <header>
-        <p className="text-sm uppercase tracking-[0.2em] text-accent">
-          Form Atlas
-        </p>
+        <p className="kicker">Form Atlas</p>
         <h1 className="mt-1 text-3xl font-semibold">The map of الأوزان</h1>
-        <p className="mt-2 max-w-2xl text-ink-soft">
+        <p className="mt-2 max-w-2xl text-muted-foreground">
           Each card is a pattern, not a word. Open one, then drop a real root
           through it.
         </p>
@@ -131,40 +139,39 @@ export function AtlasView() {
             weakness: "sound",
           });
           return (
-            <button
+            <Button
               key={item.id}
-              type="button"
+              variant="outline"
               onClick={() => setForm(item.id)}
-              className={`rounded-2xl border p-4 text-left transition ${
-                active
-                  ? "border-accent bg-accent-soft"
-                  : "border-rule bg-card hover:border-accent"
-              }`}
+              className={cn(
+                "h-auto flex-col items-start gap-0 whitespace-normal rounded-xl p-4 text-left",
+                active && "border-primary bg-primary/10 hover:bg-primary/10",
+              )}
             >
-              <p className="text-xs text-ink-soft">
+              <p className="text-xs text-muted-foreground">
                 {formLabel(item.id, labelMode)}
               </p>
               <div className="mt-2">
                 <ArabicWord slots={preview.slots} size="lg" />
               </div>
-              <p className="mt-2 text-xs leading-5 text-ink-soft">
+              <p className="mt-2 text-xs leading-5 text-muted-foreground">
                 {item.meaning}
               </p>
-            </button>
+            </Button>
           );
         })}
       </div>
 
       {form === 1 ? (
         <div>
-          <h2 className="mb-3 text-sm uppercase tracking-wider text-ink-soft">
+          <h2 className="mb-3 text-sm uppercase tracking-wider text-muted-foreground">
             Form I abwab
           </h2>
           <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
             {FORM_I_ABWAB.map((item) => (
-              <button
+              <Button
                 key={item.id}
-                type="button"
+                variant="outline"
                 onClick={() => {
                   setBab(item.id);
                   const next = ROOTS.find(
@@ -172,93 +179,113 @@ export function AtlasView() {
                   );
                   if (next) setRootId(next.id);
                 }}
-                className={`rounded-2xl border px-4 py-3 text-left ${
-                  bab === item.id
-                    ? "border-accent bg-card"
-                    : "border-rule bg-card/70"
-                }`}
+                className={cn(
+                  "h-auto flex-col items-start gap-0 whitespace-normal rounded-xl px-4 py-3 text-left",
+                  bab === item.id &&
+                    "border-primary bg-primary/10 hover:bg-primary/10",
+                )}
               >
                 <p className="font-arabic text-lg">{item.nameAr}</p>
-                <p className="text-xs text-ink-soft">
+                <p className="text-xs text-muted-foreground">
                   {item.waznPast} / {item.waznPresent} · {item.nameEn}
                 </p>
-              </button>
+              </Button>
             ))}
           </div>
         </div>
       ) : null}
 
-      <section className="rounded-3xl border border-rule bg-card p-6">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <FormBadge form={form} />
-            <p className="mt-2 max-w-xl text-ink-soft">{meta.meaning}</p>
-            {form === 1 ? (
-              <p className="mt-1 font-arabic text-ink-soft">
-                {babMeta.nameAr} — {babMeta.waznPast} / {babMeta.waznPresent}
-              </p>
-            ) : null}
+      <Card>
+        <CardContent>
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <FormBadge form={form} />
+              <p className="mt-2 max-w-xl text-muted-foreground">{meta.meaning}</p>
+              {form === 1 ? (
+                <p className="mt-1 font-arabic text-muted-foreground">
+                  {babMeta.nameAr} — {babMeta.waznPast} / {babMeta.waznPresent}
+                </p>
+              ) : null}
+            </div>
+            <label className="text-sm text-muted-foreground">
+              Root
+              <Select
+                value={selectedRoot.id}
+                items={rootsForForm.map((root) => ({
+                  value: root.id,
+                  label: `${rootArabic(root)} — ${root.gloss}`,
+                }))}
+                onValueChange={(value) => {
+                  if (value) setRootId(value);
+                }}
+              >
+                <SelectTrigger className="mt-1 h-9 min-w-44 bg-muted font-arabic text-lg">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {rootsForForm.map((root) => (
+                    <SelectItem
+                      key={root.id}
+                      value={root.id}
+                      className="font-arabic"
+                    >
+                      {rootArabic(root)} — {root.gloss}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </label>
           </div>
-          <label className="text-sm text-ink-soft">
-            Root
-            <select
-              className="mt-1 block rounded-xl border border-rule bg-paper px-3 py-2 font-arabic text-lg text-ink"
-              value={selectedRoot.id}
-              onChange={(e) => setRootId(e.target.value)}
-            >
-              {rootsForForm.map((root) => (
-                <option key={root.id} value={root.id}>
-                  {rootArabic(root)} — {root.gloss}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
 
-        <div className="mt-6 grid gap-4 md:grid-cols-3">
-          <MorphCard
-            english="past"
-            title="ماضي معلوم · هو"
-            result={samples.past}
-          />
-          <MorphCard
-            english="present"
-            title="مضارع معلوم · هو"
-            result={samples.present}
-          />
-          <MorphCard
-            english="imperative"
-            title="أمر · أنتَ"
-            result={samples.command}
-          />
-        </div>
-
-        {showPassive ? (
-          <div className="mt-4 grid gap-4 md:grid-cols-3">
+          <div className="mt-6 grid gap-4 md:grid-cols-3">
             <MorphCard
               english="past"
-              title="ماضي مجهول · هو"
-              result={samples.pastPassive}
+              title="ماضي معلوم · هو"
+              result={samples.past}
             />
             <MorphCard
               english="present"
-              title="مضارع مجهول · هو"
-              result={samples.presentPassive}
+              title="مضارع معلوم · هو"
+              result={samples.present}
             />
-            <div className="rounded-2xl bg-paper p-4">
-              <p className="text-xs uppercase tracking-wider text-ink-soft">
-                imperative
-              </p>
-              <p className="mt-1 text-xs text-ink-soft">أمر · مجهول</p>
-              <p className="mt-2 text-sm text-ink-soft">أمر has no مجهول.</p>
-            </div>
+            <MorphCard
+              english="imperative"
+              title="أمر · أنتَ"
+              result={samples.command}
+            />
           </div>
-        ) : (
-          <p className="mt-4 text-sm text-ink-soft">
-            Form IX has no useful morphological مجهول.
-          </p>
-        )}
-      </section>
+
+          {showPassive ? (
+            <div className="mt-4 grid gap-4 md:grid-cols-3">
+              <MorphCard
+                english="past"
+                title="ماضي مجهول · هو"
+                result={samples.pastPassive}
+              />
+              <MorphCard
+                english="present"
+                title="مضارع مجهول · هو"
+                result={samples.presentPassive}
+              />
+              <Card size="sm" className="bg-muted ring-0">
+                <CardContent>
+                  <p className="text-xs uppercase tracking-wider text-muted-foreground">
+                    imperative
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground">أمر · مجهول</p>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    أمر has no مجهول.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          ) : (
+            <p className="mt-4 text-sm text-muted-foreground">
+              Form IX has no useful morphological مجهول.
+            </p>
+          )}
+        </CardContent>
+      </Card>
 
       <VoiceKey form={form} formIBab={formIBab} />
     </div>

@@ -55,7 +55,7 @@ export function ArabicWord({
           key={`${slot.kind}-${i}`}
           className={`${KIND_CLASS[slot.kind]}${
             marked.has(slot.kind)
-              ? " rounded-sm bg-paper-deep/80 px-0.5 ring-1 ring-rule"
+              ? " rounded-sm bg-muted px-0.5 ring-1 ring-border"
               : ""
           }`}
         >
@@ -76,7 +76,7 @@ export function ColorLegend({ compact = false }: { compact?: boolean }) {
   ];
   return (
     <ul
-      className={`flex flex-wrap gap-x-4 gap-y-1 ${compact ? "text-xs" : "text-sm"} text-ink-soft`}
+      className={`flex flex-wrap gap-x-4 gap-y-1 ${compact ? "text-xs" : "text-sm"} text-muted-foreground`}
     >
       {items.map((item) => (
         <li key={item.label} className="flex items-center gap-1.5">

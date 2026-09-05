@@ -8,6 +8,8 @@ import {
   type PersonId,
 } from "@/lib/sarf";
 import { ArabicWord } from "./ArabicWord";
+import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 export function ParadigmTable({
   input,
@@ -27,13 +29,13 @@ export function ParadigmTable({
   const cols = ["Singular", "Dual", "Plural"] as const;
 
   return (
-    <div className="overflow-x-auto rounded-2xl border border-rule bg-card">
+    <Card className="overflow-x-auto py-0">
       <table className="w-full min-w-[36rem] border-collapse text-center">
         <thead>
-          <tr className="bg-paper-deep/60 text-xs uppercase tracking-wider text-ink-soft">
-            <th className="p-3 text-left font-medium">Person</th>
+          <tr className="bg-muted/80 text-xs uppercase tracking-wider text-muted-foreground">
+            <th className="p-2.5 text-left font-medium">Person</th>
             {cols.map((col) => (
-              <th key={col} className="p-3 font-medium">
+              <th key={col} className="p-2.5 font-medium">
                 {col}
               </th>
             ))}
@@ -41,13 +43,13 @@ export function ParadigmTable({
         </thead>
         <tbody>
           {TABLE_ROWS.map((row) => (
-            <tr key={row.label} className="border-t border-rule">
-              <th className="p-3 text-left text-sm font-medium text-ink-soft">
+            <tr key={row.label} className="border-t border-border">
+              <th className="p-2.5 text-left text-sm font-medium text-muted-foreground">
                 {row.label}
               </th>
               {row.label === "1st" ? (
                 <>
-                  <td className="p-2">
+                  <td className="p-1.5">
                     <PersonCell
                       person="ana"
                       input={input}
@@ -58,8 +60,8 @@ export function ParadigmTable({
                       onToggleReveal={onToggleReveal}
                     />
                   </td>
-                  <td className="p-2 text-ink-soft">—</td>
-                  <td className="p-2">
+                  <td className="p-1.5 text-muted-foreground">—</td>
+                  <td className="p-1.5">
                     <PersonCell
                       person="nahnu"
                       input={input}
@@ -73,7 +75,7 @@ export function ParadigmTable({
                 </>
               ) : (
                 row.cells.map((person) => (
-                  <td key={person} className="p-2">
+                  <td key={person} className="p-1.5">
                     <PersonCell
                       person={person}
                       input={input}
@@ -90,7 +92,7 @@ export function ParadigmTable({
           ))}
         </tbody>
       </table>
-    </div>
+    </Card>
   );
 }
 
@@ -119,11 +121,11 @@ function PersonCell({
   return (
     <button
       type="button"
-      className={`w-full rounded-xl px-2 py-2 ${isSelected ? "ring-2 ring-accent" : ""} ${
-        onSelect || onToggleReveal
-          ? "cursor-pointer hover:bg-paper-deep/50"
-          : ""
-      }`}
+      className={cn(
+        "w-full rounded-lg px-2 py-2",
+        isSelected && "ring-2 ring-primary",
+        (onSelect || onToggleReveal) && "cursor-pointer hover:bg-muted/70",
+      )}
       onClick={() => {
         onSelect?.(person);
         if (quiz && result.available) onToggleReveal?.(person);
@@ -134,11 +136,11 @@ function PersonCell({
           : `${info.english}: ${result.surface}`
       }
     >
-      <div dir="rtl" className="font-arabic text-xs text-ink-soft">
+      <div dir="rtl" className="font-arabic text-xs text-muted-foreground">
         {info.arabic}
       </div>
       {covered ? (
-        <span className="mt-1 flex min-h-8 items-center justify-center rounded-lg border border-dashed border-rule bg-paper-deep/40 text-xs text-ink-soft">
+        <span className="mt-1 flex min-h-8 items-center justify-center rounded-lg border border-dashed border-border bg-muted/60 text-xs text-muted-foreground">
           tap to reveal
         </span>
       ) : (
