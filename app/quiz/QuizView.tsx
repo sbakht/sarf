@@ -1,7 +1,10 @@
 "use client";
 
+import { useSettings } from "@/components/SettingsProvider";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { SpotterCard } from "@/app/spotter/SpotterCard";
+import { SpotterFilters } from "@/app/spotter/SpotterFilters";
 import { SpotterStep } from "@/app/spotter/SpotterStep";
 import { useSpotterQuiz } from "@/app/spotter/useSpotterQuiz";
 
@@ -31,23 +34,58 @@ function RoundControls({ quiz }: { quiz: ReturnType<typeof useSpotterQuiz> }) {
 
 export function QuizView() {
   const quiz = useSpotterQuiz();
+  const { setLabelMode } = useSettings();
 
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 px-4 py-8">
-      <p className="text-end text-sm font-heading font-semibold text-energy">
-        Score {quiz.score.correct}/{quiz.score.total}
-      </p>
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-8">
+      <div className="grid gap-6 lg:grid-cols-[minmax(18rem,22rem)_1fr]">
+        <SpotterFilters
+          labelMode={quiz.labelMode}
+          enabledQuestions={quiz.enabledQuestions}
+          enabledForms={quiz.enabledForms}
+          enabledTenses={quiz.enabledTenses}
+          enabledVoices={quiz.enabledVoices}
+          enabledPersons={quiz.enabledPersons}
+          onLabelModeChange={setLabelMode}
+          onToggleQuestion={quiz.toggleQuestion}
+          onToggleForm={quiz.toggleForm}
+          onToggleTense={quiz.toggleTense}
+          onToggleVoice={quiz.toggleVoice}
+          onTogglePerson={quiz.togglePerson}
+          onTogglePersonSet={quiz.togglePersonSet}
+          onSelectAllQuestions={quiz.selectAllQuestions}
+          onSelectAllPersons={quiz.selectAllPersons}
+        />
 
-      <SpotterCard
-        prompt={quiz.prompt}
-        result={quiz.result}
-        feedback={quiz.feedback}
-        showColors={quiz.showColors}
-        done={quiz.done}
-        onContinue={quiz.done && quiz.prompt ? quiz.nextPrompt : undefined}
-      />
+        <div className="flex flex-col gap-6">
+          <div className="flex flex-wrap items-center gap-3 text-sm">
+            <label className="flex items-center gap-2">
+              <Checkbox
+                id="include-weak"
+                checked={quiz.includeWeak}
+                onCheckedChange={(checked) =>
+                  quiz.setIncludeWeak(checked === true)
+                }
+              />
+              Include weak verbs
+            </label>
+            <p className="ml-auto font-heading font-semibold text-energy">
+              Score {quiz.score.correct}/{quiz.score.total}
+            </p>
+          </div>
 
-      <RoundControls quiz={quiz} />
+          <SpotterCard
+            prompt={quiz.prompt}
+            result={quiz.result}
+            feedback={quiz.feedback}
+            showColors={quiz.showColors}
+            done={quiz.done}
+            onContinue={quiz.done && quiz.prompt ? quiz.nextPrompt : undefined}
+          />
+
+          <RoundControls quiz={quiz} />
+        </div>
+      </div>
     </div>
   );
 }
