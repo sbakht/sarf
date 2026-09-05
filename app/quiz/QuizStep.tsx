@@ -1,6 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import type { QuizChoice, QuizStep as QuizStepData } from "@/lib/sarf";
+import type { QuizChoice } from "@/lib/sarf";
+
+type StepView = {
+  id: string;
+  title: string;
+  choices: QuizChoice[];
+};
 
 export function QuizStep({
   current,
@@ -8,7 +14,7 @@ export function QuizStep({
   total,
   onAnswer,
 }: {
-  current: QuizStepData;
+  current: StepView;
   step: number;
   total: number;
   onAnswer: (choice: QuizChoice) => void;
