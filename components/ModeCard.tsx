@@ -9,6 +9,7 @@ import {
 import { cn } from "@/lib/utils";
 
 const STRIPE: Record<string, string> = {
+  "/lessons": "bg-lam",
   "/atlas": "bg-primary",
   "/gym": "bg-energy",
   "/spotter": "bg-fa",

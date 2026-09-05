@@ -14,11 +14,17 @@ import { Moon, Sun } from "lucide-react";
 
 const NAV = [
   { href: "/", label: "Home" },
+  { href: "/lessons", label: "Lessons" },
   { href: "/atlas", label: "Atlas" },
   { href: "/gym", label: "Gym" },
   { href: "/spotter", label: "Spotter" },
   { href: "/lab", label: "Lab" },
 ];
+
+function navActive(href: string, pathname: string): boolean {
+  if (href === "/") return pathname === "/";
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -38,7 +44,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           </Link>
           <nav className="flex flex-wrap gap-1">
             {NAV.map((item) => {
-              const active = pathname === item.href;
+              const active = navActive(item.href, pathname);
               return (
                 <Link
                   key={item.href}

@@ -61,6 +61,16 @@ export type {
   SpotterFilters,
   SpotterStep,
 } from "./spotter";
+export {
+  PRIMER_PERSONS,
+  PRIMER_ROUNDS,
+  buildRootGenderSteps,
+  conjugateRootGender,
+  makeRootGenderPrompt,
+  primerRoots,
+  promptSeed as primerPromptSeed,
+} from "./primer";
+export type { LessonStep, RootGenderPrompt } from "./primer";
 export { inferWeakness } from "./weak";
 export { stripHarakat, normalizeForAnswer } from "./harakat";
 export { surfaceOf } from "./slots";
