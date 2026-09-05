@@ -3,12 +3,12 @@
 import { useSettings } from "@/components/SettingsProvider";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { SpotterCard } from "@/app/spotter/SpotterCard";
-import { SpotterFilters } from "@/app/spotter/SpotterFilters";
-import { SpotterStep } from "@/app/spotter/SpotterStep";
-import { useSpotterQuiz } from "@/app/spotter/useSpotterQuiz";
+import { QuizCard } from "./QuizCard";
+import { QuizFilters } from "./QuizFilters";
+import { QuizStep } from "./QuizStep";
+import { useQuiz } from "./useQuiz";
 
-function RoundControls({ quiz }: { quiz: ReturnType<typeof useSpotterQuiz> }) {
+function RoundControls({ quiz }: { quiz: ReturnType<typeof useQuiz> }) {
   if (!quiz.prompt) {
     return (
       <Button
@@ -23,7 +23,7 @@ function RoundControls({ quiz }: { quiz: ReturnType<typeof useSpotterQuiz> }) {
   }
   if (quiz.done || !quiz.current) return null;
   return (
-    <SpotterStep
+    <QuizStep
       current={quiz.current}
       step={quiz.step}
       total={quiz.steps.length}
@@ -33,13 +33,13 @@ function RoundControls({ quiz }: { quiz: ReturnType<typeof useSpotterQuiz> }) {
 }
 
 export function QuizView() {
-  const quiz = useSpotterQuiz();
+  const quiz = useQuiz();
   const { setLabelMode } = useSettings();
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-8">
       <div className="grid gap-6 lg:grid-cols-[minmax(18rem,22rem)_1fr]">
-        <SpotterFilters
+        <QuizFilters
           labelMode={quiz.labelMode}
           enabledQuestions={quiz.enabledQuestions}
           enabledForms={quiz.enabledForms}
@@ -74,7 +74,7 @@ export function QuizView() {
             </p>
           </div>
 
-          <SpotterCard
+          <QuizCard
             prompt={quiz.prompt}
             result={quiz.result}
             feedback={quiz.feedback}

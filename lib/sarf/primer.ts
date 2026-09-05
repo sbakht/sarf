@@ -1,8 +1,8 @@
 import { conjugate } from "./conjugate";
 import { rootArabic, soundRoots } from "./lexicon";
 import { PERSON_BY_ID } from "./persons";
-import { uniqueOptions } from "./quiz";
-import { pick, type SpotterChoice } from "./spotter";
+import { uniqueOptions } from "./person-quiz";
+import { pick, type QuizChoice } from "./quiz";
 import type { ConjugateResult, FormId, PersonId, RootEntry } from "./types";
 
 export const PRIMER_ROUNDS = 6;
@@ -26,7 +26,7 @@ export type IntroPrompt = {
 export type LessonStep = {
   id: string;
   title: string;
-  choices: SpotterChoice[];
+  choices: QuizChoice[];
 };
 
 export function familyKind(form: FormId): FamilyKind {

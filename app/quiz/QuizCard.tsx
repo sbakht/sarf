@@ -51,7 +51,7 @@ function cardToneClass(feedback: { ok: boolean } | null): string {
   return "ring-no/40";
 }
 
-export function SpotterCard({
+export function QuizCard({
   prompt,
   result,
   feedback,

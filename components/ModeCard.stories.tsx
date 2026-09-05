@@ -34,11 +34,11 @@ export const Gym: Story = {
   },
 };
 
-export const Spotter: Story = {
+export const Quiz: Story = {
   args: {
-    href: "/spotter",
+    href: "/quiz",
     kicker: "03 · Recognize",
-    title: "Pattern Spotter",
+    title: "Quiz",
     arabic: "التمييز",
     body: "A vocalized verb appears. Name the root, form, tense, voice, and person.",
   },

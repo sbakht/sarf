@@ -6,7 +6,7 @@ import {
   seededRng,
   type ConjugateResult,
   type LessonStep,
-  type SpotterChoice,
+  type QuizChoice,
 } from "@/lib/sarf";
 
 type Feedback = {
@@ -152,7 +152,7 @@ export function useLessonQuiz<P>(config: LessonQuizConfig<P>) {
     !state.complete && !!state.prompt && state.step >= steps.length;
   const result = state.prompt ? toResult(state.prompt) : null;
 
-  function submitAnswer(choice: SpotterChoice) {
+  function submitAnswer(choice: QuizChoice) {
     const finishRound = state.step >= steps.length - 1;
     dispatch({
       type: "answer",

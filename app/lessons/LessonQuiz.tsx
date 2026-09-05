@@ -6,7 +6,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import type { useLessonQuiz } from "./useLessonQuiz";
-import type { SpotterChoice } from "@/lib/sarf";
+import type { QuizChoice } from "@/lib/sarf";
 
 function CheckIcon() {
   return (
@@ -174,7 +174,7 @@ export function LessonQuiz<P>({
             <h2 className="mt-1 text-xl font-semibold">{quiz.current.title}</h2>
             <div className="mt-4 grid gap-2 sm:grid-cols-2">
               {quiz.current.choices.map(
-                (choice: SpotterChoice, index: number) => (
+                (choice: QuizChoice, index: number) => (
                   <Button
                     key={choice.id}
                     variant="outline"

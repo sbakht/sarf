@@ -1,17 +1,17 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import type { SpotterChoice, SpotterStep } from "@/lib/sarf";
+import type { QuizChoice, QuizStep as QuizStepData } from "@/lib/sarf";
 
-export function SpotterStep({
+export function QuizStep({
   current,
   step,
   total,
   onAnswer,
 }: {
-  current: SpotterStep;
+  current: QuizStepData;
   step: number;
   total: number;
-  onAnswer: (choice: SpotterChoice) => void;
+  onAnswer: (choice: QuizChoice) => void;
 }) {
   const arabicClass =
     current.id === "root" ? "font-arabic text-2xl" : "font-arabic text-xl";

@@ -38,7 +38,7 @@ export {
   quizPersonGroup,
   quizPersonKey,
   uniqueOptions,
-} from "./quiz";
+} from "./person-quiz";
 export {
   ALL_FORMS,
   ALL_PERSON_IDS,
@@ -46,21 +46,21 @@ export {
   ALL_TENSES,
   ALL_VOICES,
   TENSE_LABEL,
-  buildSpotterSteps,
+  buildQuizSteps,
   eligibleTenses,
   makePrompt,
   pick,
   promptSeed,
   seededRng,
   toggleItem,
-} from "./spotter";
+} from "./quiz";
 export type {
   Prompt,
   QuestionId,
-  SpotterChoice,
-  SpotterFilters,
-  SpotterStep,
-} from "./spotter";
+  QuizChoice,
+  QuizFilters,
+  QuizStep,
+} from "./quiz";
 export {
   PRIMER_PERSONS,
   PRIMER_ROUNDS,

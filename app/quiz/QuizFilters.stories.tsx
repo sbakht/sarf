@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { useState } from "react";
 import { expect } from "storybook/test";
-import { SpotterFilters } from "./SpotterFilters";
+import { QuizFilters } from "./QuizFilters";
 import {
   ALL_FORMS,
   ALL_PERSON_IDS,
@@ -40,7 +40,7 @@ function FiltersDemo({
   const [enabledPersons, setPersons] = useState(initialPersons);
 
   return (
-    <SpotterFilters
+    <QuizFilters
       labelMode={labelMode}
       enabledQuestions={enabledQuestions}
       enabledForms={enabledForms}
@@ -84,9 +84,9 @@ function FiltersDemo({
 }
 
 const meta = {
-  component: SpotterFilters,
+  component: QuizFilters,
   tags: ["ai-generated"],
-} satisfies Meta<typeof SpotterFilters>;
+} satisfies Meta<typeof QuizFilters>;
 
 export default meta;
 

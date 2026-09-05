@@ -23,9 +23,9 @@ const MODES = [
     body: "Fill the 14-person table from a root and a form. Study the overlay, then quiz empty cells.",
   },
   {
-    href: "/spotter",
+    href: "/quiz",
     kicker: "04 · Recognize",
-    title: "Pattern Spotter",
+    title: "Quiz",
     arabic: "التمييز",
     body: "A vocalized verb appears. Name the root, form, tense, voice, and person. Misses reveal the color mapping.",
   },
