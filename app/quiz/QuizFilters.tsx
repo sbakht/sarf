@@ -341,7 +341,7 @@ export function QuizFilters({
         mode={labelMode}
         english="Voice"
         arabic="البناء"
-        subtitle="Active, passive, or both"
+        subtitle="Which voices can appear"
       >
         <div className="flex flex-wrap gap-2">
           {(["active", "passive"] as Voice[]).map((voice) => (
