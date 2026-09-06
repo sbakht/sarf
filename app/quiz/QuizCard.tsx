@@ -51,7 +51,7 @@ function cardToneClass(feedback: { ok: boolean } | null): string {
   return "ring-no/40";
 }
 
-export function SpotterCard({
+export function QuizCard({
   prompt,
   result,
   feedback,
@@ -118,7 +118,9 @@ export function SpotterCard({
           ) : null}
         </>
       ) : (
-        <p className="mt-4 text-muted-foreground">No verbs match these filters</p>
+        <p className="mt-4 text-muted-foreground">
+          No verbs match these filters
+        </p>
       )}
     </>
   );

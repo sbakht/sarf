@@ -12,7 +12,7 @@ const STRIPE: Record<string, string> = {
   "/lessons": "bg-lam",
   "/atlas": "bg-primary",
   "/gym": "bg-energy",
-  "/spotter": "bg-fa",
+  "/quiz": "bg-fa",
   "/lab": "bg-ayn",
 };
 

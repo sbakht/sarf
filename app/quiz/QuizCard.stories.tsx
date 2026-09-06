@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect } from "storybook/test";
-import { SpotterCard } from "./SpotterCard";
+import { QuizCard } from "./QuizCard";
 import { conjugate, getRoot } from "@/lib/sarf";
 
 const root = getRoot("ktb");
@@ -21,9 +21,9 @@ const result = conjugate({
 });
 
 const meta = {
-  component: SpotterCard,
+  component: QuizCard,
   tags: ["ai-generated"],
-} satisfies Meta<typeof SpotterCard>;
+} satisfies Meta<typeof QuizCard>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -87,6 +87,8 @@ export const NoMatches: Story = {
     done: false,
   },
   play: async ({ canvas }) => {
-    await expect(canvas.getByText("No verbs match these filters")).toBeVisible();
+    await expect(
+      canvas.getByText("No verbs match these filters"),
+    ).toBeVisible();
   },
 };

@@ -11,7 +11,7 @@ import {
   makeRootGenderPrompt,
   primerRoots,
 } from "./primer";
-import { seededRng } from "./spotter";
+import { seededRng } from "./quiz";
 
 describe("primerRoots", () => {
   it("keeps only sound Form I roots", () => {

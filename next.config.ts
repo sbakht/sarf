@@ -5,6 +5,15 @@ const nextConfig: NextConfig = {
   // standalone fails in onBuildComplete (ENOENT next-server.js.nft.json).
   // https://github.com/vercel/next.js/issues/96646
   output: process.env.VERCEL ? undefined : "standalone",
+  async redirects() {
+    return [
+      {
+        source: "/spotter",
+        destination: "/quiz",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

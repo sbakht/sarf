@@ -202,8 +202,9 @@ export function VoiceKey({
             </li>
             <li>Anything else → معلوم</li>
             <li>
-              باب فرح <span className="font-arabic text-foreground">فَعِلَ</span>{" "}
-              has kasra on ع but fatha on the first letter — still معلوم.
+              باب فرح{" "}
+              <span className="font-arabic text-foreground">فَعِلَ</span> has
+              kasra on ع but fatha on the first letter — still معلوم.
             </li>
           </ol>
           <div className="mt-3 grid gap-2 sm:grid-cols-2">

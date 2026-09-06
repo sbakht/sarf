@@ -8,18 +8,20 @@ import {
   ALL_QUESTIONS,
   ALL_TENSES,
   ALL_VOICES,
-  buildSpotterSteps,
+  buildQuizSteps,
   conjugate,
   linkedPersons,
   makePrompt,
+  quizChoiceLabel,
+  quizWrongFeedback,
   seededRng,
   toggleItem,
   type FormId,
   type PersonId,
   type Prompt,
   type QuestionId,
-  type SpotterChoice,
-  type SpotterFilters,
+  type QuizChoice,
+  type QuizFilters,
   type Tense,
   type Voice,
 } from "@/lib/sarf";
@@ -29,7 +31,7 @@ type Feedback = {
   text: string;
 };
 
-type QuizState = SpotterFilters & {
+type QuizState = QuizFilters & {
   prompt: Prompt | null;
   step: number;
   score: { correct: number; total: number };
@@ -50,10 +52,16 @@ type Action =
   | { type: "selectAllTenses" }
   | { type: "selectAllQuestions" }
   | { type: "togglePersonSet"; persons: PersonId[] }
-  | { type: "answer"; ok: boolean; label: string; finishRound: boolean }
+  | {
+      type: "answer";
+      ok: boolean;
+      label: string;
+      answer: string;
+      finishRound: boolean;
+    }
   | { type: "nextPrompt" };
 
-const DEFAULT_FILTERS: SpotterFilters = {
+const DEFAULT_FILTERS: QuizFilters = {
   includeWeak: false,
   enabledForms: ALL_FORMS,
   enabledPersons: ALL_PERSON_IDS,
@@ -62,7 +70,7 @@ const DEFAULT_FILTERS: SpotterFilters = {
   enabledQuestions: ALL_QUESTIONS,
 };
 
-function filtersOf(state: QuizState): SpotterFilters {
+function filtersOf(state: QuizState): QuizFilters {
   return {
     includeWeak: state.includeWeak,
     enabledForms: state.enabledForms,
@@ -73,10 +81,7 @@ function filtersOf(state: QuizState): SpotterFilters {
   };
 }
 
-function rollPrompt(
-  filters: SpotterFilters,
-  rng?: () => number,
-): Prompt | null {
+function rollPrompt(filters: QuizFilters, rng?: () => number): Prompt | null {
   return makePrompt(
     filters.includeWeak,
     filters.enabledForms,
@@ -88,7 +93,7 @@ function rollPrompt(
   );
 }
 
-function resetRound(state: QuizState, filters: SpotterFilters): QuizState {
+function resetRound(state: QuizState, filters: QuizFilters): QuizState {
   return {
     ...state,
     ...filters,
@@ -101,7 +106,7 @@ function resetRound(state: QuizState, filters: SpotterFilters): QuizState {
 
 function applyFilters(
   state: QuizState,
-  patch: Partial<SpotterFilters>,
+  patch: Partial<QuizFilters>,
 ): QuizState {
   return resetRound(state, { ...filtersOf(state), ...patch });
 }
@@ -211,7 +216,7 @@ function reducer(state: QuizState, action: Action): QuizState {
           ok: action.ok,
           text: action.ok
             ? `Correct — ${action.label}`
-            : `Not quite — ${action.label}`,
+            : quizWrongFeedback(action.answer, action.label),
         },
         showColors: action.ok ? state.showColors : true,
         step: state.step + 1,
@@ -233,12 +238,12 @@ function isTypingTarget(target: EventTarget | null): boolean {
   );
 }
 
-export function useSpotterQuiz() {
+export function useQuiz() {
   const { labelMode } = useSettings();
   const [state, dispatch] = useReducer(reducer, undefined, createInitialState);
 
   const steps = state.prompt
-    ? buildSpotterSteps(state.prompt, filtersOf(state), labelMode)
+    ? buildQuizSteps(state.prompt, filtersOf(state), labelMode)
     : [];
   const current = steps[state.step];
   const done = !state.prompt || state.step >= steps.length;
@@ -254,12 +259,13 @@ export function useSpotterQuiz() {
       })
     : null;
 
-  function submitAnswer(choice: SpotterChoice) {
+  function submitAnswer(choice: QuizChoice) {
     const finishRound = state.step >= steps.length - 1;
     dispatch({
       type: "answer",
       ok: choice.correct,
       label: choice.feedback,
+      answer: quizChoiceLabel(choice),
       finishRound,
     });
   }
@@ -268,7 +274,7 @@ export function useSpotterQuiz() {
     if (isTypingTarget(event.target)) return;
     if (
       event.target instanceof HTMLElement &&
-      event.target.closest("[data-spotter-filters]")
+      event.target.closest("[data-quiz-filters]")
     )
       return;
     if (done) {
@@ -293,7 +299,7 @@ export function useSpotterQuiz() {
     return () => window.removeEventListener("keydown", listener);
   }, []);
 
-  function answer(choice: SpotterChoice) {
+  function answer(choice: QuizChoice) {
     submitAnswer(choice);
   }
 

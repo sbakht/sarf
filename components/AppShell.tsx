@@ -17,9 +17,17 @@ const NAV = [
   { href: "/lessons", label: "Lessons" },
   { href: "/atlas", label: "Atlas" },
   { href: "/gym", label: "Gym" },
-  { href: "/spotter", label: "Spotter" },
+  { href: "/quiz", label: "Quiz" },
   { href: "/lab", label: "Lab" },
 ];
+
+const BARE_ROUTES = ["/quiz"];
+
+function isBareRoute(pathname: string): boolean {
+  return BARE_ROUTES.some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`),
+  );
+}
 
 function navActive(href: string, pathname: string): boolean {
   if (href === "/") return pathname === "/";
@@ -31,6 +39,10 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { showHarakat, setShowHarakat, labelMode, setLabelMode } =
     useSettings();
   const { resolvedTheme, setTheme } = useTheme();
+
+  if (isBareRoute(pathname)) {
+    return <>{children}</>;
+  }
 
   return (
     <div className="min-h-full flex flex-col">
@@ -74,8 +86,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             >
               <Sun className="size-3.5 dark:hidden" />
               <Moon className="hidden size-3.5 dark:block" />
-              Dark{" "}
-              <span className="dark:hidden">off</span>
+              Dark <span className="dark:hidden">off</span>
               <span className="hidden dark:inline">on</span>
             </Button>
             <Toggle
@@ -111,7 +122,9 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
         </div>
       </header>
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">{children}</main>
+      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
+        {children}
+      </main>
       <footer className="px-4 py-3">
         <Separator className="mb-3" />
         <div className="mx-auto flex max-w-6xl justify-end">

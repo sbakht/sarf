@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { useState } from "react";
 import { expect } from "storybook/test";
-import { SpotterFilters } from "./SpotterFilters";
+import { QuizFilters } from "./QuizFilters";
 import {
   ALL_FORMS,
   ALL_PERSON_IDS,
@@ -40,7 +40,7 @@ function FiltersDemo({
   const [enabledPersons, setPersons] = useState(initialPersons);
 
   return (
-    <SpotterFilters
+    <QuizFilters
       labelMode={labelMode}
       enabledQuestions={enabledQuestions}
       enabledForms={enabledForms}
@@ -84,9 +84,9 @@ function FiltersDemo({
 }
 
 const meta = {
-  component: SpotterFilters,
+  component: QuizFilters,
   tags: ["ai-generated"],
-} satisfies Meta<typeof SpotterFilters>;
+} satisfies Meta<typeof QuizFilters>;
 
 export default meta;
 
@@ -94,18 +94,20 @@ export const AllSelected: StoryObj = {
   render: () => <FiltersDemo />,
   play: async ({ canvas }) => {
     await expect(canvas.getByText("Quiz on")).toBeVisible();
-    await expect(
-      canvas.getByRole("button", { name: "Root" }),
-    ).toHaveAttribute("aria-pressed", "true");
+    await expect(canvas.getByRole("button", { name: "Root" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
   },
 };
 
 export const WaznLabels: StoryObj = {
   render: () => <FiltersDemo initialLabelMode="wazn" />,
   play: async ({ canvas }) => {
-    await expect(
-      canvas.getByRole("button", { name: "وزن" }),
-    ).toHaveAttribute("aria-pressed", "true");
+    await expect(canvas.getByRole("button", { name: "وزن" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
     await expect(canvas.getByText("فَعَلَ")).toBeVisible();
   },
 };
@@ -113,9 +115,10 @@ export const WaznLabels: StoryObj = {
 export const BothLabels: StoryObj = {
   render: () => <FiltersDemo initialLabelMode="both" />,
   play: async ({ canvas }) => {
-    await expect(
-      canvas.getByRole("button", { name: "Both" }),
-    ).toHaveAttribute("aria-pressed", "true");
+    await expect(canvas.getByRole("button", { name: "Both" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
     await expect(canvas.getByText("I")).toBeVisible();
     await expect(canvas.getByText("فَعَلَ")).toBeVisible();
   },
@@ -132,11 +135,13 @@ export const SparseSelection: StoryObj = {
     />
   ),
   play: async ({ canvas }) => {
-    await expect(
-      canvas.getByRole("button", { name: "Root" }),
-    ).toHaveAttribute("aria-pressed", "true");
-    await expect(
-      canvas.getByRole("button", { name: "Tense" }),
-    ).toHaveAttribute("aria-pressed", "false");
+    await expect(canvas.getByRole("button", { name: "Root" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    await expect(canvas.getByRole("button", { name: "Tense" })).toHaveAttribute(
+      "aria-pressed",
+      "false",
+    );
   },
 };

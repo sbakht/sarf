@@ -1,14 +1,9 @@
 import { conjugate } from "./conjugate";
 import { rootArabic, soundRoots } from "./lexicon";
 import { PERSON_BY_ID } from "./persons";
-import { uniqueOptions } from "./quiz";
-import { pick, type SpotterChoice } from "./spotter";
-import type {
-  ConjugateResult,
-  FormId,
-  PersonId,
-  RootEntry,
-} from "./types";
+import { uniqueOptions } from "./person-quiz";
+import { pick, type QuizChoice } from "./quiz";
+import type { ConjugateResult, FormId, PersonId, RootEntry } from "./types";
 
 export const PRIMER_ROUNDS = 6;
 export const PRIMER_PERSONS: PersonId[] = ["huwa", "hiya"];
@@ -31,7 +26,7 @@ export type IntroPrompt = {
 export type LessonStep = {
   id: string;
   title: string;
-  choices: SpotterChoice[];
+  choices: QuizChoice[];
 };
 
 export function familyKind(form: FormId): FamilyKind {
@@ -56,9 +51,7 @@ export function makeRootGenderPrompt(
   return { root, person };
 }
 
-export function conjugateRootGender(
-  prompt: RootGenderPrompt,
-): ConjugateResult {
+export function conjugateRootGender(prompt: RootGenderPrompt): ConjugateResult {
   return conjugate({
     root: prompt.root.letters,
     form: 1,

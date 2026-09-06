@@ -1,22 +1,22 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, fn } from "storybook/test";
-import { SpotterStep } from "./SpotterStep";
-import type { SpotterStep as SpotterStepData } from "@/lib/sarf";
+import { QuizStep } from "./QuizStep";
+import type { QuizStep as QuizStepData } from "@/lib/sarf";
 
 const meta = {
-  component: SpotterStep,
+  component: QuizStep,
   tags: ["ai-generated"],
   args: {
     onAnswer: fn(),
     step: 0,
     total: 5,
   },
-} satisfies Meta<typeof SpotterStep>;
+} satisfies Meta<typeof QuizStep>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const rootStep: SpotterStepData = {
+const rootStep: QuizStepData = {
   id: "root",
   title: "Which root?",
   choices: [
@@ -39,7 +39,7 @@ const rootStep: SpotterStepData = {
   ],
 };
 
-const formStep: SpotterStepData = {
+const formStep: QuizStepData = {
   id: "form",
   title: "Which form?",
   choices: [
@@ -60,7 +60,7 @@ const formStep: SpotterStepData = {
   ],
 };
 
-const voiceStep: SpotterStepData = {
+const voiceStep: QuizStepData = {
   id: "voice",
   title: "Which voice?",
   choices: [

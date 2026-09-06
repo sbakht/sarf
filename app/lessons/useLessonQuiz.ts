@@ -6,7 +6,9 @@ import {
   seededRng,
   type ConjugateResult,
   type LessonStep,
-  type SpotterChoice,
+  type QuizChoice,
+  quizChoiceLabel,
+  quizWrongFeedback,
 } from "@/lib/sarf";
 
 type Feedback = {
@@ -25,7 +27,13 @@ type QuizState<P> = {
 };
 
 type Action =
-  | { type: "answer"; ok: boolean; label: string; finishRound: boolean }
+  | {
+      type: "answer";
+      ok: boolean;
+      label: string;
+      answer: string;
+      finishRound: boolean;
+    }
   | { type: "nextRound" }
   | { type: "restart" };
 
@@ -105,7 +113,7 @@ export function useLessonQuiz<P>(config: LessonQuizConfig<P>) {
               ok: action.ok,
               text: action.ok
                 ? `Correct — ${action.label}`
-                : `Not quite — ${action.label}`,
+                : quizWrongFeedback(action.answer, action.label),
             },
             showColors: action.ok ? current.showColors : true,
             step: current.step + 1,
@@ -152,12 +160,13 @@ export function useLessonQuiz<P>(config: LessonQuizConfig<P>) {
     !state.complete && !!state.prompt && state.step >= steps.length;
   const result = state.prompt ? toResult(state.prompt) : null;
 
-  function submitAnswer(choice: SpotterChoice) {
+  function submitAnswer(choice: QuizChoice) {
     const finishRound = state.step >= steps.length - 1;
     dispatch({
       type: "answer",
       ok: choice.correct,
       label: choice.feedback,
+      answer: quizChoiceLabel(choice),
       finishRound,
     });
   }

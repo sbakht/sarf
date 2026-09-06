@@ -150,11 +150,7 @@ export function TheRootArticle() {
         </p>
         <div className="grid gap-3 sm:grid-cols-2">
           <Example label="he wrote · هُوَ" result={kataba} />
-          <Example
-            label="she wrote · هِيَ"
-            result={katabat}
-            highlightSuffix
-          />
+          <Example label="she wrote · هِيَ" result={katabat} highlightSuffix />
         </div>
         <p className="text-sm leading-6 text-muted-foreground">
           The stone-colored{" "}

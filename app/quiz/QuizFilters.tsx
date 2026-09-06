@@ -44,7 +44,7 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
   );
 }
 
-export function SpotterFilters({
+export function QuizFilters({
   labelMode,
   enabledQuestions,
   enabledForms,
@@ -79,7 +79,7 @@ export function SpotterFilters({
 }) {
   return (
     <aside
-      data-spotter-filters
+      data-quiz-filters
       className="flex flex-col gap-5 rounded-xl border border-border bg-card p-4 ring-1 ring-foreground/10 lg:sticky lg:top-20 lg:self-start"
     >
       <p className="text-xs uppercase tracking-wider text-muted-foreground">
@@ -148,7 +148,10 @@ export function SpotterFilters({
               >
                 {meta.roman}
                 {labelMode !== "form" ? (
-                  <span dir="rtl" className="font-arabic text-[11px] leading-tight">
+                  <span
+                    dir="rtl"
+                    className="font-arabic text-[11px] leading-tight"
+                  >
                     {meta.waznPast}
                   </span>
                 ) : null}

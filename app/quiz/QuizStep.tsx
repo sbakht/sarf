@@ -1,17 +1,23 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import type { SpotterChoice, SpotterStep } from "@/lib/sarf";
+import type { QuizChoice } from "@/lib/sarf";
 
-export function SpotterStep({
+type StepView = {
+  id: string;
+  title: string;
+  choices: QuizChoice[];
+};
+
+export function QuizStep({
   current,
   step,
   total,
   onAnswer,
 }: {
-  current: SpotterStep;
+  current: StepView;
   step: number;
   total: number;
-  onAnswer: (choice: SpotterChoice) => void;
+  onAnswer: (choice: QuizChoice) => void;
 }) {
   const arabicClass =
     current.id === "root" ? "font-arabic text-2xl" : "font-arabic text-xl";
@@ -42,7 +48,14 @@ export function SpotterStep({
                 choice.primary
               )}
               {choice.secondary ? (
-                <span className="text-sm text-muted-foreground">
+                <span
+                  dir={choice.secondaryArabic ? "rtl" : undefined}
+                  className={
+                    choice.secondaryArabic
+                      ? "font-arabic text-sm text-muted-foreground"
+                      : "text-sm text-muted-foreground"
+                  }
+                >
                   {choice.secondary}
                 </span>
               ) : null}

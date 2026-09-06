@@ -10,7 +10,9 @@ export function FormBadge({ form }: { form: FormId }) {
 
   const formLabel = (
     <span
-      className={labelMode === "wazn" ? "text-muted-foreground" : "font-semibold"}
+      className={
+        labelMode === "wazn" ? "text-muted-foreground" : "font-semibold"
+      }
     >
       Form {meta.roman}
     </span>
