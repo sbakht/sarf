@@ -1,6 +1,6 @@
 import { ArabicWord } from "@/components/ArabicWord";
 import { FormBadge } from "@/components/FormBadge";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   personQuizFeedback,
   rootArabic,
@@ -45,12 +45,6 @@ function XIcon() {
   );
 }
 
-function cardToneClass(feedback: { ok: boolean } | null): string {
-  if (!feedback) return "";
-  if (feedback.ok) return "ring-ok/40";
-  return "ring-no/40";
-}
-
 export function QuizCard({
   prompt,
   result,
@@ -66,7 +60,6 @@ export function QuizCard({
   done: boolean;
   onContinue?: () => void;
 }) {
-  const cardTone = cardToneClass(feedback);
   const continueHint = done && onContinue;
 
   const body = (
@@ -79,23 +72,19 @@ export function QuizCard({
           <div
             className={`mt-4 ${continueHint ? "transition group-hover:scale-[1.03]" : ""}`}
           >
-            {showColors || done ? (
-              <ArabicWord
-                slots={result.slots}
-                surface={result.surface}
-                size="xl"
-              />
-            ) : (
-              <span dir="rtl" className="font-arabic text-5xl">
-                {result.surface}
-              </span>
-            )}
+            <ArabicWord
+              slots={result.slots}
+              surface={result.surface}
+              size="xl"
+              colored={showColors || done}
+            />
           </div>
-          <div className="mt-4 flex min-h-10 items-center justify-center">
+          {/* Fixed slot so correct/incorrect feedback never shifts the step below (CLS). */}
+          <div className="relative mt-2 h-10 shrink-0">
             {feedback ? (
               <p
                 aria-live="polite"
-                className={`flex w-fit items-center gap-2 rounded-xl px-3 py-2 text-sm font-bold ${
+                className={`absolute inset-x-0 top-1/2 mx-auto flex w-fit max-w-full -translate-y-1/2 items-center gap-2 rounded-lg px-3 py-1 text-sm font-bold leading-snug text-balance ${
                   feedback.ok ? "bg-ok/15 text-ok" : "bg-no/15 text-no"
                 }`}
               >
@@ -130,12 +119,16 @@ export function QuizCard({
       <button
         type="button"
         onClick={onContinue}
-        className={`group w-full rounded-xl border-2 border-dashed border-energy/60 bg-card px-6 py-10 text-center transition hover:border-energy hover:bg-energy/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-energy ${cardTone}`}
+        className="group w-full rounded-xl bg-card px-4 py-4 text-center ring-1 ring-foreground/10 transition hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         {body}
       </button>
     );
   }
 
-  return <Card className={`px-6 py-10 text-center ${cardTone}`}>{body}</Card>;
+  return (
+    <Card className="text-center">
+      <CardContent>{body}</CardContent>
+    </Card>
+  );
 }
