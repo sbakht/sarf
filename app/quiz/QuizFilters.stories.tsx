@@ -93,21 +93,21 @@ export default meta;
 export const AllSelected: StoryObj = {
   render: () => <FiltersDemo />,
   play: async ({ canvas }) => {
-    await expect(canvas.getByText("Quiz on")).toBeVisible();
-    await expect(canvas.getByRole("button", { name: "Root" })).toHaveAttribute(
+    await expect(canvas.getByText("Filters")).toBeVisible();
+    await expect(canvas.getByText("Questions")).toBeVisible();
+    await expect(canvas.getByRole("button", { name: /Root/ })).toHaveAttribute(
       "aria-pressed",
       "true",
     );
   },
 };
 
-export const WaznLabels: StoryObj = {
+export const ArabicLabels: StoryObj = {
   render: () => <FiltersDemo initialLabelMode="wazn" />,
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole("button", { name: "وزن" })).toHaveAttribute(
-      "aria-pressed",
-      "true",
-    );
+    await expect(
+      canvas.getByRole("button", { name: "Arabic" }),
+    ).toHaveAttribute("aria-pressed", "true");
     await expect(canvas.getByText("فَعَلَ")).toBeVisible();
   },
 };
@@ -135,11 +135,11 @@ export const SparseSelection: StoryObj = {
     />
   ),
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole("button", { name: "Root" })).toHaveAttribute(
+    await expect(canvas.getByRole("button", { name: /Root/ })).toHaveAttribute(
       "aria-pressed",
       "true",
     );
-    await expect(canvas.getByRole("button", { name: "Tense" })).toHaveAttribute(
+    await expect(canvas.getByRole("button", { name: /Tense/ })).toHaveAttribute(
       "aria-pressed",
       "false",
     );

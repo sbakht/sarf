@@ -14,18 +14,32 @@ const KIND_CLASS: Record<SlotKind, string> = {
   suffix: "text-affix font-normal opacity-80",
 };
 
+/** Typography without color — keep metrics stable when coloring toggles. */
+const KIND_TONE: Record<SlotKind, string> = {
+  f: "font-semibold",
+  a: "font-semibold",
+  l: "font-semibold",
+  extra:
+    "font-semibold underline decoration-transparent decoration-2 underline-offset-4",
+  prefix: "font-normal opacity-80",
+  suffix: "font-normal opacity-80",
+};
+
 export function ArabicWord({
   slots,
   surface,
   className = "",
   size = "md",
   highlight,
+  colored = true,
 }: {
   slots?: MorphemeSlot[];
   surface?: string;
   className?: string;
   size?: "sm" | "md" | "lg" | "xl";
   highlight?: SlotKind[];
+  /** When false, keep the same slot metrics but paint everything as plain text. */
+  colored?: boolean;
 }) {
   const { showHarakat } = useSettings();
   const sizeClass = {
@@ -48,12 +62,12 @@ export function ArabicWord({
   return (
     <span
       dir="rtl"
-      className={`font-arabic ${sizeClass} ${className} tracking-wide`}
+      className={`font-arabic tracking-wide ${sizeClass} ${className}`}
     >
       {slots.map((slot, i) => (
         <span
           key={`${slot.kind}-${i}`}
-          className={`${KIND_CLASS[slot.kind]}${
+          className={`${colored ? KIND_CLASS[slot.kind] : KIND_TONE[slot.kind]}${
             marked.has(slot.kind)
               ? " rounded-sm bg-muted px-0.5 ring-1 ring-border"
               : ""
