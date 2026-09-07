@@ -18,6 +18,9 @@ export const FormIFull: Story = {
   },
   play: async ({ canvas }) => {
     await expect(canvas.getByText("معلوم or مجهول?")).toBeVisible();
+    await expect(
+      canvas.getByText(/Form VII انفعل/, { exact: false }),
+    ).toBeVisible();
   },
 };
 
