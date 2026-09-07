@@ -504,7 +504,7 @@ function Row({
                 className={
                   showArabic(labelMode)
                     ? "text-[10px] text-muted-foreground"
-                    : "text-[10px]"
+                    : "text-xs"
                 }
               >
                 {personFilterEnglish(id)}
