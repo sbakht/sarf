@@ -363,7 +363,7 @@ export function QuizFilters({
           type="button"
           aria-expanded={open}
           onClick={() => setOpen((value) => !value)}
-          className="flex w-full items-start gap-3 px-4 py-3 text-start"
+          className="flex w-full cursor-pointer items-start gap-3 px-4 py-3 text-start"
         >
           <div className="min-w-0 flex-1">
             <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
@@ -500,7 +500,13 @@ function Row({
               </span>
             ) : null}
             {showEnglish(labelMode) ? (
-              <span className="text-[10px] text-muted-foreground">
+              <span
+                className={
+                  showArabic(labelMode)
+                    ? "text-[10px] text-muted-foreground"
+                    : "text-[10px]"
+                }
+              >
                 {personFilterEnglish(id)}
               </span>
             ) : null}
