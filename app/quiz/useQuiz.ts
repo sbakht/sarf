@@ -32,6 +32,7 @@ type Feedback = {
 
 type QuizState = QuizFilters & {
   prompt: Prompt | null;
+  started: boolean;
   step: number;
   score: { correct: number; total: number };
   feedback: Feedback | null;
@@ -96,6 +97,7 @@ function resetRound(state: QuizState, filters: QuizFilters): QuizState {
   return {
     ...state,
     ...filters,
+    started: true,
     prompt: rollPrompt(filters),
     step: 0,
     feedback: null,
@@ -138,7 +140,8 @@ function nextPersons(enabled: PersonId[], person: PersonId): PersonId[] | null {
 export function createInitialState(): QuizState {
   return {
     ...DEFAULT_FILTERS,
-    prompt: rollPrompt(DEFAULT_FILTERS),
+    prompt: null,
+    started: false,
     step: 0,
     score: { correct: 0, total: 0 },
     feedback: null,
@@ -146,7 +149,7 @@ export function createInitialState(): QuizState {
   };
 }
 
-function reducer(state: QuizState, action: Action): QuizState {
+export function reduceQuiz(state: QuizState, action: Action): QuizState {
   switch (action.type) {
     case "toggleForm": {
       const next = toggleItem(state.enabledForms, action.form);
@@ -239,7 +242,11 @@ function isTypingTarget(target: EventTarget | null): boolean {
 
 export function useQuiz() {
   const { labelMode } = useSettings();
-  const [state, dispatch] = useReducer(reducer, undefined, createInitialState);
+  const [state, dispatch] = useReducer(
+    reduceQuiz,
+    undefined,
+    createInitialState,
+  );
 
   const steps = state.prompt
     ? buildQuizSteps(state.prompt, filtersOf(state), labelMode)
@@ -291,6 +298,10 @@ export function useQuiz() {
   });
 
   useEffect(() => {
+    if (!state.started) dispatch({ type: "nextPrompt" });
+  }, [state.started]);
+
+  useEffect(() => {
     function listener(event: KeyboardEvent) {
       onKey(event);
     }
@@ -310,6 +321,7 @@ export function useQuiz() {
     enabledTenses: state.enabledTenses,
     enabledQuestions: state.enabledQuestions,
     prompt: state.prompt,
+    started: state.started,
     step: state.step,
     score: state.score,
     feedback: state.feedback,

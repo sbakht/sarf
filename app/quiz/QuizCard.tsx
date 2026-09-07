@@ -51,6 +51,7 @@ export function QuizCard({
   feedback,
   showColors,
   done,
+  pending = false,
   onContinue,
 }: {
   prompt: Prompt | null;
@@ -58,6 +59,7 @@ export function QuizCard({
   feedback: { ok: boolean; text: string } | null;
   showColors: boolean;
   done: boolean;
+  pending?: boolean;
   onContinue?: () => void;
 }) {
   const continueHint = done && onContinue;
@@ -67,50 +69,47 @@ export function QuizCard({
       <p className="text-xs uppercase tracking-wider text-muted-foreground">
         {continueHint ? "Tap the verb to continue" : "Identify this verb"}
       </p>
-      {prompt && result ? (
-        <>
-          <div
-            className={`mt-6 ${continueHint ? "transition group-hover:scale-[1.03]" : ""}`}
+      <div
+        data-testid="quiz-verb-slot"
+        className={`mt-6 flex min-h-16 items-center justify-center ${continueHint ? "transition group-hover:scale-[1.03]" : ""}`}
+      >
+        {prompt && result ? (
+          <ArabicWord
+            slots={result.slots}
+            surface={result.surface}
+            size="xl"
+            colored={showColors || done}
+          />
+        ) : pending ? null : (
+          <p className="text-muted-foreground">No verbs match these filters</p>
+        )}
+      </div>
+      {/* Fixed slot so correct/incorrect feedback never shifts the step below (CLS). */}
+      <div className="relative mt-2 h-10 shrink-0">
+        {feedback ? (
+          <p
+            aria-live="polite"
+            className={`absolute inset-x-0 top-1/2 mx-auto flex w-fit max-w-full -translate-y-1/2 items-center gap-2 rounded-lg px-3 py-1 text-sm font-bold leading-snug text-balance ${
+              feedback.ok ? "bg-ok/15 text-ok" : "bg-no/15 text-no"
+            }`}
           >
-            <ArabicWord
-              slots={result.slots}
-              surface={result.surface}
-              size="xl"
-              colored={showColors || done}
-            />
-          </div>
-          {/* Fixed slot so correct/incorrect feedback never shifts the step below (CLS). */}
-          <div className="relative mt-2 h-10 shrink-0">
-            {feedback ? (
-              <p
-                aria-live="polite"
-                className={`absolute inset-x-0 top-1/2 mx-auto flex w-fit max-w-full -translate-y-1/2 items-center gap-2 rounded-lg px-3 py-1 text-sm font-bold leading-snug text-balance ${
-                  feedback.ok ? "bg-ok/15 text-ok" : "bg-no/15 text-no"
-                }`}
-              >
-                {feedback.ok ? <CheckIcon /> : <XIcon />}
-                {feedback.text}
-              </p>
-            ) : null}
-          </div>
-          {done ? (
-            <div className="mt-2 flex flex-col items-center gap-2 text-muted-foreground">
-              <FormBadge form={prompt.form} />
-              <p>
-                {rootArabic(prompt.root)} · {prompt.tense} · {prompt.voice} ·{" "}
-                {personQuizFeedback(prompt.person, prompt.tense)}
-              </p>
-              {continueHint ? (
-                <p className="text-sm">or press Enter / Space</p>
-              ) : null}
-            </div>
+            {feedback.ok ? <CheckIcon /> : <XIcon />}
+            {feedback.text}
+          </p>
+        ) : null}
+      </div>
+      {done && prompt ? (
+        <div className="mt-2 flex flex-col items-center gap-2 text-muted-foreground">
+          <FormBadge form={prompt.form} />
+          <p>
+            {rootArabic(prompt.root)} · {prompt.tense} · {prompt.voice} ·{" "}
+            {personQuizFeedback(prompt.person, prompt.tense)}
+          </p>
+          {continueHint ? (
+            <p className="text-sm">or press Enter / Space</p>
           ) : null}
-        </>
-      ) : (
-        <p className="mt-4 text-muted-foreground">
-          No verbs match these filters
-        </p>
-      )}
+        </div>
+      ) : null}
     </>
   );
 

@@ -2,6 +2,7 @@
 
 import { useSettings } from "@/components/SettingsProvider";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { QuizCard } from "./QuizCard";
 import { QuizFilters } from "./QuizFilters";
@@ -9,6 +10,15 @@ import { QuizStep } from "./QuizStep";
 import { useQuiz } from "./useQuiz";
 
 function RoundControls({ quiz }: { quiz: ReturnType<typeof useQuiz> }) {
+  if (!quiz.started) {
+    return (
+      <Card aria-hidden>
+        <CardContent>
+          <div className="min-h-40" />
+        </CardContent>
+      </Card>
+    );
+  }
   if (!quiz.prompt) {
     return (
       <Button
@@ -101,6 +111,7 @@ export function QuizView() {
             feedback={quiz.feedback}
             showColors={quiz.showColors}
             done={quiz.done}
+            pending={!quiz.started}
             onContinue={quiz.done && quiz.prompt ? quiz.nextPrompt : undefined}
           />
 

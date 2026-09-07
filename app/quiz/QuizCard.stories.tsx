@@ -78,6 +78,22 @@ export const RevealedWithColors: Story = {
   },
 };
 
+export const Pending: Story = {
+  args: {
+    prompt: null,
+    result: null,
+    feedback: null,
+    showColors: false,
+    done: false,
+    pending: true,
+  },
+  play: async ({ canvas }) => {
+    await expect(canvas.getByText("Identify this verb")).toBeVisible();
+    await expect(canvas.getByTestId("quiz-verb-slot")).toBeVisible();
+    await expect(canvas.queryByText("No verbs match these filters")).toBeNull();
+  },
+};
+
 export const NoMatches: Story = {
   args: {
     prompt: null,
