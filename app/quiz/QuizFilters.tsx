@@ -286,7 +286,7 @@ export function QuizFilters({
                       : `Form ${meta.roman} · ${meta.waznPast}`
                 }
                 onClick={() => onToggleForm(form)}
-                className="px-0"
+                className="flex-row gap-1 px-1"
               >
                 {showEnglish(labelMode) ? meta.roman : null}
                 {showArabic(labelMode) ? (
