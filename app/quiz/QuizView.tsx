@@ -74,14 +74,14 @@ export function QuizView() {
   };
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-8">
-      <div className="grid gap-6 lg:grid-cols-[minmax(18rem,22rem)_1fr]">
-        <div className="hidden lg:block">
+    <div className="flex min-w-0 w-full flex-col gap-6">
+      <div className="grid min-w-0 gap-6 lg:grid-cols-[minmax(18rem,22rem)_1fr]">
+        <div className="hidden min-w-0 lg:block">
           <QuizFilters {...filterProps} />
         </div>
 
-        <div className="flex flex-col gap-4">
-          <div className="lg:hidden">
+        <div className="flex min-w-0 flex-col gap-4">
+          <div className="min-w-0 lg:hidden">
             <QuizFilters
               {...filterProps}
               collapsible
