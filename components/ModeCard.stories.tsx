@@ -36,7 +36,7 @@ export const Gym: Story = {
 
 export const Quiz: Story = {
   args: {
-    href: "/quiz",
+    href: "/",
     kicker: "03 · Recognize",
     title: "Quiz",
     arabic: "التمييز",

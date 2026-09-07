@@ -13,19 +13,21 @@ import { cn } from "@/lib/utils";
 import { Moon, Sun } from "lucide-react";
 
 const NAV = [
-  { href: "/", label: "Home" },
+  { href: "/landing", label: "Home" },
   { href: "/lessons", label: "Lessons" },
   { href: "/atlas", label: "Atlas" },
   { href: "/gym", label: "Gym" },
-  { href: "/quiz", label: "Quiz" },
+  { href: "/", label: "Quiz" },
   { href: "/lab", label: "Lab" },
 ];
 
-const BARE_ROUTES = ["/quiz"];
+const BARE_ROUTES = ["/"];
 
 function isBareRoute(pathname: string): boolean {
-  return BARE_ROUTES.some(
-    (route) => pathname === route || pathname.startsWith(`${route}/`),
+  return BARE_ROUTES.some((route) =>
+    route === "/"
+      ? pathname === "/"
+      : pathname === route || pathname.startsWith(`${route}/`),
   );
 }
 
