@@ -5,10 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { ColorLegend } from "./ArabicWord";
-import { useSettings } from "./SettingsProvider";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Toggle } from "@/components/ui/toggle";
 import { cn } from "@/lib/utils";
 import { Moon, Sun } from "lucide-react";
 
@@ -39,8 +37,6 @@ function navActive(href: string, pathname: string): boolean {
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const bare = isBareRoute(pathname);
-  const { showHarakat, setShowHarakat, labelMode, setLabelMode } =
-    useSettings();
   const { resolvedTheme, setTheme } = useTheme();
 
   const brand = (
@@ -99,36 +95,6 @@ export function AppShell({ children }: { children: ReactNode }) {
               <Moon className="hidden size-3.5 dark:block" />
               Dark <span className="dark:hidden">off</span>
               <span className="hidden dark:inline">on</span>
-            </Button>
-            <Toggle
-              pressed={showHarakat}
-              onPressedChange={setShowHarakat}
-              variant="outline"
-              size="sm"
-              className="rounded-full px-3"
-            >
-              Harakat {showHarakat ? "on" : "off"}
-            </Toggle>
-            <Button
-              variant="outline"
-              size="sm"
-              className="rounded-full px-3"
-              onClick={() =>
-                setLabelMode(
-                  labelMode === "form"
-                    ? "wazn"
-                    : labelMode === "wazn"
-                      ? "both"
-                      : "form",
-                )
-              }
-            >
-              Labels:{" "}
-              {labelMode === "form"
-                ? "Form I–X"
-                : labelMode === "wazn"
-                  ? "وزن"
-                  : "Both"}
             </Button>
           </div>
         </div>
