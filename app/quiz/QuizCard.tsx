@@ -70,7 +70,7 @@ export function QuizCard({
       {prompt && result ? (
         <>
           <div
-            className={`mt-4 ${continueHint ? "transition group-hover:scale-[1.03]" : ""}`}
+            className={`mt-6 ${continueHint ? "transition group-hover:scale-[1.03]" : ""}`}
           >
             <ArabicWord
               slots={result.slots}
