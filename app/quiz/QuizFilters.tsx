@@ -5,7 +5,6 @@ import { ChevronDown } from "lucide-react";
 import { Chip } from "./Chip";
 import {
   ALL_FORMS,
-  ALL_QUESTIONS,
   FORM_BY_ID,
   PERSON_BY_ID,
   TABLE_ROWS,
@@ -188,7 +187,6 @@ export function QuizFilters({
   onToggleVoice,
   onTogglePerson,
   onTogglePersonSet,
-  onSelectAllQuestions,
   onSelectAllPersons,
   collapsible = false,
   summary,
@@ -206,7 +204,6 @@ export function QuizFilters({
   onToggleVoice: (voice: Voice) => void;
   onTogglePerson: (person: PersonId) => void;
   onTogglePersonSet: (persons: PersonId[]) => void;
-  onSelectAllQuestions: () => void;
   onSelectAllPersons: () => void;
   /** Mobile: one card that expands/collapses. */
   collapsible?: boolean;
@@ -251,12 +248,6 @@ export function QuizFilters({
         subtitle="Steps that appear in each round"
       >
         <div className="flex flex-wrap gap-2">
-          <Chip
-            selected={enabledQuestions.length === ALL_QUESTIONS.length}
-            onClick={onSelectAllQuestions}
-          >
-            <ModeText mode={labelMode} english="All" arabic="الكل" />
-          </Chip>
           {QUESTION_CHIPS.map((question) => (
             <Chip
               key={question.id}
@@ -295,7 +286,7 @@ export function QuizFilters({
                 }
                 onClick={() => onToggleForm(form)}
                 className={cn(
-                  "flex flex-col items-center justify-center rounded-lg border px-1 py-1.5 text-xs",
+                  "flex cursor-pointer flex-col items-center justify-center rounded-lg border px-1 py-1.5 text-xs",
                   selected
                     ? "border-primary bg-primary/10"
                     : "border-border bg-muted text-muted-foreground",
@@ -446,10 +437,10 @@ function PronounGrid({
     <div className="grid grid-cols-4 gap-1 text-center">
       <button
         type="button"
-        className="p-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground"
+        className="cursor-pointer p-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground"
         onClick={onSelectAll}
       >
-        <ModeText mode={labelMode} english="All" arabic="الكل" />
+        All
       </button>
       {COLS.map((col) => (
         <p
@@ -504,7 +495,7 @@ function Row({
     <>
       <button
         type="button"
-        className="p-1 text-xs font-medium text-muted-foreground hover:text-foreground"
+        className="cursor-pointer p-1 text-xs font-medium text-muted-foreground hover:text-foreground"
         onClick={() => onToggleSet(ids)}
       >
         {label}
@@ -517,7 +508,7 @@ function Row({
             title={`${PERSON_BY_ID[id].arabic} · ${personFilterEnglish(id)}`}
             onClick={() => onToggle(id)}
             className={cn(
-              "flex w-full flex-col items-center justify-center gap-0.5 rounded-md border px-1 py-1.5 text-xs leading-tight",
+              "flex w-full cursor-pointer flex-col items-center justify-center gap-0.5 rounded-md border px-1 py-1.5 text-xs leading-tight",
               linkedPersons(id).every((person) => enabled.includes(person))
                 ? "border-primary bg-primary/10"
                 : "border-transparent bg-muted text-muted-foreground",
