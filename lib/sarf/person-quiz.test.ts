@@ -30,6 +30,14 @@ describe("2nd dual quiz identity", () => {
     expect(personQuizEnglish("antuma_f")).toBe("you dual (m/f)");
   });
 
+  it("keeps choices in pool order", () => {
+    const pool = ["c", "a", "b", "d"];
+    const first = uniqueOptions("b", pool, 4, "seed-a", (item) => item);
+    const second = uniqueOptions("b", pool, 4, "seed-b", (item) => item);
+    expect(first).toEqual(["c", "a", "b", "d"]);
+    expect(second).toEqual(first);
+  });
+
   it("never offers both 2nd dual genders as distinct choices", () => {
     const ids = ["antuma_f", ...ALL_PERSON_IDS] as PersonId[];
     const choices = uniqueOptions("antuma_f", ids, 14, "seed", quizPersonKey);

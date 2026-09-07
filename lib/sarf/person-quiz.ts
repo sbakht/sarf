@@ -70,8 +70,9 @@ export function uniqueOptions<T>(
   }
   rest.sort((a, b) => hash(seed + key(a)) - hash(seed + key(b)));
   const picked = [correct, ...rest.slice(0, Math.max(0, count - 1))];
+  const poolIndex = new Map(pool.map((item, index) => [key(item), index]));
   picked.sort(
-    (a, b) => hash(`${seed}:order:${key(a)}`) - hash(`${seed}:order:${key(b)}`),
+    (a, b) => (poolIndex.get(key(a)) ?? 0) - (poolIndex.get(key(b)) ?? 0),
   );
   return picked;
 }
