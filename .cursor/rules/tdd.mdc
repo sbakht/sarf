@@ -1,0 +1,31 @@
+---
+description: Always use test-driven development (red-green-refactor)
+alwaysApply: true
+---
+
+# Always Use TDD
+
+For features and bug fixes, follow red → green → refactor. Do not write production code before a failing test.
+
+## Workflow
+
+1. **RED** — Write one Vitest test for one observable behavior. Run it; confirm it fails for the right reason.
+2. **GREEN** — Write the minimum code to make that test pass. No speculative features.
+3. **REFACTOR** — Clean up only while green. Never refactor while red.
+4. Repeat for the next behavior (vertical slices).
+
+```
+WRONG: all tests first, then all implementation
+RIGHT: test1 → impl1 → test2 → impl2 → …
+```
+
+## Test Quality
+
+- Assert through public interfaces (`conjugate`, component props/API), not internals
+- Name tests as behavior: `"conjugates past"`, not `"calls helper X"`
+- Prefer real collaborators over mocks; mock only at true boundaries
+- Colocate: `foo.ts` ↔ `foo.test.ts` (Vitest unit project)
+
+## Exceptions
+
+Skip TDD only for pure config/docs, throwaway spikes the user marks as throwaway, or when the user explicitly says not to test. After a spike, add characterizing tests before hardening.

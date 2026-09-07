@@ -60,7 +60,6 @@ export function QuizView() {
     onToggleVoice: quiz.toggleVoice,
     onTogglePerson: quiz.togglePerson,
     onTogglePersonSet: quiz.togglePersonSet,
-    onSelectAllQuestions: quiz.selectAllQuestions,
     onSelectAllPersons: quiz.selectAllPersons,
   };
 

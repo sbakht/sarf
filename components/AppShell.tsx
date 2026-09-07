@@ -13,19 +13,21 @@ import { cn } from "@/lib/utils";
 import { Moon, Sun } from "lucide-react";
 
 const NAV = [
-  { href: "/", label: "Home" },
+  { href: "/landing", label: "Home" },
   { href: "/lessons", label: "Lessons" },
   { href: "/atlas", label: "Atlas" },
   { href: "/gym", label: "Gym" },
-  { href: "/quiz", label: "Quiz" },
+  { href: "/", label: "Quiz" },
   { href: "/lab", label: "Lab" },
 ];
 
-const BARE_ROUTES = ["/quiz"];
+const BARE_ROUTES = ["/"];
 
 function isBareRoute(pathname: string): boolean {
-  return BARE_ROUTES.some(
-    (route) => pathname === route || pathname.startsWith(`${route}/`),
+  return BARE_ROUTES.some((route) =>
+    route === "/"
+      ? pathname === "/"
+      : pathname === route || pathname.startsWith(`${route}/`),
   );
 }
 
@@ -36,44 +38,53 @@ function navActive(href: string, pathname: string): boolean {
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const bare = isBareRoute(pathname);
   const { showHarakat, setShowHarakat, labelMode, setLabelMode } =
     useSettings();
   const { resolvedTheme, setTheme } = useTheme();
 
-  if (isBareRoute(pathname)) {
-    return <>{children}</>;
-  }
+  const brand = (
+    <>
+      <span className="font-arabic text-2xl text-primary">صرف</span>
+      <span className="text-sm font-medium tracking-wide text-muted-foreground">
+        Sarf Trainer
+      </span>
+    </>
+  );
 
   return (
     <div className="min-h-full flex flex-col">
       <header className="border-b border-border bg-card/80 backdrop-blur-sm sticky top-0 z-20">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-2.5">
-          <Link href="/" className="flex items-baseline gap-2">
-            <span className="font-arabic text-2xl text-primary">صرف</span>
-            <span className="text-sm font-medium tracking-wide text-muted-foreground">
-              Sarf Trainer
-            </span>
-          </Link>
-          <nav className="flex flex-wrap gap-1">
-            {NAV.map((item) => {
-              const active = navActive(item.href, pathname);
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    buttonVariants({
-                      variant: active ? "default" : "ghost",
-                      size: "sm",
-                    }),
-                    "rounded-full",
-                  )}
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
-          </nav>
+          {bare ? (
+            <div className="flex items-baseline gap-2">{brand}</div>
+          ) : (
+            <Link href="/" className="flex items-baseline gap-2">
+              {brand}
+            </Link>
+          )}
+          {!bare && (
+            <nav className="flex flex-wrap gap-1">
+              {NAV.map((item) => {
+                const active = navActive(item.href, pathname);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={cn(
+                      buttonVariants({
+                        variant: active ? "default" : "ghost",
+                        size: "sm",
+                      }),
+                      "rounded-full",
+                    )}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </nav>
+          )}
           <div className="flex flex-wrap items-center gap-2">
             <Button
               variant="outline"

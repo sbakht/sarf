@@ -77,7 +77,6 @@ function FiltersDemo({
           setPersons([...new Set([...enabledPersons, ...ids])]);
         }
       }}
-      onSelectAllQuestions={() => setQuestions([...ALL_QUESTIONS])}
       onSelectAllPersons={() => setPersons([...ALL_PERSON_IDS])}
     />
   );
