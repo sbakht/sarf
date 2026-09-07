@@ -23,6 +23,9 @@ export default defineConfig({
     projects: [
       {
         extends: true,
+        resolve: {
+          alias: { "@": dirname },
+        },
         test: {
           name: "unit",
           include: ["**/*.test.ts"],

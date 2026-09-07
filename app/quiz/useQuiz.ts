@@ -14,7 +14,6 @@ import {
   makePrompt,
   quizChoiceLabel,
   quizWrongFeedback,
-  seededRng,
   toggleItem,
   type FormId,
   type PersonId,
@@ -136,10 +135,10 @@ function nextPersons(enabled: PersonId[], person: PersonId): PersonId[] | null {
   return ALL_PERSON_IDS.filter((id) => set.has(id));
 }
 
-function createInitialState(): QuizState {
+export function createInitialState(): QuizState {
   return {
     ...DEFAULT_FILTERS,
-    prompt: rollPrompt(DEFAULT_FILTERS, seededRng(1)),
+    prompt: rollPrompt(DEFAULT_FILTERS),
     step: 0,
     score: { correct: 0, total: 0 },
     feedback: null,
