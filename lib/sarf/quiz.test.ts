@@ -362,6 +362,100 @@ describe("buildQuizSteps", () => {
     expect(bothStep.choices[0]?.secondary).toBe("فَعَلَ");
     expect(bothStep.choices[0]?.secondaryArabic).toBe(true);
   });
+
+  it("titles tense, voice, and person like other questions", () => {
+    const tenseStep = buildQuizSteps(
+      prompt,
+      { ...defaultFilters, enabledQuestions: ["tense"] },
+      "form",
+    )[0]!;
+    const voiceStep = buildQuizSteps(
+      prompt,
+      { ...defaultFilters, enabledQuestions: ["voice"] },
+      "form",
+    )[0]!;
+    const personStep = buildQuizSteps(
+      prompt,
+      { ...defaultFilters, enabledQuestions: ["person"] },
+      "form",
+    )[0]!;
+
+    expect(tenseStep.title).toBe("What is the tense / الزمن?");
+    expect(voiceStep.title).toBe("What is the voice / البناء?");
+    expect(personStep.title).toBe("What is the person / الضمير?");
+  });
+
+  it("labels tense choices by label mode", () => {
+    const pastPrompt = { ...prompt, tense: "past" as const };
+    const englishStep = buildQuizSteps(
+      pastPrompt,
+      { ...defaultFilters, enabledQuestions: ["tense"] },
+      "form",
+    )[0]!;
+    const arabicStep = buildQuizSteps(
+      pastPrompt,
+      { ...defaultFilters, enabledQuestions: ["tense"] },
+      "wazn",
+    )[0]!;
+    const bothStep = buildQuizSteps(
+      pastPrompt,
+      { ...defaultFilters, enabledQuestions: ["tense"] },
+      "both",
+    )[0]!;
+
+    const englishPast = englishStep.choices.find((c) => c.id === "past")!;
+    expect(englishPast.primary).toBe("Past");
+    expect(englishPast.arabic).toBeUndefined();
+    expect(englishPast.secondary).toBeUndefined();
+    expect(englishPast.feedback).toBe("Past");
+
+    const arabicPast = arabicStep.choices.find((c) => c.id === "past")!;
+    expect(arabicPast.primary).toBe("ماضي");
+    expect(arabicPast.arabic).toBe(true);
+    expect(arabicPast.feedback).toBe("ماضي");
+
+    const bothPast = bothStep.choices.find((c) => c.id === "past")!;
+    expect(bothPast.primary).toBe("Past");
+    expect(bothPast.secondary).toBe("ماضي");
+    expect(bothPast.secondaryArabic).toBe(true);
+    expect(bothPast.feedback).toBe("Past · ماضي");
+  });
+
+  it("labels voice choices by label mode", () => {
+    const activePrompt = { ...prompt, voice: "active" as const };
+    const englishStep = buildQuizSteps(
+      activePrompt,
+      { ...defaultFilters, enabledQuestions: ["voice"] },
+      "form",
+    )[0]!;
+    const arabicStep = buildQuizSteps(
+      activePrompt,
+      { ...defaultFilters, enabledQuestions: ["voice"] },
+      "wazn",
+    )[0]!;
+    const bothStep = buildQuizSteps(
+      activePrompt,
+      { ...defaultFilters, enabledQuestions: ["voice"] },
+      "both",
+    )[0]!;
+
+    const englishActive = englishStep.choices.find((c) => c.id === "active")!;
+    expect(englishActive.primary).toBe("Active");
+    expect(englishActive.arabic).toBeUndefined();
+    expect(englishActive.secondary).toBeUndefined();
+    expect(englishActive.feedback).toBe("Active");
+
+    const arabicActive = arabicStep.choices.find((c) => c.id === "active")!;
+    expect(arabicActive.primary).toBe("معلوم");
+    expect(arabicActive.arabic).toBe(true);
+    expect(arabicActive.feedback).toBe("معلوم");
+
+    const bothActive = bothStep.choices.find((c) => c.id === "active")!;
+    expect(bothActive.primary).toBe("Active");
+    expect(bothActive.secondary).toBe("معلوم");
+    expect(bothActive.secondaryArabic).toBe(true);
+    expect(bothActive.feedback).toBe("Active · معلوم");
+  });
 });
 
 describe("quiz feedback helpers", () => {

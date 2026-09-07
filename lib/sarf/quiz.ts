@@ -81,10 +81,75 @@ export const TENSE_LABEL: Record<Tense, string> = {
   imperative: "أمر",
 };
 
-const VOICE_LABEL: Record<Voice, string> = {
+export const TENSE_EN: Record<Tense, string> = {
+  past: "Past",
+  present: "Present",
+  imperative: "Imperative",
+};
+
+export const VOICE_LABEL: Record<Voice, string> = {
   active: "معلوم",
   passive: "مجهول",
 };
+
+export const VOICE_EN: Record<Voice, string> = {
+  active: "Active",
+  passive: "Passive",
+};
+
+export function tenseQuizChoice(
+  tense: Tense,
+  mode: LabelMode,
+): {
+  primary: string;
+  secondary?: string;
+  arabic?: boolean;
+  secondaryArabic?: boolean;
+  feedback: string;
+} {
+  const english = TENSE_EN[tense];
+  const arabic = TENSE_LABEL[tense];
+  switch (mode) {
+    case "form":
+      return { primary: english, feedback: english };
+    case "wazn":
+      return { primary: arabic, arabic: true, feedback: arabic };
+    case "both":
+      return {
+        primary: english,
+        secondary: arabic,
+        secondaryArabic: true,
+        feedback: `${english} · ${arabic}`,
+      };
+  }
+}
+
+export function voiceQuizChoice(
+  voice: Voice,
+  mode: LabelMode,
+): {
+  primary: string;
+  secondary?: string;
+  arabic?: boolean;
+  secondaryArabic?: boolean;
+  feedback: string;
+} {
+  const english = VOICE_EN[voice];
+  const arabic = VOICE_LABEL[voice];
+  switch (mode) {
+    case "form":
+      return { primary: english, feedback: english };
+    case "wazn":
+      return { primary: arabic, arabic: true, feedback: arabic };
+    case "both":
+      return {
+        primary: english,
+        secondary: arabic,
+        secondaryArabic: true,
+        feedback: `${english} · ${arabic}`,
+      };
+  }
+}
 
 export function seededRng(seed: number): () => number {
   let a = seed >>> 0;
@@ -258,29 +323,41 @@ export function buildQuizSteps(
     },
     {
       id: "tense" as const,
-      title: "Tense?",
-      choices: tenseChoices.map((tense) => ({
-        id: tense,
-        primary: TENSE_LABEL[tense],
-        arabic: true,
-        correct: tense === prompt.tense,
-        feedback: prompt.tense,
-      })),
+      title: "What is the tense / الزمن?",
+      choices: tenseChoices.map((tense) => {
+        const labels = tenseQuizChoice(tense, labelMode);
+        const answer = tenseQuizChoice(prompt.tense, labelMode);
+        return {
+          id: tense,
+          primary: labels.primary,
+          secondary: labels.secondary,
+          arabic: labels.arabic,
+          secondaryArabic: labels.secondaryArabic,
+          correct: tense === prompt.tense,
+          feedback: answer.feedback,
+        };
+      }),
     },
     {
       id: "voice" as const,
-      title: "Voice?",
-      choices: filters.enabledVoices.map((voice) => ({
-        id: voice,
-        primary: VOICE_LABEL[voice],
-        arabic: true,
-        correct: voice === prompt.voice,
-        feedback: prompt.voice,
-      })),
+      title: "What is the voice / البناء?",
+      choices: filters.enabledVoices.map((voice) => {
+        const labels = voiceQuizChoice(voice, labelMode);
+        const answer = voiceQuizChoice(prompt.voice, labelMode);
+        return {
+          id: voice,
+          primary: labels.primary,
+          secondary: labels.secondary,
+          arabic: labels.arabic,
+          secondaryArabic: labels.secondaryArabic,
+          correct: voice === prompt.voice,
+          feedback: answer.feedback,
+        };
+      }),
     },
     {
       id: "person" as const,
-      title: "Person?",
+      title: "What is the person / الضمير?",
       choices: personChoices.map((person) => ({
         id: quizPersonGroup(person, prompt.tense),
         primary: PERSON_BY_ID[quizPersonKey(person)].arabic,

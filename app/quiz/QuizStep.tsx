@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { QuizChoice } from "@/lib/sarf";
+import { cn } from "@/lib/utils";
 
 type StepView = {
   id: string;
@@ -34,31 +35,32 @@ export function QuizStep({
             <Button
               key={choice.id}
               variant="outline"
-              className="relative h-auto flex-col items-center gap-1 whitespace-normal rounded-xl bg-muted px-4 py-3 hover:border-primary"
+              className="relative h-auto items-center whitespace-normal rounded-xl bg-muted px-4 py-3 hover:border-primary"
               onClick={() => onAnswer(choice)}
             >
               <span className="absolute start-3 top-2 text-xs text-muted-foreground">
                 {index + 1}
               </span>
-              {choice.arabic ? (
-                <span dir="rtl" className={arabicClass}>
-                  {choice.primary}
-                </span>
-              ) : (
-                choice.primary
-              )}
-              {choice.secondary ? (
-                <span
-                  dir={choice.secondaryArabic ? "rtl" : undefined}
-                  className={
-                    choice.secondaryArabic
-                      ? "font-arabic text-sm text-muted-foreground"
-                      : "text-sm text-muted-foreground"
-                  }
-                >
-                  {choice.secondary}
-                </span>
-              ) : null}
+              <span className="inline-flex items-baseline justify-center gap-1.5 leading-none">
+                {choice.arabic ? (
+                  <span dir="rtl" className={arabicClass}>
+                    {choice.primary}
+                  </span>
+                ) : (
+                  <span>{choice.primary}</span>
+                )}
+                {choice.secondary ? (
+                  <span
+                    dir={choice.secondaryArabic ? "rtl" : undefined}
+                    className={cn(
+                      "text-sm text-muted-foreground",
+                      choice.secondaryArabic && "font-arabic",
+                    )}
+                  >
+                    {choice.secondary}
+                  </span>
+                ) : null}
+              </span>
             </Button>
           ))}
         </div>

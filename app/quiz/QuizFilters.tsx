@@ -9,7 +9,10 @@ import {
   FORM_BY_ID,
   PERSON_BY_ID,
   TABLE_ROWS,
+  TENSE_EN,
   TENSE_LABEL,
+  VOICE_EN,
+  VOICE_LABEL,
   linkedPersons,
   type FormId,
   type LabelMode,
@@ -31,22 +34,6 @@ const QUESTION_CHIPS: {
   { id: "voice", english: "Voice", arabic: "البناء" },
   { id: "person", english: "Pronoun", arabic: "الضمير" },
 ];
-
-const TENSE_EN: Record<Tense, string> = {
-  past: "Past",
-  present: "Present",
-  imperative: "Imperative",
-};
-
-const VOICE_EN: Record<Voice, string> = {
-  active: "Active",
-  passive: "Passive",
-};
-
-const VOICE_AR: Record<Voice, string> = {
-  active: "معلوم",
-  passive: "مجهول",
-};
 
 const COLS: { english: string; arabic: string }[] = [
   { english: "Singular", arabic: "مفرد" },
@@ -340,7 +327,7 @@ export function QuizFilters({
               <BilingualLabel
                 mode={labelMode}
                 english={VOICE_EN[voice]}
-                arabic={VOICE_AR[voice]}
+                arabic={VOICE_LABEL[voice]}
               />
             </Chip>
           ))}
