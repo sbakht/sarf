@@ -212,6 +212,12 @@ describe("derived forms", () => {
       }).surface,
     ).toBe("تُطْتَلَبْنَ");
   });
+
+  it("Form VIII تبع gathers the two tes", () => {
+    const tb3 = ["ت", "ب", "ع"] as [string, string, string];
+    expect(form({ root: tb3, form: 8 })).toBe("اِتَّبَعَ");
+    expect(form({ root: tb3, form: 8, tense: "present" })).toBe("يَتَّبِعُ");
+  });
 });
 
 describe("أجوف قال / باع / خاف", () => {

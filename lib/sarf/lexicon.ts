@@ -42,6 +42,14 @@ export const ROOTS: RootEntry[] = [
     forms: [1, 8],
   },
   {
+    id: "tb3",
+    letters: ["ت", "ب", "ع"],
+    gloss: "follow",
+    weakness: "sound",
+    formIBab: "fariha",
+    forms: [1, 8],
+  },
+  {
     id: "nZr",
     letters: ["ن", "ظ", "ر"],
     gloss: "look",
