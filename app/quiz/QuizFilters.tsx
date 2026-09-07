@@ -3,6 +3,7 @@
 import { useState, type ReactNode } from "react";
 import { ChevronDown } from "lucide-react";
 import { Chip } from "./Chip";
+import { TileChip } from "./TileChip";
 import {
   ALL_FORMS,
   FORM_BY_ID,
@@ -274,9 +275,9 @@ export function QuizFilters({
             const meta = FORM_BY_ID[form];
             const selected = enabledForms.includes(form);
             return (
-              <button
+              <TileChip
                 key={form}
-                type="button"
+                selected={selected}
                 title={
                   labelMode === "form"
                     ? `Form ${meta.roman}`
@@ -285,12 +286,7 @@ export function QuizFilters({
                       : `Form ${meta.roman} · ${meta.waznPast}`
                 }
                 onClick={() => onToggleForm(form)}
-                className={cn(
-                  "flex cursor-pointer flex-col items-center justify-center rounded-lg border px-1 py-1.5 text-xs",
-                  selected
-                    ? "border-primary bg-primary/10"
-                    : "border-border bg-muted text-muted-foreground",
-                )}
+                className="px-0"
               >
                 {showEnglish(labelMode) ? meta.roman : null}
                 {showArabic(labelMode) ? (
@@ -301,7 +297,7 @@ export function QuizFilters({
                     {meta.waznPast}
                   </span>
                 ) : null}
-              </button>
+              </TileChip>
             );
           })}
         </div>
@@ -502,17 +498,14 @@ function Row({
       </button>
       {cells.map((id, index) =>
         id ? (
-          <button
+          <TileChip
             key={id}
-            type="button"
+            selected={linkedPersons(id).every((person) =>
+              enabled.includes(person),
+            )}
             title={`${PERSON_BY_ID[id].arabic} · ${personFilterEnglish(id)}`}
             onClick={() => onToggle(id)}
-            className={cn(
-              "flex w-full cursor-pointer flex-col items-center justify-center gap-0.5 rounded-md border px-1 py-1.5 text-xs leading-tight",
-              linkedPersons(id).every((person) => enabled.includes(person))
-                ? "border-primary bg-primary/10"
-                : "border-transparent bg-muted text-muted-foreground",
-            )}
+            className="gap-0.5 rounded-md border-transparent leading-tight"
           >
             {showArabic(labelMode) ? (
               <span dir="rtl" className="font-arabic text-sm">
@@ -524,7 +517,7 @@ function Row({
                 {personFilterEnglish(id)}
               </span>
             ) : null}
-          </button>
+          </TileChip>
         ) : (
           <p key={index} className="p-0.5 text-muted-foreground">
             —
