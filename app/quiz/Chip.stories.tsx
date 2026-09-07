@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { expect, fn } from "storybook/test";
+import { expect, fn, userEvent } from "storybook/test";
 import { Chip } from "./Chip";
 
 const meta = {
@@ -42,6 +42,20 @@ export const ArabicLabel: Story = {
     selected: true,
     children: <span className="font-arabic">ماضي</span>,
     title: "past tense",
+  },
+};
+
+export const WithClassName: Story = {
+  args: {
+    selected: false,
+    children: "Custom",
+    className: "rounded-lg",
+  },
+  play: async ({ canvas, args }) => {
+    const chip = canvas.getByRole("button", { name: "Custom" });
+    await expect(chip).toHaveAttribute("aria-pressed", "false");
+    await userEvent.click(chip);
+    await expect(args.onClick).toHaveBeenCalled();
   },
 };
 
