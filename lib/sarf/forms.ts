@@ -30,7 +30,7 @@ export const FORMS: FormMeta[] = [
     waznPast: "فَعَلَ",
     waznPresent: "يَفْعُلُ",
     meaning: "Base meaning of the root",
-    traditional: "الجرّد",
+    traditional: "المجرد",
   },
   {
     id: 2,

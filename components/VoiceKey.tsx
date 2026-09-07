@@ -124,7 +124,7 @@ export function VoiceKey({
       <p className="kicker">Voice key</p>
       <h2 className="mt-1 text-2xl font-semibold">معلوم or مجهول?</h2>
       <p className="mt-2 max-w-2xl text-muted-foreground leading-7">
-        This reads morphological voice from vowels, not meaning. Form VII إنفعل
+        This reads morphological voice from vowels, not meaning. Form VII انفعل
         can feel “passive” but is still معلوم here.
       </p>
 
