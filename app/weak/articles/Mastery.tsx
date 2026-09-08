@@ -5,7 +5,7 @@ import { CompareTable, DIAGNOSTIC_ROWS, WordCard, live } from "../examples";
 
 export function MasteryArticle({ kicker = "Chapter 08" }: { kicker?: string }) {
   return (
-    <article className="flex max-w-2xl flex-col gap-8">
+    <article className="flex min-w-0 w-full max-w-2xl flex-col gap-8">
       <header>
         <p className="kicker">{kicker}</p>
         <h1 className="mt-1 text-3xl font-semibold">Mastery</h1>
@@ -31,7 +31,7 @@ export function MasteryArticle({ kicker = "Chapter 08" }: { kicker?: string }) {
             Apply only that family’s rule. If the analog already matches, stop.
           </li>
         </ol>
-        <div className="overflow-x-auto rounded-xl border border-border">
+        <div className="min-w-0 w-full overflow-x-auto rounded-xl border border-border">
           <table className="w-full min-w-[32rem] text-start text-sm">
             <thead>
               <tr className="bg-muted/80 text-xs uppercase tracking-wider text-muted-foreground">

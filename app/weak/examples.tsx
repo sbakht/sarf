@@ -112,8 +112,8 @@ export function CompareTable({
 }) {
   const root = getRoot(rootId);
   return (
-    <div className="overflow-x-auto rounded-xl border border-border">
-      <table className="w-full min-w-[40rem] text-center">
+    <div className="min-w-0 w-full overflow-x-auto rounded-xl border border-border">
+      <table className="w-full min-w-[36rem] text-center">
         <caption className="bg-muted/80 p-3 text-start text-sm text-muted-foreground">
           <span dir="rtl" className="font-arabic text-base text-foreground">
             {root.letters.join(" ")}

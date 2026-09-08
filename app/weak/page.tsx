@@ -1,13 +1,18 @@
 import Link from "next/link";
 import { COURSE_CHAPTERS, FIRST_CHAPTER_ID } from "@/lib/sarf";
 import { buttonVariants } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 export default function WeakCoursePage() {
   return (
-    <div className="flex flex-col gap-10">
-      <section className="max-w-2xl">
+    <div className="flex max-w-2xl flex-col gap-10">
+      <section>
         <p className="kicker">Weak verbs</p>
         <h1 className="mt-2 text-4xl font-semibold">From analog to actual</h1>
         <p className="mt-4 text-lg leading-8 text-muted-foreground">
@@ -27,26 +32,24 @@ export default function WeakCoursePage() {
         </Link>
       </section>
 
-      <section className="grid gap-3">
+      <section className="grid gap-4">
         {COURSE_CHAPTERS.map((chapter, index) => (
           <Link key={chapter.id} href={`/weak/${chapter.id}`} className="block">
             <Card className="transition hover:-translate-y-0.5 hover:ring-primary/40">
-              <CardHeader className="flex flex-row items-start justify-between gap-4">
-                <div>
+              <CardHeader>
+                <div className="flex items-start justify-between gap-3">
                   <p className="kicker">{String(index + 1).padStart(2, "0")}</p>
-                  <CardTitle className="mt-1 text-2xl">
-                    {chapter.title}
-                  </CardTitle>
+                  <span className="font-arabic text-2xl text-muted-foreground">
+                    {chapter.arabic}
+                  </span>
                 </div>
-                <span className="font-arabic text-2xl text-muted-foreground">
-                  {chapter.arabic}
-                </span>
-              </CardHeader>
-              <CardContent>
-                <p className="leading-7 text-muted-foreground">
+                <CardTitle className="mt-2 text-2xl font-semibold">
+                  {chapter.title}
+                </CardTitle>
+                <CardDescription className="leading-7">
                   {chapter.summary}
-                </p>
-              </CardContent>
+                </CardDescription>
+              </CardHeader>
             </Card>
           </Link>
         ))}

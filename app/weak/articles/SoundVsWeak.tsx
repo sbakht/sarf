@@ -13,7 +13,7 @@ export function SoundVsWeakArticle({
   const qala = live("qwl");
 
   return (
-    <article className="flex max-w-2xl flex-col gap-8">
+    <article className="flex min-w-0 w-full max-w-2xl flex-col gap-8">
       <header>
         <p className="kicker">{kicker}</p>
         <h1 className="mt-1 text-3xl font-semibold">Sound vs weak</h1>
@@ -81,7 +81,7 @@ export function SoundVsWeakArticle({
         <p className="leading-7 text-muted-foreground">
           Classical books split the chart this way:
         </p>
-        <div className="overflow-x-auto rounded-xl border border-border">
+        <div className="min-w-0 w-full overflow-x-auto rounded-xl border border-border">
           <table className="w-full min-w-[28rem] text-start text-sm">
             <thead>
               <tr className="bg-muted/80 text-xs uppercase tracking-wider text-muted-foreground">

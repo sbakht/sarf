@@ -70,7 +70,7 @@ export function WeakQuiz({
   const rule = quiz.prompt ? mutationId(quiz.prompt) : "none";
 
   return (
-    <div className="flex max-w-2xl flex-col gap-4">
+    <div className="flex min-w-0 max-w-2xl flex-col gap-4">
       <div className="flex flex-wrap items-center gap-3 text-sm">
         <p className="text-muted-foreground">
           Verb {Math.min(quiz.round + 1, quiz.rounds)} / {quiz.rounds}

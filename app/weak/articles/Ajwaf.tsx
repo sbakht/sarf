@@ -4,7 +4,7 @@ import { CompareTable, WordCard, analog, live } from "../examples";
 
 export function AjwafArticle({ kicker = "Chapter 04" }: { kicker?: string }) {
   return (
-    <article className="flex max-w-2xl flex-col gap-8">
+    <article className="flex min-w-0 w-full max-w-2xl flex-col gap-8">
       <header>
         <p className="kicker">{kicker}</p>
         <h1 className="mt-1 text-3xl font-semibold">Ajwaf</h1>

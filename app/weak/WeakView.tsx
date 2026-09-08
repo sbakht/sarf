@@ -43,7 +43,7 @@ export function WeakView({ slug }: { slug: string }) {
   }
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[minmax(14rem,18rem)_minmax(0,1fr)]">
+    <div className="grid min-w-0 gap-8 lg:grid-cols-[minmax(14rem,18rem)_minmax(0,1fr)]">
       <aside className="flex flex-col gap-3 lg:sticky lg:top-20 lg:self-start">
         <Link
           href="/weak"
@@ -81,7 +81,7 @@ export function WeakView({ slug }: { slug: string }) {
         </nav>
       </aside>
 
-      <div className="flex flex-col gap-10">
+      <div className="flex min-w-0 flex-col gap-10">
         <Article kicker={`Chapter ${String(index + 1).padStart(2, "0")}`} />
         <ChapterSession key={slug} slug={slug as ChapterId} />
       </div>
