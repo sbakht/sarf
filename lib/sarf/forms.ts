@@ -1,5 +1,5 @@
 import { DAMMA, FATHA, KASRA } from "./harakat";
-import type { FormIBab, FormId } from "./types";
+import type { FormIBab, FormId, LabelMode } from "./types";
 
 export const ROMAN_FORMS: Record<FormId, string> = {
   1: "I",
@@ -181,50 +181,44 @@ export const BAB_BY_ID: Record<FormIBab, BabMeta> = Object.fromEntries(
   FORM_I_ABWAB.map((bab) => [bab.id, bab]),
 ) as Record<FormIBab, BabMeta>;
 
-export function formLabel(
-  form: FormId,
-  mode: "form" | "wazn" | "both",
-): string {
-  const meta = FORM_BY_ID[form];
-  switch (mode) {
-    case "form":
-      return `Form ${meta.roman}`;
-    case "wazn":
-      return meta.waznPast;
-    case "both":
-      return `Form ${meta.roman} · ${meta.waznPast}`;
-  }
-}
-
-export function formQuizChoice(
-  form: FormId,
-  mode: "form" | "wazn" | "both",
-): {
+export type QuizChoiceLabels = {
   primary: string;
   secondary?: string;
   arabic?: boolean;
   secondaryArabic?: boolean;
   feedback: string;
-} {
-  const meta = FORM_BY_ID[form];
+};
+
+export function bilingualQuizChoice(
+  english: string,
+  arabic: string,
+  mode: LabelMode,
+): QuizChoiceLabels {
   switch (mode) {
     case "form":
-      return {
-        primary: `Form ${meta.roman}`,
-        feedback: `Form ${meta.roman}`,
-      };
+      return { primary: english, feedback: english };
     case "wazn":
-      return {
-        primary: meta.waznPast,
-        arabic: true,
-        feedback: meta.waznPast,
-      };
+      return { primary: arabic, arabic: true, feedback: arabic };
     case "both":
       return {
-        primary: `Form ${meta.roman}`,
-        secondary: meta.waznPast,
+        primary: english,
+        secondary: arabic,
         secondaryArabic: true,
-        feedback: `Form ${meta.roman} · ${meta.waznPast}`,
+        feedback: `${english} · ${arabic}`,
       };
   }
+}
+
+export function formLabel(form: FormId, mode: LabelMode): string {
+  const meta = FORM_BY_ID[form];
+  return bilingualQuizChoice(`Form ${meta.roman}`, meta.waznPast, mode)
+    .feedback;
+}
+
+export function formQuizChoice(
+  form: FormId,
+  mode: LabelMode,
+): QuizChoiceLabels {
+  const meta = FORM_BY_ID[form];
+  return bilingualQuizChoice(`Form ${meta.roman}`, meta.waznPast, mode);
 }

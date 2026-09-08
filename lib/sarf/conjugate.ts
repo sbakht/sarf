@@ -1,4 +1,4 @@
-import { PERSONS } from "./persons";
+import { PERSONS, isSecondPerson } from "./persons";
 import {
   buildSoundPresent,
   buildSoundVerb,
@@ -54,15 +54,7 @@ export function conjugate(input: ConjugateInput): ConjugateResult {
 
   if (input.tense === "imperative") {
     if (input.voice === "passive") return unavailable(weakness);
-    const second: PersonId[] = [
-      "anta",
-      "anti",
-      "antuma_m",
-      "antuma_f",
-      "antum",
-      "antunna",
-    ];
-    if (!second.includes(input.person)) return unavailable(weakness);
+    if (!isSecondPerson(input.person)) return unavailable(weakness);
 
     const presentInput: ConjugateInput = {
       ...input,

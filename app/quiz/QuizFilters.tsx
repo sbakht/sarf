@@ -6,6 +6,8 @@ import { Chip } from "./Chip";
 import { TileChip } from "./TileChip";
 import {
   ALL_FORMS,
+  ALL_TENSES,
+  ALL_VOICES,
   FORM_BY_ID,
   PERSON_BY_ID,
   TABLE_ROWS,
@@ -13,6 +15,7 @@ import {
   TENSE_LABEL,
   VOICE_EN,
   VOICE_LABEL,
+  formLabel,
   linkedPersons,
   type FormId,
   type LabelMode,
@@ -61,11 +64,13 @@ function ModeText({
   english,
   arabic,
   className,
+  compact = false,
 }: {
   mode: LabelMode;
   english: string;
   arabic: string;
   className?: string;
+  compact?: boolean;
 }) {
   const en = showEnglish(mode);
   const ar = showArabic(mode);
@@ -74,14 +79,23 @@ function ModeText({
     return (
       <span
         className={cn(
-          "inline-flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5",
+          "inline-flex items-baseline",
+          compact ? "gap-1.5 leading-none" : "flex-wrap gap-x-1.5 gap-y-0.5",
           className,
         )}
       >
-        <span dir="rtl" className="font-arabic">
+        <span dir="rtl" className={cn("font-arabic", compact && "text-sm")}>
           {arabic}
         </span>
-        <span className="text-muted-foreground">{english}</span>
+        <span
+          className={
+            compact
+              ? "text-[11px] text-muted-foreground"
+              : "text-muted-foreground"
+          }
+        >
+          {english}
+        </span>
       </span>
     );
   }
@@ -125,40 +139,37 @@ function Field({
   );
 }
 
-function BilingualLabel({
-  mode,
-  english,
-  arabic,
-  arabicClassName,
+function ChipRow<T extends string>({
+  items,
+  selected,
+  onToggle,
+  labelMode,
+  compact = false,
 }: {
-  mode: LabelMode;
-  english: string;
-  arabic: string;
-  arabicClassName?: string;
+  items: { id: T; english: string; arabic: string }[];
+  selected: T[];
+  onToggle: (item: T) => void;
+  labelMode: LabelMode;
+  compact?: boolean;
 }) {
-  const en = showEnglish(mode);
-  const ar = showArabic(mode);
-
-  if (en && ar) {
-    return (
-      <span className="inline-flex items-baseline gap-1.5 leading-none">
-        <span dir="rtl" className={cn("font-arabic text-sm", arabicClassName)}>
-          {arabic}
-        </span>
-        <span className="text-[11px] text-muted-foreground">{english}</span>
-      </span>
-    );
-  }
-
-  if (ar) {
-    return (
-      <span dir="rtl" className={cn("font-arabic", arabicClassName)}>
-        {arabic}
-      </span>
-    );
-  }
-
-  return <span>{english}</span>;
+  return (
+    <div className="flex flex-wrap gap-2">
+      {items.map((item) => (
+        <Chip
+          key={item.id}
+          selected={selected.includes(item.id)}
+          onClick={() => onToggle(item.id)}
+        >
+          <ModeText
+            mode={labelMode}
+            english={item.english}
+            arabic={item.arabic}
+            compact={compact}
+          />
+        </Chip>
+      ))}
+    </div>
+  );
 }
 
 export function QuizFilters({
@@ -235,21 +246,12 @@ export function QuizFilters({
         arabic="الأسئلة"
         subtitle="Steps that appear in each round"
       >
-        <div className="flex flex-wrap gap-2">
-          {QUESTION_CHIPS.map((question) => (
-            <Chip
-              key={question.id}
-              selected={enabledQuestions.includes(question.id)}
-              onClick={() => onToggleQuestion(question.id)}
-            >
-              <ModeText
-                mode={labelMode}
-                english={question.english}
-                arabic={question.arabic}
-              />
-            </Chip>
-          ))}
-        </div>
+        <ChipRow
+          items={QUESTION_CHIPS}
+          selected={enabledQuestions}
+          onToggle={onToggleQuestion}
+          labelMode={labelMode}
+        />
       </Field>
       <Field
         mode={labelMode}
@@ -265,13 +267,7 @@ export function QuizFilters({
               <TileChip
                 key={form}
                 selected={selected}
-                title={
-                  labelMode === "form"
-                    ? `Form ${meta.roman}`
-                    : labelMode === "wazn"
-                      ? meta.waznPast
-                      : `Form ${meta.roman} · ${meta.waznPast}`
-                }
+                title={formLabel(form, labelMode)}
                 onClick={() => onToggleForm(form)}
                 className="flex-row gap-1 px-1"
               >
@@ -295,21 +291,17 @@ export function QuizFilters({
         arabic="الزمن"
         subtitle="Which tenses can appear"
       >
-        <div className="flex flex-wrap gap-2">
-          {(["past", "present", "imperative"] as Tense[]).map((tense) => (
-            <Chip
-              key={tense}
-              selected={enabledTenses.includes(tense)}
-              onClick={() => onToggleTense(tense)}
-            >
-              <BilingualLabel
-                mode={labelMode}
-                english={TENSE_EN[tense]}
-                arabic={TENSE_LABEL[tense]}
-              />
-            </Chip>
-          ))}
-        </div>
+        <ChipRow
+          items={ALL_TENSES.map((id) => ({
+            id,
+            english: TENSE_EN[id],
+            arabic: TENSE_LABEL[id],
+          }))}
+          selected={enabledTenses}
+          onToggle={onToggleTense}
+          labelMode={labelMode}
+          compact
+        />
       </Field>
       <Field
         mode={labelMode}
@@ -317,21 +309,17 @@ export function QuizFilters({
         arabic="البناء"
         subtitle="Which voices can appear"
       >
-        <div className="flex flex-wrap gap-2">
-          {(["active", "passive"] as Voice[]).map((voice) => (
-            <Chip
-              key={voice}
-              selected={enabledVoices.includes(voice)}
-              onClick={() => onToggleVoice(voice)}
-            >
-              <BilingualLabel
-                mode={labelMode}
-                english={VOICE_EN[voice]}
-                arabic={VOICE_LABEL[voice]}
-              />
-            </Chip>
-          ))}
-        </div>
+        <ChipRow
+          items={ALL_VOICES.map((id) => ({
+            id,
+            english: VOICE_EN[id],
+            arabic: VOICE_LABEL[id],
+          }))}
+          selected={enabledVoices}
+          onToggle={onToggleVoice}
+          labelMode={labelMode}
+          compact
+        />
       </Field>
       <Field
         mode={labelMode}

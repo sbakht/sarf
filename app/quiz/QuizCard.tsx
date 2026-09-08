@@ -7,43 +7,7 @@ import {
   type ConjugateResult,
   type Prompt,
 } from "@/lib/sarf";
-
-function CheckIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 16 16"
-      className="size-4 shrink-0"
-      fill="none"
-    >
-      <path
-        d="M3.5 8.5 6.5 11.5 12.5 4.5"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-function XIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 16 16"
-      className="size-4 shrink-0"
-      fill="none"
-    >
-      <path
-        d="M4 4 12 12M12 4 4 12"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
+import { FeedbackMark } from "./FeedbackMark";
 
 export function QuizCard({
   prompt,
@@ -93,7 +57,7 @@ export function QuizCard({
               feedback.ok ? "bg-ok/15 text-ok" : "bg-no/15 text-no"
             }`}
           >
-            {feedback.ok ? <CheckIcon /> : <XIcon />}
+            <FeedbackMark ok={feedback.ok} />
             {feedback.text}
           </p>
         ) : null}

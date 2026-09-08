@@ -70,13 +70,7 @@ function prefixVowel(form: FormId, voice: Voice): string {
 }
 
 function pastThemeA(form: FormId, voice: Voice, bab: FormIBab): string {
-  if (voice === "passive") {
-    if (form === 1 || form === 7 || form === 8 || form === 10) return KASRA;
-    if (form === 2 || form === 5) return KASRA;
-    if (form === 3 || form === 6) return KASRA;
-    if (form === 4) return KASRA;
-    return KASRA;
-  }
+  if (voice === "passive") return KASRA;
   if (form === 1) return BAB_BY_ID[bab].pastA;
   return FATHA;
 }

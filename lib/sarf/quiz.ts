@@ -1,5 +1,5 @@
 import { conjugate } from "./conjugate";
-import { FORMS, formQuizChoice } from "./forms";
+import { FORMS, bilingualQuizChoice, formQuizChoice } from "./forms";
 import { ROOTS, rootArabic, soundRoots } from "./lexicon";
 import { PERSON_BY_ID, PERSONS, isSecondPerson } from "./persons";
 import {
@@ -75,6 +75,15 @@ export const ALL_QUESTIONS: QuestionId[] = [
   "person",
 ];
 
+export const DEFAULT_FILTERS: QuizFilters = {
+  includeWeak: false,
+  enabledForms: ALL_FORMS,
+  enabledPersons: ALL_PERSON_IDS,
+  enabledVoices: ALL_VOICES,
+  enabledTenses: ALL_TENSES,
+  enabledQuestions: ALL_QUESTIONS,
+};
+
 export const TENSE_LABEL: Record<Tense, string> = {
   past: "ماضي",
   present: "مضارع",
@@ -97,58 +106,12 @@ export const VOICE_EN: Record<Voice, string> = {
   passive: "Passive",
 };
 
-export function tenseQuizChoice(
-  tense: Tense,
-  mode: LabelMode,
-): {
-  primary: string;
-  secondary?: string;
-  arabic?: boolean;
-  secondaryArabic?: boolean;
-  feedback: string;
-} {
-  const english = TENSE_EN[tense];
-  const arabic = TENSE_LABEL[tense];
-  switch (mode) {
-    case "form":
-      return { primary: english, feedback: english };
-    case "wazn":
-      return { primary: arabic, arabic: true, feedback: arabic };
-    case "both":
-      return {
-        primary: english,
-        secondary: arabic,
-        secondaryArabic: true,
-        feedback: `${english} · ${arabic}`,
-      };
-  }
+export function tenseQuizChoice(tense: Tense, mode: LabelMode) {
+  return bilingualQuizChoice(TENSE_EN[tense], TENSE_LABEL[tense], mode);
 }
 
-export function voiceQuizChoice(
-  voice: Voice,
-  mode: LabelMode,
-): {
-  primary: string;
-  secondary?: string;
-  arabic?: boolean;
-  secondaryArabic?: boolean;
-  feedback: string;
-} {
-  const english = VOICE_EN[voice];
-  const arabic = VOICE_LABEL[voice];
-  switch (mode) {
-    case "form":
-      return { primary: english, feedback: english };
-    case "wazn":
-      return { primary: arabic, arabic: true, feedback: arabic };
-    case "both":
-      return {
-        primary: english,
-        secondary: arabic,
-        secondaryArabic: true,
-        feedback: `${english} · ${arabic}`,
-      };
-  }
+export function voiceQuizChoice(voice: Voice, mode: LabelMode) {
+  return bilingualQuizChoice(VOICE_EN[voice], VOICE_LABEL[voice], mode);
 }
 
 export function seededRng(seed: number): () => number {
@@ -192,29 +155,25 @@ export function eligibleTenses(
 }
 
 export function makePrompt(
-  includeWeak: boolean,
-  enabledForms: FormId[],
-  enabledPersons: PersonId[],
-  enabledVoices: Voice[],
-  quizVoice: boolean,
+  filters: QuizFilters,
   rng: () => number = Math.random,
-  enabledTenses: Tense[] = ALL_TENSES,
 ): Prompt | null {
-  const formSet = new Set(enabledForms);
-  const secondPersons = enabledPersons.filter(isSecondPerson);
+  const formSet = new Set(filters.enabledForms);
+  const quizVoice = filters.enabledQuestions.includes("voice");
+  const secondPersons = filters.enabledPersons.filter(isSecondPerson);
   const tenses = eligibleTenses(
-    enabledPersons,
-    enabledVoices,
+    filters.enabledPersons,
+    filters.enabledVoices,
     quizVoice,
-    enabledTenses,
+    filters.enabledTenses,
   );
-  const pool = (includeWeak ? ROOTS : soundRoots()).filter((root) =>
+  const pool = (filters.includeWeak ? ROOTS : soundRoots()).filter((root) =>
     root.forms.some((form) => formSet.has(form)),
   );
   if (
     pool.length === 0 ||
-    enabledPersons.length === 0 ||
-    enabledVoices.length === 0 ||
+    filters.enabledPersons.length === 0 ||
+    filters.enabledVoices.length === 0 ||
     tenses.length === 0
   ) {
     return null;
@@ -227,19 +186,19 @@ export function makePrompt(
     const form = pick(forms, rng);
     const tense = pick(tenses, rng);
     let voice: Voice;
-    if (enabledVoices.length === 1) {
-      voice = enabledVoices[0]!;
+    if (filters.enabledVoices.length === 1) {
+      voice = filters.enabledVoices[0]!;
     } else if (quizVoice) {
-      voice = pick(enabledVoices, rng);
+      voice = pick(filters.enabledVoices, rng);
     } else if (tense === "imperative" || rng() > 0.85) {
       voice = "active";
     } else {
-      voice = pick(enabledVoices, rng);
+      voice = pick(filters.enabledVoices, rng);
     }
     const person =
       tense === "imperative"
         ? pick(secondPersons, rng)
-        : pick(enabledPersons, rng);
+        : pick(filters.enabledPersons, rng);
     const result = conjugate({
       root: root.letters,
       form,
@@ -256,6 +215,27 @@ export function makePrompt(
 
 export function promptSeed(prompt: Prompt): string {
   return `${prompt.root.id}:${prompt.form}:${prompt.tense}:${prompt.voice}:${prompt.person}`;
+}
+
+function labeledChoices<T>(
+  items: T[],
+  correct: T,
+  idOf: (item: T) => string,
+  labelsOf: (item: T) => ReturnType<typeof bilingualQuizChoice>,
+): QuizChoice[] {
+  const answer = labelsOf(correct);
+  return items.map((item) => {
+    const labels = labelsOf(item);
+    return {
+      id: idOf(item),
+      primary: labels.primary,
+      secondary: labels.secondary,
+      arabic: labels.arabic,
+      secondaryArabic: labels.secondaryArabic,
+      correct: idOf(item) === idOf(correct),
+      feedback: answer.feedback,
+    };
+  });
 }
 
 export function buildQuizSteps(
@@ -307,53 +287,29 @@ export function buildQuizSteps(
     {
       id: "form" as const,
       title: "What is the form / وزن?",
-      choices: formChoices.map((form) => {
-        const labels = formQuizChoice(form, labelMode);
-        const answer = formQuizChoice(prompt.form, labelMode);
-        return {
-          id: String(form),
-          primary: labels.primary,
-          secondary: labels.secondary,
-          arabic: labels.arabic,
-          secondaryArabic: labels.secondaryArabic,
-          correct: form === prompt.form,
-          feedback: answer.feedback,
-        };
-      }),
+      choices: labeledChoices(formChoices, prompt.form, String, (form) =>
+        formQuizChoice(form, labelMode),
+      ),
     },
     {
       id: "tense" as const,
       title: "What is the tense / الزمن?",
-      choices: tenseChoices.map((tense) => {
-        const labels = tenseQuizChoice(tense, labelMode);
-        const answer = tenseQuizChoice(prompt.tense, labelMode);
-        return {
-          id: tense,
-          primary: labels.primary,
-          secondary: labels.secondary,
-          arabic: labels.arabic,
-          secondaryArabic: labels.secondaryArabic,
-          correct: tense === prompt.tense,
-          feedback: answer.feedback,
-        };
-      }),
+      choices: labeledChoices(
+        tenseChoices,
+        prompt.tense,
+        (tense) => tense,
+        (tense) => tenseQuizChoice(tense, labelMode),
+      ),
     },
     {
       id: "voice" as const,
       title: "What is the voice / البناء?",
-      choices: filters.enabledVoices.map((voice) => {
-        const labels = voiceQuizChoice(voice, labelMode);
-        const answer = voiceQuizChoice(prompt.voice, labelMode);
-        return {
-          id: voice,
-          primary: labels.primary,
-          secondary: labels.secondary,
-          arabic: labels.arabic,
-          secondaryArabic: labels.secondaryArabic,
-          correct: voice === prompt.voice,
-          feedback: answer.feedback,
-        };
-      }),
+      choices: labeledChoices(
+        filters.enabledVoices,
+        prompt.voice,
+        (voice) => voice,
+        (voice) => voiceQuizChoice(voice, labelMode),
+      ),
     },
     {
       id: "person" as const,
