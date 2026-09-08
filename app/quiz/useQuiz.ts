@@ -2,12 +2,10 @@
 
 import { useEffect, useEffectEvent, useReducer } from "react";
 import { useSettings } from "@/components/SettingsProvider";
+import { isTypingTarget } from "./keyboard";
 import {
-  ALL_FORMS,
   ALL_PERSON_IDS,
-  ALL_QUESTIONS,
-  ALL_TENSES,
-  ALL_VOICES,
+  DEFAULT_FILTERS,
   buildQuizSteps,
   conjugate,
   linkedPersons,
@@ -39,6 +37,13 @@ type QuizState = QuizFilters & {
   showColors: boolean;
 };
 
+type ListFilter =
+  | "enabledForms"
+  | "enabledPersons"
+  | "enabledVoices"
+  | "enabledTenses"
+  | "enabledQuestions";
+
 type Action =
   | { type: "toggleForm"; form: FormId }
   | { type: "togglePerson"; person: PersonId }
@@ -61,15 +66,6 @@ type Action =
     }
   | { type: "nextPrompt" };
 
-const DEFAULT_FILTERS: QuizFilters = {
-  includeWeak: false,
-  enabledForms: ALL_FORMS,
-  enabledPersons: ALL_PERSON_IDS,
-  enabledVoices: ALL_VOICES,
-  enabledTenses: ALL_TENSES,
-  enabledQuestions: ALL_QUESTIONS,
-};
-
 function filtersOf(state: QuizState): QuizFilters {
   return {
     includeWeak: state.includeWeak,
@@ -81,24 +77,12 @@ function filtersOf(state: QuizState): QuizFilters {
   };
 }
 
-function rollPrompt(filters: QuizFilters, rng?: () => number): Prompt | null {
-  return makePrompt(
-    filters.includeWeak,
-    filters.enabledForms,
-    filters.enabledPersons,
-    filters.enabledVoices,
-    filters.enabledQuestions.includes("voice"),
-    rng,
-    filters.enabledTenses,
-  );
-}
-
 function resetRound(state: QuizState, filters: QuizFilters): QuizState {
   return {
     ...state,
     ...filters,
     started: true,
-    prompt: rollPrompt(filters),
+    prompt: makePrompt(filters),
     step: 0,
     feedback: null,
     showColors: false,
@@ -112,6 +96,23 @@ function applyFilters(
   return resetRound(state, { ...filtersOf(state), ...patch });
 }
 
+function toggleFilter<T>(
+  state: QuizState,
+  key: Exclude<ListFilter, "enabledPersons">,
+  list: T[],
+  item: T,
+): QuizState {
+  const next = toggleItem(list, item);
+  return next ? applyFilters(state, { [key]: next }) : state;
+}
+
+function selectAll(state: QuizState, key: ListFilter): QuizState {
+  const all = DEFAULT_FILTERS[key];
+  return state[key].length === all.length
+    ? state
+    : applyFilters(state, { [key]: all });
+}
+
 function nextPersonSet(
   enabled: PersonId[],
   ids: PersonId[],
@@ -122,18 +123,6 @@ function nextPersonSet(
     return next.length === 0 ? null : next;
   }
   const set = new Set([...enabled, ...ids]);
-  return ALL_PERSON_IDS.filter((id) => set.has(id));
-}
-
-function nextPersons(enabled: PersonId[], person: PersonId): PersonId[] | null {
-  const group = linkedPersons(person);
-  const allOn = group.every((id) => enabled.includes(id));
-  if (allOn) {
-    const next = enabled.filter((id) => !group.includes(id));
-    return next.length === 0 ? null : next;
-  }
-  const set = new Set(enabled);
-  for (const id of group) set.add(id);
   return ALL_PERSON_IDS.filter((id) => set.has(id));
 }
 
@@ -151,50 +140,55 @@ export function createInitialState(): QuizState {
 
 export function reduceQuiz(state: QuizState, action: Action): QuizState {
   switch (action.type) {
-    case "toggleForm": {
-      const next = toggleItem(state.enabledForms, action.form);
-      return next ? applyFilters(state, { enabledForms: next }) : state;
-    }
+    case "toggleForm":
+      return toggleFilter(
+        state,
+        "enabledForms",
+        state.enabledForms,
+        action.form,
+      );
     case "togglePerson": {
-      const next = nextPersons(state.enabledPersons, action.person);
+      const next = nextPersonSet(
+        state.enabledPersons,
+        linkedPersons(action.person),
+      );
       return next ? applyFilters(state, { enabledPersons: next }) : state;
     }
-    case "toggleVoice": {
-      const next = toggleItem(state.enabledVoices, action.voice);
-      return next ? applyFilters(state, { enabledVoices: next }) : state;
-    }
-    case "toggleTense": {
-      const next = toggleItem(state.enabledTenses, action.tense);
-      return next ? applyFilters(state, { enabledTenses: next }) : state;
-    }
-    case "toggleQuestion": {
-      const next = toggleItem(state.enabledQuestions, action.question);
-      return next ? applyFilters(state, { enabledQuestions: next }) : state;
-    }
+    case "toggleVoice":
+      return toggleFilter(
+        state,
+        "enabledVoices",
+        state.enabledVoices,
+        action.voice,
+      );
+    case "toggleTense":
+      return toggleFilter(
+        state,
+        "enabledTenses",
+        state.enabledTenses,
+        action.tense,
+      );
+    case "toggleQuestion":
+      return toggleFilter(
+        state,
+        "enabledQuestions",
+        state.enabledQuestions,
+        action.question,
+      );
     case "setIncludeWeak":
       return state.includeWeak === action.value
         ? state
         : applyFilters(state, { includeWeak: action.value });
     case "selectAllForms":
-      return state.enabledForms.length === ALL_FORMS.length
-        ? state
-        : applyFilters(state, { enabledForms: ALL_FORMS });
+      return selectAll(state, "enabledForms");
     case "selectAllPersons":
-      return state.enabledPersons.length === ALL_PERSON_IDS.length
-        ? state
-        : applyFilters(state, { enabledPersons: ALL_PERSON_IDS });
+      return selectAll(state, "enabledPersons");
     case "selectAllVoices":
-      return state.enabledVoices.length === ALL_VOICES.length
-        ? state
-        : applyFilters(state, { enabledVoices: ALL_VOICES });
+      return selectAll(state, "enabledVoices");
     case "selectAllTenses":
-      return state.enabledTenses.length === ALL_TENSES.length
-        ? state
-        : applyFilters(state, { enabledTenses: ALL_TENSES });
+      return selectAll(state, "enabledTenses");
     case "selectAllQuestions":
-      return state.enabledQuestions.length === ALL_QUESTIONS.length
-        ? state
-        : applyFilters(state, { enabledQuestions: ALL_QUESTIONS });
+      return selectAll(state, "enabledQuestions");
     case "togglePersonSet": {
       const next = nextPersonSet(state.enabledPersons, action.persons);
       return next ? applyFilters(state, { enabledPersons: next }) : state;
@@ -229,17 +223,6 @@ export function reduceQuiz(state: QuizState, action: Action): QuizState {
   }
 }
 
-function isTypingTarget(target: EventTarget | null): boolean {
-  if (!(target instanceof HTMLElement)) return false;
-  const tag = target.tagName;
-  return (
-    tag === "INPUT" ||
-    tag === "SELECT" ||
-    tag === "TEXTAREA" ||
-    target.isContentEditable
-  );
-}
-
 export function useQuiz() {
   const { labelMode } = useSettings();
   const [state, dispatch] = useReducer(
@@ -265,14 +248,13 @@ export function useQuiz() {
       })
     : null;
 
-  function submitAnswer(choice: QuizChoice) {
-    const finishRound = state.step >= steps.length - 1;
+  function answer(choice: QuizChoice) {
     dispatch({
       type: "answer",
       ok: choice.correct,
       label: choice.feedback,
       answer: quizChoiceLabel(choice),
-      finishRound,
+      finishRound: state.step >= steps.length - 1,
     });
   }
 
@@ -294,7 +276,7 @@ export function useQuiz() {
     const choice = current?.choices[index];
     if (!choice) return;
     event.preventDefault();
-    submitAnswer(choice);
+    answer(choice);
   });
 
   useEffect(() => {
@@ -309,17 +291,8 @@ export function useQuiz() {
     return () => window.removeEventListener("keydown", listener);
   }, []);
 
-  function answer(choice: QuizChoice) {
-    submitAnswer(choice);
-  }
-
   return {
-    includeWeak: state.includeWeak,
-    enabledForms: state.enabledForms,
-    enabledPersons: state.enabledPersons,
-    enabledVoices: state.enabledVoices,
-    enabledTenses: state.enabledTenses,
-    enabledQuestions: state.enabledQuestions,
+    ...filtersOf(state),
     prompt: state.prompt,
     started: state.started,
     step: state.step,

@@ -1,11 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { ROOTS } from "./lexicon";
 import {
-  ALL_FORMS,
   ALL_PERSON_IDS,
   ALL_QUESTIONS,
-  ALL_TENSES,
   ALL_VOICES,
+  DEFAULT_FILTERS,
   buildQuizSteps,
   eligibleTenses,
   makePrompt,
@@ -17,24 +16,20 @@ import {
   type QuizFilters,
 } from "./quiz";
 
-const defaultFilters: QuizFilters = {
-  includeWeak: false,
-  enabledForms: ALL_FORMS,
-  enabledPersons: ALL_PERSON_IDS,
-  enabledVoices: ALL_VOICES,
-  enabledTenses: ALL_TENSES,
-  enabledQuestions: ALL_QUESTIONS,
-};
+const defaultFilters: QuizFilters = DEFAULT_FILTERS;
+const noVoiceQuestions = ALL_QUESTIONS.filter(
+  (question) => question !== "voice",
+);
+
+function promptFrom(
+  patch: Partial<QuizFilters> = {},
+  rng = seededRng(1),
+): Prompt | null {
+  return makePrompt({ ...DEFAULT_FILTERS, ...patch }, rng);
+}
 
 function samplePrompt(): Prompt {
-  const prompt = makePrompt(
-    false,
-    ALL_FORMS,
-    ALL_PERSON_IDS,
-    ALL_VOICES,
-    true,
-    seededRng(1),
-  );
+  const prompt = promptFrom({}, seededRng(1));
   if (!prompt) throw new Error("expected a prompt");
   return prompt;
 }
@@ -113,27 +108,14 @@ describe("eligibleTenses", () => {
 
 describe("makePrompt", () => {
   it("returns null when the pool is empty", () => {
-    expect(
-      makePrompt(false, [], ALL_PERSON_IDS, ALL_VOICES, true, seededRng(1)),
-    ).toBeNull();
-    expect(
-      makePrompt(false, ALL_FORMS, [], ALL_VOICES, true, seededRng(1)),
-    ).toBeNull();
-    expect(
-      makePrompt(false, ALL_FORMS, ALL_PERSON_IDS, [], true, seededRng(1)),
-    ).toBeNull();
+    expect(promptFrom({ enabledForms: [] })).toBeNull();
+    expect(promptFrom({ enabledPersons: [] })).toBeNull();
+    expect(promptFrom({ enabledVoices: [] })).toBeNull();
   });
 
   it("never picks imperative when voice is a quiz question", () => {
     for (let seed = 1; seed <= 20; seed += 1) {
-      const prompt = makePrompt(
-        false,
-        ALL_FORMS,
-        ALL_PERSON_IDS,
-        ALL_VOICES,
-        true,
-        seededRng(seed),
-      );
+      const prompt = promptFrom({}, seededRng(seed));
       expect(prompt).not.toBeNull();
       expect(prompt!.tense).not.toBe("imperative");
     }
@@ -141,12 +123,11 @@ describe("makePrompt", () => {
 
   it("never picks imperative when no second person is enabled", () => {
     for (let seed = 1; seed <= 20; seed += 1) {
-      const prompt = makePrompt(
-        false,
-        ALL_FORMS,
-        ["huwa", "hiya", "hum"],
-        ALL_VOICES,
-        false,
+      const prompt = promptFrom(
+        {
+          enabledPersons: ["huwa", "hiya", "hum"],
+          enabledQuestions: noVoiceQuestions,
+        },
         seededRng(seed),
       );
       expect(prompt).not.toBeNull();
@@ -157,12 +138,12 @@ describe("makePrompt", () => {
   it("stays within the enabled filters", () => {
     const forms = [1, 2] as const;
     const persons = ["huwa", "anta"] as const;
-    const prompt = makePrompt(
-      false,
-      [...forms],
-      [...persons],
-      ["active"],
-      true,
+    const prompt = promptFrom(
+      {
+        enabledForms: [...forms],
+        enabledPersons: [...persons],
+        enabledVoices: ["active"],
+      },
       seededRng(3),
     );
     expect(prompt).not.toBeNull();
@@ -174,28 +155,19 @@ describe("makePrompt", () => {
 
   it("returns null when no enabled tense is eligible", () => {
     expect(
-      makePrompt(
-        false,
-        ALL_FORMS,
-        ["huwa", "hiya"],
-        ALL_VOICES,
-        false,
-        seededRng(1),
-        ["imperative"],
-      ),
+      promptFrom({
+        enabledPersons: ["huwa", "hiya"],
+        enabledQuestions: noVoiceQuestions,
+        enabledTenses: ["imperative"],
+      }),
     ).toBeNull();
   });
 
   it("stays within the enabled tenses", () => {
     for (let seed = 1; seed <= 20; seed += 1) {
-      const prompt = makePrompt(
-        false,
-        ALL_FORMS,
-        ALL_PERSON_IDS,
-        ALL_VOICES,
-        false,
+      const prompt = promptFrom(
+        { enabledQuestions: noVoiceQuestions, enabledTenses: ["past"] },
         seededRng(seed),
-        ["past"],
       );
       expect(prompt).not.toBeNull();
       expect(prompt!.tense).toBe("past");
@@ -203,29 +175,19 @@ describe("makePrompt", () => {
   });
 
   it("can produce imperative when only أمر is enabled", () => {
-    const prompt = makePrompt(
-      false,
-      ALL_FORMS,
-      ALL_PERSON_IDS,
-      ALL_VOICES,
-      false,
-      seededRng(1),
-      ["imperative"],
-    );
+    const prompt = promptFrom({
+      enabledQuestions: noVoiceQuestions,
+      enabledTenses: ["imperative"],
+    });
     expect(prompt).not.toBeNull();
     expect(prompt!.tense).toBe("imperative");
   });
 
   it("can produce imperative-only prompts even when voice is a quiz question", () => {
     for (let seed = 1; seed <= 10; seed += 1) {
-      const prompt = makePrompt(
-        false,
-        ALL_FORMS,
-        ALL_PERSON_IDS,
-        ALL_VOICES,
-        true,
+      const prompt = promptFrom(
+        { enabledTenses: ["imperative"] },
         seededRng(seed),
-        ["imperative"],
       );
       expect(prompt).not.toBeNull();
       expect(prompt!.tense).toBe("imperative");
@@ -238,14 +200,7 @@ describe("makePrompt", () => {
     );
     let foundWeak = false;
     for (let seed = 1; seed <= 40; seed += 1) {
-      const prompt = makePrompt(
-        true,
-        ALL_FORMS,
-        ALL_PERSON_IDS,
-        ALL_VOICES,
-        true,
-        seededRng(seed),
-      );
+      const prompt = promptFrom({ includeWeak: true }, seededRng(seed));
       expect(prompt).not.toBeNull();
       if (weakIds.has(prompt!.root.id)) {
         foundWeak = true;

@@ -7,44 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import type { useLessonQuiz } from "./useLessonQuiz";
 import { QuizStep } from "@/app/quiz/QuizStep";
-
-function CheckIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 16 16"
-      className="size-4 shrink-0"
-      fill="none"
-    >
-      <path
-        d="M3.5 8.5 6.5 11.5 12.5 4.5"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-function XIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 16 16"
-      className="size-4 shrink-0"
-      fill="none"
-    >
-      <path
-        d="M4 4 12 12M12 4 4 12"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
+import { FeedbackMark } from "@/app/quiz/FeedbackMark";
 
 export function LessonQuiz<P>({
   quiz,
@@ -106,7 +69,7 @@ export function LessonQuiz<P>({
                 quiz.feedback.ok ? "bg-ok/15 text-ok" : "bg-no/15 text-no",
               )}
             >
-              {quiz.feedback.ok ? <CheckIcon /> : <XIcon />}
+              <FeedbackMark ok={quiz.feedback.ok} />
               {quiz.feedback.text}
             </p>
           ) : null}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useEffectEvent, useReducer } from "react";
+import { isTypingTarget } from "@/app/quiz/keyboard";
 import {
   PRIMER_ROUNDS,
   seededRng,
@@ -64,17 +65,6 @@ function freshRound<P>(
     showColors: false,
     ...patch,
   };
-}
-
-function isTypingTarget(target: EventTarget | null): boolean {
-  if (!(target instanceof HTMLElement)) return false;
-  const tag = target.tagName;
-  return (
-    tag === "INPUT" ||
-    tag === "SELECT" ||
-    tag === "TEXTAREA" ||
-    target.isContentEditable
-  );
 }
 
 export function useLessonQuiz<P>(config: LessonQuizConfig<P>) {
