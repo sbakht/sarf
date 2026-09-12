@@ -32,7 +32,17 @@ cp .env.example .env
 docker compose up --build
 ```
 
-Then open [http://localhost:3002](http://localhost:3002). Health: [http://localhost:3002/api/health](http://localhost:3002/api/health).
+Then open [http://localhost:3002](http://localhost:3002).
+
+## Bug reports
+
+The quiz has a **Bug report** button. It opens a form and attaches the selected filters, the current question, and answers, then creates a GitHub issue.
+
+To create issues from the app, set `BUG_REPORT_GITHUB_TOKEN` (a PAT with `issues: write`) and optionally `BUG_REPORT_GITHUB_REPO`. Without a token, the form still builds a prefilled GitHub issue URL.
+
+To have an AI reproduce the report, fix it, and open a pull request, set `CURSOR_API_KEY` on the app **or** as a GitHub Actions secret. The [`bug-report.yml`](.github/workflows/bug-report.yml) workflow launches a Cursor Cloud Agent when a quiz bug issue is opened.
+
+## Docker Health: [http://localhost:3002/api/health](http://localhost:3002/api/health).
 
 Redis is defined but not started by default:
 

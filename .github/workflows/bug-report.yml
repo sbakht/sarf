@@ -1,0 +1,27 @@
+name: Auto-fix quiz bug reports
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  issues: write
+  contents: read
+  pull-requests: write
+
+jobs:
+  reproduce-and-fix:
+    if: |
+      contains(github.event.issue.body, '<!-- sarf-bug-report -->') &&
+      !contains(github.event.issue.body, '<!-- agent: api -->')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Launch Cursor Cloud Agent
+        env:
+          CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
+          GH_TOKEN: ${{ github.token }}
+        run: node .github/scripts/launch-bug-agent.mjs

@@ -75,4 +75,23 @@ describe("reduceQuiz", () => {
     });
     expect(blocked.enabledWeakLetters).toEqual(["waw"]);
   });
+
+  it("records selected quiz answers", () => {
+    const answered = reduceQuiz(createInitialState(), {
+      type: "answer",
+      question: "form",
+      ok: false,
+      label: "Form I",
+      answer: "Form II",
+      finishRound: false,
+    });
+    expect(answered.answers).toEqual([
+      {
+        question: "form",
+        selected: "Form II",
+        ok: false,
+        correctLabel: "Form I",
+      },
+    ]);
+  });
 });

@@ -1,8 +1,10 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useSettings } from "@/components/SettingsProvider";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { BugReportButton, bugReportSource } from "./BugReportButton";
 import { QuizCard } from "./QuizCard";
 import { QuizFilters } from "./QuizFilters";
 import { QuizStep } from "./QuizStep";
@@ -55,6 +57,7 @@ function filterSummary(quiz: ReturnType<typeof useQuiz>): string {
 export function QuizView() {
   const quiz = useQuiz();
   const { setLabelMode } = useSettings();
+  const pathname = usePathname() || "/";
 
   const filterProps = {
     labelMode: quiz.labelMode,
@@ -110,6 +113,31 @@ export function QuizView() {
           />
 
           <RoundControls quiz={quiz} />
+
+          <BugReportButton
+            source={bugReportSource(
+              {
+                labelMode: quiz.labelMode,
+                enabledWeaknesses: quiz.enabledWeaknesses,
+                enabledWeakLetters: quiz.enabledWeakLetters,
+                enabledForms: quiz.enabledForms,
+                enabledPersons: quiz.enabledPersons,
+                enabledVoices: quiz.enabledVoices,
+                enabledTenses: quiz.enabledTenses,
+                enabledQuestions: quiz.enabledQuestions,
+                score: quiz.score,
+                step: quiz.step,
+                done: quiz.done,
+                prompt: quiz.prompt,
+                result: quiz.result,
+                current: quiz.current ?? null,
+                steps: quiz.steps,
+                feedback: quiz.feedback,
+                answers: quiz.answers,
+              },
+              pathname,
+            )}
+          />
         </div>
       </div>
     </div>

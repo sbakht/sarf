@@ -33,6 +33,13 @@ type Feedback = {
   text: string;
 };
 
+type QuizAnswer = {
+  question: string;
+  selected: string;
+  ok: boolean;
+  correctLabel: string;
+};
+
 type QuizState = QuizFilters & {
   prompt: Prompt | null;
   started: boolean;
@@ -40,6 +47,7 @@ type QuizState = QuizFilters & {
   score: { correct: number; total: number };
   feedback: Feedback | null;
   showColors: boolean;
+  answers: QuizAnswer[];
 };
 
 type Action =
@@ -58,6 +66,7 @@ type Action =
   | { type: "togglePersonSet"; persons: PersonId[] }
   | {
       type: "answer";
+      question: string;
       ok: boolean;
       label: string;
       answer: string;
@@ -146,6 +155,7 @@ export function createInitialState(): QuizState {
     score: { correct: 0, total: 0 },
     feedback: null,
     showColors: false,
+    answers: [],
   };
 }
 
@@ -208,16 +218,27 @@ export function reduceQuiz(state: QuizState, action: Action): QuizState {
         correct: state.score.correct + (action.ok ? 1 : 0),
         total: state.score.total + 1,
       };
+      const answers = [
+        ...state.answers,
+        {
+          question: action.question,
+          selected: action.answer,
+          ok: action.ok,
+          correctLabel: action.label,
+        },
+      ];
       // Correct on the last step: skip the reveal dwell and roll the next verb.
       if (action.finishRound && action.ok) {
         return {
           ...resetRound(state, filtersOf(state)),
           score,
+          answers,
         };
       }
       return {
         ...state,
         score,
+        answers,
         feedback: {
           ok: action.ok,
           text: action.ok
@@ -273,6 +294,7 @@ export function useQuiz() {
     const finishRound = state.step >= steps.length - 1;
     dispatch({
       type: "answer",
+      question: current?.id ?? "",
       ok: choice.correct,
       label: choice.feedback,
       answer: quizChoiceLabel(choice),
@@ -284,7 +306,7 @@ export function useQuiz() {
     if (isTypingTarget(event.target)) return;
     if (
       event.target instanceof HTMLElement &&
-      event.target.closest("[data-quiz-filters]")
+      event.target.closest("[data-quiz-filters], [data-bug-report]")
     )
       return;
     if (done) {
@@ -331,6 +353,7 @@ export function useQuiz() {
     score: state.score,
     feedback: state.feedback,
     showColors: state.showColors,
+    answers: state.answers,
     steps,
     current,
     done,
