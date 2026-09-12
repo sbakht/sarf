@@ -187,6 +187,12 @@ body {
 
 .font-arabic {
   font-family: var(--font-arabic), "Noto Naskh Arabic", serif;
+  /* Prototype: live scale from Settings (1 = current sizes at 16px baseline). */
+  zoom: var(--arabic-font-scale, 1);
+}
+
+.font-arabic-face {
+  font-family: var(--font-arabic), "Noto Naskh Arabic", serif;
 }
 
 .kicker {

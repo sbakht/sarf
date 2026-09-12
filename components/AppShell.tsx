@@ -1,14 +1,33 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
+import { Moon, Settings, Sun } from "lucide-react";
 import { ColorLegend } from "./ArabicWord";
+import { useSettings } from "./SettingsProvider";
+import { SliderSelect } from "./SliderSelect";
 import { Button, buttonVariants } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import { Moon, Sun } from "lucide-react";
+
+const ARABIC_FONT_SIZE_OPTIONS = [
+  { value: "12", label: "12px" },
+  { value: "14", label: "14px" },
+  { value: "16", label: "16px" },
+  { value: "18", label: "18px" },
+  { value: "20", label: "20px" },
+  { value: "24", label: "24px" },
+];
 
 const NAV = [
   { href: "/landing", label: "Home" },
@@ -32,6 +51,31 @@ function isBareRoute(pathname: string): boolean {
 function navActive(href: string, pathname: string): boolean {
   if (href === "/") return pathname === "/";
   return pathname === href || pathname.startsWith(`${href}/`);
+}
+
+function SettingsPanel() {
+  const { arabicFontSize, setArabicFontSize } = useSettings();
+
+  return (
+    <div className="flex flex-col gap-4">
+      <SliderSelect
+        label="Arabic font size"
+        options={ARABIC_FONT_SIZE_OPTIONS}
+        value={arabicFontSize}
+        onValueChange={setArabicFontSize}
+      />
+      <p
+        className="font-arabic-face flex h-20 items-center justify-center rounded-lg border border-border bg-card px-4 text-center leading-none"
+        style={{ fontSize: `${arabicFontSize}px` }}
+      >
+        فَعَلَ
+      </p>
+      <p className="text-xs text-muted-foreground">
+        Prototype: scales all Arabic on the page relative to 16px (current
+        sizes).
+      </p>
+    </div>
+  );
 }
 
 export function AppShell({ children }: { children: ReactNode }) {
@@ -96,6 +140,29 @@ export function AppShell({ children }: { children: ReactNode }) {
               Dark <span className="dark:hidden">off</span>
               <span className="hidden dark:inline">on</span>
             </Button>
+            <Dialog>
+              <DialogTrigger
+                render={
+                  <Button
+                    variant="outline"
+                    size="icon-sm"
+                    className="rounded-full"
+                    aria-label="Settings"
+                  />
+                }
+              >
+                <Settings className="size-3.5" />
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Settings</DialogTitle>
+                  <DialogDescription>
+                    Live prototype — scales every Arabic size on the page.
+                  </DialogDescription>
+                </DialogHeader>
+                <SettingsPanel />
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       </header>
