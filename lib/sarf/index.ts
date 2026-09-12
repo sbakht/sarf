@@ -44,8 +44,10 @@ export {
   ALL_FORMS,
   ALL_PERSON_IDS,
   ALL_QUESTIONS,
+  ALL_QUIZ_WEAKNESSES,
   ALL_TENSES,
   ALL_VOICES,
+  ALL_WEAK_LETTERS,
   TENSE_EN,
   TENSE_LABEL,
   VOICE_EN,
@@ -53,12 +55,15 @@ export {
   buildQuizSteps,
   eligibleTenses,
   makePrompt,
+  normalizeQuizWeakness,
   pick,
   promptSeed,
+  quizRootPool,
   seededRng,
   toggleItem,
   quizChoiceLabel,
   quizWrongFeedback,
+  weakRadicalLetter,
 } from "./quiz";
 export type {
   Prompt,
@@ -66,6 +71,8 @@ export type {
   QuizChoice,
   QuizFilters,
   QuizStep,
+  QuizWeakness,
+  WeakLetter,
 } from "./quiz";
 export {
   PRIMER_PERSONS,

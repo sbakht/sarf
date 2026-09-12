@@ -3,7 +3,6 @@
 import { useSettings } from "@/components/SettingsProvider";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import { QuizCard } from "./QuizCard";
 import { QuizFilters } from "./QuizFilters";
 import { QuizStep } from "./QuizStep";
@@ -44,6 +43,7 @@ function RoundControls({ quiz }: { quiz: ReturnType<typeof useQuiz> }) {
 
 function filterSummary(quiz: ReturnType<typeof useQuiz>): string {
   return [
+    `${quiz.enabledWeaknesses.length} root types`,
     `${quiz.enabledQuestions.length} questions`,
     `${quiz.enabledForms.length} forms`,
     `${quiz.enabledTenses.length} tenses`,
@@ -63,6 +63,8 @@ export function QuizView() {
     enabledTenses: quiz.enabledTenses,
     enabledVoices: quiz.enabledVoices,
     enabledPersons: quiz.enabledPersons,
+    enabledWeaknesses: quiz.enabledWeaknesses,
+    enabledWeakLetters: quiz.enabledWeakLetters,
     onLabelModeChange: setLabelMode,
     onToggleQuestion: quiz.toggleQuestion,
     onToggleForm: quiz.toggleForm,
@@ -71,6 +73,8 @@ export function QuizView() {
     onTogglePerson: quiz.togglePerson,
     onTogglePersonSet: quiz.togglePersonSet,
     onSelectAllPersons: quiz.selectAllPersons,
+    onToggleWeakness: quiz.toggleWeakness,
+    onToggleWeakLetter: quiz.toggleWeakLetter,
   };
 
   return (
@@ -90,16 +94,6 @@ export function QuizView() {
           </div>
 
           <div className="flex flex-wrap items-center gap-3 text-sm">
-            <label className="flex items-center gap-2">
-              <Checkbox
-                id="include-weak"
-                checked={quiz.includeWeak}
-                onCheckedChange={(checked) =>
-                  quiz.setIncludeWeak(checked === true)
-                }
-              />
-              Include weak verbs
-            </label>
             <p className="ml-auto font-heading font-semibold text-energy">
               Score {quiz.score.correct}/{quiz.score.total}
             </p>

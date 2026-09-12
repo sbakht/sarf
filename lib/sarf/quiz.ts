@@ -1,6 +1,7 @@
 import { conjugate } from "./conjugate";
 import { FORMS, formQuizChoice } from "./forms";
-import { ROOTS, rootArabic, soundRoots } from "./lexicon";
+import { WAW, YEH } from "./harakat";
+import { ROOTS, rootArabic } from "./lexicon";
 import { PERSON_BY_ID, PERSONS, isSecondPerson } from "./persons";
 import {
   isCorrectQuizPerson,
@@ -17,9 +18,15 @@ import type {
   RootEntry,
   Tense,
   Voice,
+  WeaknessType,
 } from "./types";
 
 export type QuestionId = "root" | "form" | "tense" | "voice" | "person";
+
+export type QuizWeakness =
+  "sound" | "mithal" | "ajwaf" | "naqis" | "mudaf" | "mahmuz";
+
+export type WeakLetter = "waw" | "ya";
 
 export type Prompt = {
   root: RootEntry;
@@ -30,7 +37,8 @@ export type Prompt = {
 };
 
 export type QuizFilters = {
-  includeWeak: boolean;
+  enabledWeaknesses: QuizWeakness[];
+  enabledWeakLetters: WeakLetter[];
   enabledForms: FormId[];
   enabledPersons: PersonId[];
   enabledVoices: Voice[];
@@ -74,6 +82,50 @@ export const ALL_QUESTIONS: QuestionId[] = [
   "voice",
   "person",
 ];
+export const ALL_QUIZ_WEAKNESSES: QuizWeakness[] = [
+  "sound",
+  "mithal",
+  "ajwaf",
+  "naqis",
+  "mudaf",
+  "mahmuz",
+];
+export const ALL_WEAK_LETTERS: WeakLetter[] = ["waw", "ya"];
+
+export function normalizeQuizWeakness(weakness: WeaknessType): QuizWeakness {
+  if (
+    weakness === "mahmuz_f" ||
+    weakness === "mahmuz_a" ||
+    weakness === "mahmuz_l"
+  ) {
+    return "mahmuz";
+  }
+  return weakness;
+}
+
+export function weakRadicalLetter(root: RootEntry): WeakLetter | null {
+  const kind = normalizeQuizWeakness(root.weakness);
+  let letter: string | undefined;
+  if (kind === "mithal") letter = root.letters[0];
+  else if (kind === "ajwaf") letter = root.letters[1];
+  else if (kind === "naqis") letter = root.letters[2];
+  else return null;
+  if (letter === WAW) return "waw";
+  if (letter === YEH) return "ya";
+  return null;
+}
+
+export function quizRootPool(filters: QuizFilters): RootEntry[] {
+  const weaknesses = new Set(filters.enabledWeaknesses);
+  const letters = new Set(filters.enabledWeakLetters);
+  return ROOTS.filter((root) => {
+    const kind = normalizeQuizWeakness(root.weakness);
+    if (!weaknesses.has(kind)) return false;
+    const radical = weakRadicalLetter(root);
+    if (radical === null) return true;
+    return letters.has(radical);
+  });
+}
 
 export const TENSE_LABEL: Record<Tense, string> = {
   past: "ماضي",
@@ -192,14 +244,17 @@ export function eligibleTenses(
 }
 
 export function makePrompt(
-  includeWeak: boolean,
-  enabledForms: FormId[],
-  enabledPersons: PersonId[],
-  enabledVoices: Voice[],
-  quizVoice: boolean,
+  filters: QuizFilters,
   rng: () => number = Math.random,
-  enabledTenses: Tense[] = ALL_TENSES,
 ): Prompt | null {
+  const {
+    enabledForms,
+    enabledPersons,
+    enabledVoices,
+    enabledTenses,
+    enabledQuestions,
+  } = filters;
+  const quizVoice = enabledQuestions.includes("voice");
   const formSet = new Set(enabledForms);
   const secondPersons = enabledPersons.filter(isSecondPerson);
   const tenses = eligibleTenses(
@@ -208,7 +263,7 @@ export function makePrompt(
     quizVoice,
     enabledTenses,
   );
-  const pool = (includeWeak ? ROOTS : soundRoots()).filter((root) =>
+  const pool = quizRootPool(filters).filter((root) =>
     root.forms.some((form) => formSet.has(form)),
   );
   if (
@@ -265,7 +320,7 @@ export function buildQuizSteps(
 ): QuizStep[] {
   const seed = promptSeed(prompt);
   const secondPersons = filters.enabledPersons.filter(isSecondPerson);
-  const rootPool = filters.includeWeak ? ROOTS : soundRoots();
+  const rootPool = quizRootPool(filters);
   const rootChoices = uniqueOptions(
     prompt.root,
     rootPool,

@@ -6,19 +6,25 @@ import {
   ALL_QUESTIONS,
   ALL_TENSES,
   ALL_VOICES,
+  ALL_QUIZ_WEAKNESSES,
+  ALL_WEAK_LETTERS,
   buildQuizSteps,
   eligibleTenses,
   makePrompt,
+  normalizeQuizWeakness,
   quizChoiceLabel,
+  quizRootPool,
   quizWrongFeedback,
   seededRng,
   toggleItem,
+  weakRadicalLetter,
   type Prompt,
   type QuizFilters,
 } from "./quiz";
 
 const defaultFilters: QuizFilters = {
-  includeWeak: false,
+  enabledWeaknesses: ["sound"],
+  enabledWeakLetters: [...ALL_WEAK_LETTERS],
   enabledForms: ALL_FORMS,
   enabledPersons: ALL_PERSON_IDS,
   enabledVoices: ALL_VOICES,
@@ -27,17 +33,95 @@ const defaultFilters: QuizFilters = {
 };
 
 function samplePrompt(): Prompt {
-  const prompt = makePrompt(
-    false,
-    ALL_FORMS,
-    ALL_PERSON_IDS,
-    ALL_VOICES,
-    true,
-    seededRng(1),
-  );
+  const prompt = makePrompt(defaultFilters, seededRng(1));
   if (!prompt) throw new Error("expected a prompt");
   return prompt;
 }
+
+describe("normalizeQuizWeakness", () => {
+  it("maps mahmuz positions to a single mahmuz filter", () => {
+    expect(normalizeQuizWeakness("mahmuz_f")).toBe("mahmuz");
+    expect(normalizeQuizWeakness("mahmuz_a")).toBe("mahmuz");
+    expect(normalizeQuizWeakness("mahmuz_l")).toBe("mahmuz");
+    expect(normalizeQuizWeakness("ajwaf")).toBe("ajwaf");
+    expect(normalizeQuizWeakness("sound")).toBe("sound");
+  });
+});
+
+describe("weakRadicalLetter", () => {
+  it("reads the weak radical for mithal, ajwaf, and naqis", () => {
+    expect(weakRadicalLetter(ROOTS.find((r) => r.id === "w3d")!)).toBe("waw");
+    expect(weakRadicalLetter(ROOTS.find((r) => r.id === "qwl")!)).toBe("waw");
+    expect(weakRadicalLetter(ROOTS.find((r) => r.id === "by3")!)).toBe("ya");
+    expect(weakRadicalLetter(ROOTS.find((r) => r.id === "d3w")!)).toBe("waw");
+    expect(weakRadicalLetter(ROOTS.find((r) => r.id === "rmy")!)).toBe("ya");
+  });
+
+  it("returns null for sound, mudaf, and mahmuz", () => {
+    expect(weakRadicalLetter(ROOTS.find((r) => r.id === "ktb")!)).toBeNull();
+    expect(weakRadicalLetter(ROOTS.find((r) => r.id === "mdd")!)).toBeNull();
+    expect(weakRadicalLetter(ROOTS.find((r) => r.id === "axd")!)).toBeNull();
+  });
+});
+
+describe("quizRootPool", () => {
+  it("defaults to sound roots only", () => {
+    const pool = quizRootPool(defaultFilters);
+    expect(pool.length).toBeGreaterThan(0);
+    expect(pool.every((root) => root.weakness === "sound")).toBe(true);
+  });
+
+  it("can select ajwaf only", () => {
+    const pool = quizRootPool({
+      ...defaultFilters,
+      enabledWeaknesses: ["ajwaf"],
+    });
+    expect(pool.length).toBeGreaterThan(0);
+    expect(pool.every((root) => root.weakness === "ajwaf")).toBe(true);
+  });
+
+  it("treats all mahmuz positions as one filter", () => {
+    const pool = quizRootPool({
+      ...defaultFilters,
+      enabledWeaknesses: ["mahmuz"],
+    });
+    expect(pool.length).toBeGreaterThanOrEqual(3);
+    expect(pool.every((root) => root.weakness.startsWith("mahmuz"))).toBe(true);
+    expect(pool.map((root) => root.id)).toEqual(
+      expect.arrayContaining(["axd", "qrA", "sAl", "bdA"]),
+    );
+  });
+
+  it("filters ajwaf by waw vs ya", () => {
+    const waw = quizRootPool({
+      ...defaultFilters,
+      enabledWeaknesses: ["ajwaf"],
+      enabledWeakLetters: ["waw"],
+    });
+    const ya = quizRootPool({
+      ...defaultFilters,
+      enabledWeaknesses: ["ajwaf"],
+      enabledWeakLetters: ["ya"],
+    });
+    expect(waw.every((root) => root.letters[1] === "و")).toBe(true);
+    expect(ya.every((root) => root.letters[1] === "ي")).toBe(true);
+    expect(waw.some((root) => root.id === "qwl")).toBe(true);
+    expect(ya.some((root) => root.id === "by3")).toBe(true);
+    expect(waw.some((root) => root.id === "by3")).toBe(false);
+  });
+
+  it("ignores the letter filter for sound roots", () => {
+    const pool = quizRootPool({
+      ...defaultFilters,
+      enabledWeaknesses: ["sound"],
+      enabledWeakLetters: ["waw"],
+    });
+    expect(pool.every((root) => root.weakness === "sound")).toBe(true);
+    expect(pool.length).toBe(
+      ROOTS.filter((root) => root.weakness === "sound").length,
+    );
+  });
+});
 
 describe("toggleItem", () => {
   it("refuses dropping the last item", () => {
@@ -114,26 +198,19 @@ describe("eligibleTenses", () => {
 describe("makePrompt", () => {
   it("returns null when the pool is empty", () => {
     expect(
-      makePrompt(false, [], ALL_PERSON_IDS, ALL_VOICES, true, seededRng(1)),
+      makePrompt({ ...defaultFilters, enabledForms: [] }, seededRng(1)),
     ).toBeNull();
     expect(
-      makePrompt(false, ALL_FORMS, [], ALL_VOICES, true, seededRng(1)),
+      makePrompt({ ...defaultFilters, enabledPersons: [] }, seededRng(1)),
     ).toBeNull();
     expect(
-      makePrompt(false, ALL_FORMS, ALL_PERSON_IDS, [], true, seededRng(1)),
+      makePrompt({ ...defaultFilters, enabledVoices: [] }, seededRng(1)),
     ).toBeNull();
   });
 
   it("never picks imperative when voice is a quiz question", () => {
     for (let seed = 1; seed <= 20; seed += 1) {
-      const prompt = makePrompt(
-        false,
-        ALL_FORMS,
-        ALL_PERSON_IDS,
-        ALL_VOICES,
-        true,
-        seededRng(seed),
-      );
+      const prompt = makePrompt(defaultFilters, seededRng(seed));
       expect(prompt).not.toBeNull();
       expect(prompt!.tense).not.toBe("imperative");
     }
@@ -142,11 +219,11 @@ describe("makePrompt", () => {
   it("never picks imperative when no second person is enabled", () => {
     for (let seed = 1; seed <= 20; seed += 1) {
       const prompt = makePrompt(
-        false,
-        ALL_FORMS,
-        ["huwa", "hiya", "hum"],
-        ALL_VOICES,
-        false,
+        {
+          ...defaultFilters,
+          enabledPersons: ["huwa", "hiya", "hum"],
+          enabledQuestions: ALL_QUESTIONS.filter((q) => q !== "voice"),
+        },
         seededRng(seed),
       );
       expect(prompt).not.toBeNull();
@@ -158,11 +235,12 @@ describe("makePrompt", () => {
     const forms = [1, 2] as const;
     const persons = ["huwa", "anta"] as const;
     const prompt = makePrompt(
-      false,
-      [...forms],
-      [...persons],
-      ["active"],
-      true,
+      {
+        ...defaultFilters,
+        enabledForms: [...forms],
+        enabledPersons: [...persons],
+        enabledVoices: ["active"],
+      },
       seededRng(3),
     );
     expect(prompt).not.toBeNull();
@@ -175,13 +253,13 @@ describe("makePrompt", () => {
   it("returns null when no enabled tense is eligible", () => {
     expect(
       makePrompt(
-        false,
-        ALL_FORMS,
-        ["huwa", "hiya"],
-        ALL_VOICES,
-        false,
+        {
+          ...defaultFilters,
+          enabledPersons: ["huwa", "hiya"],
+          enabledQuestions: ALL_QUESTIONS.filter((q) => q !== "voice"),
+          enabledTenses: ["imperative"],
+        },
         seededRng(1),
-        ["imperative"],
       ),
     ).toBeNull();
   });
@@ -189,13 +267,12 @@ describe("makePrompt", () => {
   it("stays within the enabled tenses", () => {
     for (let seed = 1; seed <= 20; seed += 1) {
       const prompt = makePrompt(
-        false,
-        ALL_FORMS,
-        ALL_PERSON_IDS,
-        ALL_VOICES,
-        false,
+        {
+          ...defaultFilters,
+          enabledQuestions: ALL_QUESTIONS.filter((q) => q !== "voice"),
+          enabledTenses: ["past"],
+        },
         seededRng(seed),
-        ["past"],
       );
       expect(prompt).not.toBeNull();
       expect(prompt!.tense).toBe("past");
@@ -204,13 +281,12 @@ describe("makePrompt", () => {
 
   it("can produce imperative when only أمر is enabled", () => {
     const prompt = makePrompt(
-      false,
-      ALL_FORMS,
-      ALL_PERSON_IDS,
-      ALL_VOICES,
-      false,
+      {
+        ...defaultFilters,
+        enabledQuestions: ALL_QUESTIONS.filter((q) => q !== "voice"),
+        enabledTenses: ["imperative"],
+      },
       seededRng(1),
-      ["imperative"],
     );
     expect(prompt).not.toBeNull();
     expect(prompt!.tense).toBe("imperative");
@@ -219,40 +295,61 @@ describe("makePrompt", () => {
   it("can produce imperative-only prompts even when voice is a quiz question", () => {
     for (let seed = 1; seed <= 10; seed += 1) {
       const prompt = makePrompt(
-        false,
-        ALL_FORMS,
-        ALL_PERSON_IDS,
-        ALL_VOICES,
-        true,
+        {
+          ...defaultFilters,
+          enabledTenses: ["imperative"],
+        },
         seededRng(seed),
-        ["imperative"],
       );
       expect(prompt).not.toBeNull();
       expect(prompt!.tense).toBe("imperative");
     }
   });
 
-  it("can draw weak roots when includeWeak is on", () => {
-    const weakIds = new Set(
-      ROOTS.filter((root) => root.weakness !== "sound").map((root) => root.id),
-    );
-    let foundWeak = false;
-    for (let seed = 1; seed <= 40; seed += 1) {
+  it("draws only from enabled weakness types", () => {
+    for (let seed = 1; seed <= 30; seed += 1) {
       const prompt = makePrompt(
-        true,
-        ALL_FORMS,
-        ALL_PERSON_IDS,
-        ALL_VOICES,
-        true,
+        {
+          ...defaultFilters,
+          enabledWeaknesses: ["ajwaf"],
+        },
         seededRng(seed),
       );
       expect(prompt).not.toBeNull();
-      if (weakIds.has(prompt!.root.id)) {
-        foundWeak = true;
-        break;
-      }
+      expect(prompt!.root.weakness).toBe("ajwaf");
     }
-    expect(foundWeak).toBe(true);
+  });
+
+  it("draws only waw ajwaf when the letter filter is waw", () => {
+    for (let seed = 1; seed <= 30; seed += 1) {
+      const prompt = makePrompt(
+        {
+          ...defaultFilters,
+          enabledWeaknesses: ["ajwaf"],
+          enabledWeakLetters: ["waw"],
+        },
+        seededRng(seed),
+      );
+      expect(prompt).not.toBeNull();
+      expect(prompt!.root.letters[1]).toBe("و");
+    }
+  });
+
+  it("can draw from every enabled weakness including sound and weak", () => {
+    const seen = new Set<string>();
+    for (let seed = 1; seed <= 80; seed += 1) {
+      const prompt = makePrompt(
+        {
+          ...defaultFilters,
+          enabledWeaknesses: [...ALL_QUIZ_WEAKNESSES],
+        },
+        seededRng(seed),
+      );
+      expect(prompt).not.toBeNull();
+      seen.add(normalizeQuizWeakness(prompt!.root.weakness));
+    }
+    expect(seen.has("sound")).toBe(true);
+    expect(seen.size).toBeGreaterThan(1);
   });
 });
 
@@ -332,6 +429,39 @@ describe("buildQuizSteps", () => {
         expect(choice.primary.length).toBeGreaterThan(0);
         expect(typeof choice.id).toBe("string");
       }
+    }
+  });
+
+  it("keeps root distractors inside the filtered pool", () => {
+    const ajwafPrompt = makePrompt(
+      {
+        ...defaultFilters,
+        enabledWeaknesses: ["ajwaf"],
+        enabledWeakLetters: ["waw"],
+      },
+      seededRng(2),
+    );
+    expect(ajwafPrompt).not.toBeNull();
+    const steps = buildQuizSteps(
+      ajwafPrompt!,
+      {
+        ...defaultFilters,
+        enabledWeaknesses: ["ajwaf"],
+        enabledWeakLetters: ["waw"],
+        enabledQuestions: ["root"],
+      },
+      "form",
+    );
+    const poolIds = new Set(
+      quizRootPool({
+        ...defaultFilters,
+        enabledWeaknesses: ["ajwaf"],
+        enabledWeakLetters: ["waw"],
+      }).map((root) => root.id),
+    );
+    expect(steps).toHaveLength(1);
+    for (const choice of steps[0]!.choices) {
+      expect(poolIds.has(choice.id)).toBe(true);
     }
   });
 
