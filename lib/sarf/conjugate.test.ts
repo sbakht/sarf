@@ -218,6 +218,23 @@ describe("derived forms", () => {
     expect(form({ root: tb3, form: 8 })).toBe("اِتَّبَعَ");
     expect(form({ root: tb3, form: 8, tense: "present" })).toBe("يَتَّبِعُ");
   });
+
+  it("Form VIII مثال وصل turns و into اتّ", () => {
+    const wSl = ["و", "ص", "ل"] as [string, string, string];
+    expect(form({ root: wSl, form: 8, formIBab: "daraba" })).toBe("اِتَّصَلَ");
+    expect(
+      form({ root: wSl, form: 8, formIBab: "daraba", tense: "present" }),
+    ).toBe("يَتَّصِلُ");
+    expect(
+      form({
+        root: wSl,
+        form: 8,
+        formIBab: "daraba",
+        tense: "imperative",
+        person: "anta",
+      }),
+    ).toBe("اِتَّصِلْ");
+  });
 });
 
 describe("أجوف قال / باع / خاف", () => {

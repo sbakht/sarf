@@ -581,20 +581,21 @@ export function applyFormVIIIIdgham(slots: MorphemeSlot[]): {
   if (extraIdx < 0) return { slots, mutations: [] };
   const F = slots[fIdx];
   const fCons = consOf(F);
-  if (!FORM_VIII_IDGHAM.has(fCons) && !isHamzaLetter(fCons))
+  const becomesTeh = isHamzaLetter(fCons) || fCons === WAW || fCons === YEH;
+  if (!FORM_VIII_IDGHAM.has(fCons) && !becomesTeh)
     return { slots, mutations: [] };
 
   const from = surfaceOf(slots);
   const vowel = vowelOf(slots[extraIdx]) ?? FATHA;
   const next = slots.map((item) => ({ ...item }));
-  const letter = isHamzaLetter(fCons) ? TEH : fCons;
+  const letter = becomesTeh ? TEH : fCons;
   next[fIdx] = rewrite(F, letter, SHADDA, vowel);
   next.splice(extraIdx, 1);
   return {
     slots: next,
     mutations: [
       {
-        rule: "Form VIII: the infixed ت assimilates to the first radical (اطَّلَبَ, اتَّخَذَ).",
+        rule: "Form VIII: the infixed ت assimilates to the first radical (اطَّلَبَ, اتَّصَلَ, اتَّخَذَ).",
         from,
         to: surfaceOf(next),
       },
