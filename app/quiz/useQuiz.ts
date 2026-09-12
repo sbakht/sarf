@@ -8,6 +8,7 @@ import {
   ALL_QUESTIONS,
   ALL_TENSES,
   ALL_VOICES,
+  ALL_WEAK_LETTERS,
   buildQuizSteps,
   conjugate,
   linkedPersons,
@@ -21,8 +22,10 @@ import {
   type QuestionId,
   type QuizChoice,
   type QuizFilters,
+  type QuizWeakness,
   type Tense,
   type Voice,
+  type WeakLetter,
 } from "@/lib/sarf";
 
 type Feedback = {
@@ -45,7 +48,8 @@ type Action =
   | { type: "toggleVoice"; voice: Voice }
   | { type: "toggleTense"; tense: Tense }
   | { type: "toggleQuestion"; question: QuestionId }
-  | { type: "setIncludeWeak"; value: boolean }
+  | { type: "toggleWeakness"; weakness: QuizWeakness }
+  | { type: "toggleWeakLetter"; letter: WeakLetter }
   | { type: "selectAllForms" }
   | { type: "selectAllPersons" }
   | { type: "selectAllVoices" }
@@ -62,7 +66,8 @@ type Action =
   | { type: "nextPrompt" };
 
 const DEFAULT_FILTERS: QuizFilters = {
-  includeWeak: false,
+  enabledWeaknesses: ["sound"],
+  enabledWeakLetters: [...ALL_WEAK_LETTERS],
   enabledForms: ALL_FORMS,
   enabledPersons: ALL_PERSON_IDS,
   enabledVoices: ALL_VOICES,
@@ -72,7 +77,8 @@ const DEFAULT_FILTERS: QuizFilters = {
 
 function filtersOf(state: QuizState): QuizFilters {
   return {
-    includeWeak: state.includeWeak,
+    enabledWeaknesses: state.enabledWeaknesses,
+    enabledWeakLetters: state.enabledWeakLetters,
     enabledForms: state.enabledForms,
     enabledPersons: state.enabledPersons,
     enabledVoices: state.enabledVoices,
@@ -82,15 +88,7 @@ function filtersOf(state: QuizState): QuizFilters {
 }
 
 function rollPrompt(filters: QuizFilters, rng?: () => number): Prompt | null {
-  return makePrompt(
-    filters.includeWeak,
-    filters.enabledForms,
-    filters.enabledPersons,
-    filters.enabledVoices,
-    filters.enabledQuestions.includes("voice"),
-    rng,
-    filters.enabledTenses,
-  );
+  return makePrompt(filters, rng);
 }
 
 function resetRound(state: QuizState, filters: QuizFilters): QuizState {
@@ -109,7 +107,9 @@ function applyFilters(
   state: QuizState,
   patch: Partial<QuizFilters>,
 ): QuizState {
-  return resetRound(state, { ...filtersOf(state), ...patch });
+  const filters = { ...filtersOf(state), ...patch };
+  console.log("[quiz filters]", JSON.stringify(filters, null, 2));
+  return resetRound(state, filters);
 }
 
 function nextPersonSet(
@@ -171,10 +171,14 @@ export function reduceQuiz(state: QuizState, action: Action): QuizState {
       const next = toggleItem(state.enabledQuestions, action.question);
       return next ? applyFilters(state, { enabledQuestions: next }) : state;
     }
-    case "setIncludeWeak":
-      return state.includeWeak === action.value
-        ? state
-        : applyFilters(state, { includeWeak: action.value });
+    case "toggleWeakness": {
+      const next = toggleItem(state.enabledWeaknesses, action.weakness);
+      return next ? applyFilters(state, { enabledWeaknesses: next }) : state;
+    }
+    case "toggleWeakLetter": {
+      const next = toggleItem(state.enabledWeakLetters, action.letter);
+      return next ? applyFilters(state, { enabledWeakLetters: next }) : state;
+    }
     case "selectAllForms":
       return state.enabledForms.length === ALL_FORMS.length
         ? state
@@ -314,7 +318,8 @@ export function useQuiz() {
   }
 
   return {
-    includeWeak: state.includeWeak,
+    enabledWeaknesses: state.enabledWeaknesses,
+    enabledWeakLetters: state.enabledWeakLetters,
     enabledForms: state.enabledForms,
     enabledPersons: state.enabledPersons,
     enabledVoices: state.enabledVoices,
@@ -331,8 +336,10 @@ export function useQuiz() {
     done,
     result,
     labelMode,
-    setIncludeWeak: (value: boolean) =>
-      dispatch({ type: "setIncludeWeak", value }),
+    toggleWeakness: (weakness: QuizWeakness) =>
+      dispatch({ type: "toggleWeakness", weakness }),
+    toggleWeakLetter: (letter: WeakLetter) =>
+      dispatch({ type: "toggleWeakLetter", letter }),
     toggleForm: (form: FormId) => dispatch({ type: "toggleForm", form }),
     togglePerson: (person: PersonId) =>
       dispatch({ type: "togglePerson", person }),

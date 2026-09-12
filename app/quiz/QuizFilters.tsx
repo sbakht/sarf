@@ -18,8 +18,10 @@ import {
   type LabelMode,
   type PersonId,
   type QuestionId,
+  type QuizWeakness,
   type Tense,
   type Voice,
+  type WeakLetter,
 } from "@/lib/sarf";
 import { cn } from "@/lib/utils";
 
@@ -34,6 +36,30 @@ const QUESTION_CHIPS: {
   { id: "voice", english: "Voice", arabic: "البناء" },
   { id: "person", english: "Pronoun", arabic: "الضمير" },
 ];
+
+const WEAKNESS_CHIPS: {
+  id: QuizWeakness;
+  english: string;
+  arabic: string;
+}[] = [
+  { id: "sound", english: "Sound", arabic: "الصحيح" },
+  { id: "mithal", english: "Mithal", arabic: "المثال" },
+  { id: "ajwaf", english: "Ajwaf", arabic: "الأجوف" },
+  { id: "naqis", english: "Naqis", arabic: "الناقص" },
+  { id: "mudaf", english: "Mudaf", arabic: "المضاعف" },
+  { id: "mahmuz", english: "Mahmuz", arabic: "المهموز" },
+];
+
+const WEAK_LETTER_CHIPS: {
+  id: WeakLetter;
+  english: string;
+  arabic: string;
+}[] = [
+  { id: "waw", english: "Waw", arabic: "واوي" },
+  { id: "ya", english: "Ya", arabic: "يائي" },
+];
+
+const VOWEL_WEAK: QuizWeakness[] = ["mithal", "ajwaf", "naqis"];
 
 const COLS: { english: string; arabic: string }[] = [
   { english: "Singular", arabic: "مفرد" },
@@ -168,6 +194,8 @@ export function QuizFilters({
   enabledTenses,
   enabledVoices,
   enabledPersons,
+  enabledWeaknesses,
+  enabledWeakLetters,
   onLabelModeChange,
   onToggleQuestion,
   onToggleForm,
@@ -176,6 +204,8 @@ export function QuizFilters({
   onTogglePerson,
   onTogglePersonSet,
   onSelectAllPersons,
+  onToggleWeakness,
+  onToggleWeakLetter,
   collapsible = false,
   summary,
 }: {
@@ -185,6 +215,8 @@ export function QuizFilters({
   enabledTenses: Tense[];
   enabledVoices: Voice[];
   enabledPersons: PersonId[];
+  enabledWeaknesses: QuizWeakness[];
+  enabledWeakLetters: WeakLetter[];
   onLabelModeChange: (mode: LabelMode) => void;
   onToggleQuestion: (question: QuestionId) => void;
   onToggleForm: (form: FormId) => void;
@@ -193,12 +225,17 @@ export function QuizFilters({
   onTogglePerson: (person: PersonId) => void;
   onTogglePersonSet: (persons: PersonId[]) => void;
   onSelectAllPersons: () => void;
+  onToggleWeakness: (weakness: QuizWeakness) => void;
+  onToggleWeakLetter: (letter: WeakLetter) => void;
   /** Mobile: one card that expands/collapses. */
   collapsible?: boolean;
   summary?: string;
 }) {
   const [open, setOpen] = useState(!collapsible);
   const showBody = !collapsible || open;
+  const showLetterFilter = enabledWeaknesses.some((kind) =>
+    VOWEL_WEAK.includes(kind),
+  );
 
   const labelToggle = (
     <div
@@ -229,6 +266,52 @@ export function QuizFilters({
 
   const fields = (
     <>
+      <Field
+        mode={labelMode}
+        english="Roots"
+        arabic="الجذور"
+        subtitle="Sound and weak root types"
+      >
+        <div className="flex flex-wrap gap-2">
+          {WEAKNESS_CHIPS.map((weakness) => (
+            <Chip
+              key={weakness.id}
+              selected={enabledWeaknesses.includes(weakness.id)}
+              onClick={() => onToggleWeakness(weakness.id)}
+            >
+              <ModeText
+                mode={labelMode}
+                english={weakness.english}
+                arabic={weakness.arabic}
+              />
+            </Chip>
+          ))}
+        </div>
+      </Field>
+      {showLetterFilter ? (
+        <Field
+          mode={labelMode}
+          english="Weak letter"
+          arabic="حرف العلة"
+          subtitle="Waw vs ya for mithal, ajwaf, and naqis"
+        >
+          <div className="flex flex-wrap gap-2">
+            {WEAK_LETTER_CHIPS.map((letter) => (
+              <Chip
+                key={letter.id}
+                selected={enabledWeakLetters.includes(letter.id)}
+                onClick={() => onToggleWeakLetter(letter.id)}
+              >
+                <ModeText
+                  mode={labelMode}
+                  english={letter.english}
+                  arabic={letter.arabic}
+                />
+              </Chip>
+            ))}
+          </div>
+        </Field>
+      ) : null}
       <Field
         mode={labelMode}
         english="Questions"

@@ -8,13 +8,16 @@ import {
   ALL_QUESTIONS,
   ALL_TENSES,
   ALL_VOICES,
+  ALL_WEAK_LETTERS,
   toggleItem,
   type FormId,
   type LabelMode,
   type PersonId,
   type QuestionId,
+  type QuizWeakness,
   type Tense,
   type Voice,
+  type WeakLetter,
 } from "@/lib/sarf";
 
 function FiltersDemo({
@@ -24,6 +27,8 @@ function FiltersDemo({
   initialTenses = [...ALL_TENSES],
   initialVoices = [...ALL_VOICES],
   initialPersons = [...ALL_PERSON_IDS],
+  initialWeaknesses = ["sound"] as QuizWeakness[],
+  initialWeakLetters = [...ALL_WEAK_LETTERS] as WeakLetter[],
 }: {
   initialLabelMode?: LabelMode;
   initialQuestions?: QuestionId[];
@@ -31,6 +36,8 @@ function FiltersDemo({
   initialTenses?: Tense[];
   initialVoices?: Voice[];
   initialPersons?: PersonId[];
+  initialWeaknesses?: QuizWeakness[];
+  initialWeakLetters?: WeakLetter[];
 }) {
   const [labelMode, setLabelMode] = useState(initialLabelMode);
   const [enabledQuestions, setQuestions] = useState(initialQuestions);
@@ -38,6 +45,8 @@ function FiltersDemo({
   const [enabledTenses, setTenses] = useState(initialTenses);
   const [enabledVoices, setVoices] = useState(initialVoices);
   const [enabledPersons, setPersons] = useState(initialPersons);
+  const [enabledWeaknesses, setWeaknesses] = useState(initialWeaknesses);
+  const [enabledWeakLetters, setWeakLetters] = useState(initialWeakLetters);
 
   return (
     <QuizFilters
@@ -47,6 +56,8 @@ function FiltersDemo({
       enabledTenses={enabledTenses}
       enabledVoices={enabledVoices}
       enabledPersons={enabledPersons}
+      enabledWeaknesses={enabledWeaknesses}
+      enabledWeakLetters={enabledWeakLetters}
       onLabelModeChange={setLabelMode}
       onToggleQuestion={(q) => {
         const next = toggleItem(enabledQuestions, q);
@@ -78,6 +89,14 @@ function FiltersDemo({
         }
       }}
       onSelectAllPersons={() => setPersons([...ALL_PERSON_IDS])}
+      onToggleWeakness={(w) => {
+        const next = toggleItem(enabledWeaknesses, w);
+        if (next) setWeaknesses(next);
+      }}
+      onToggleWeakLetter={(letter) => {
+        const next = toggleItem(enabledWeakLetters, letter);
+        if (next) setWeakLetters(next);
+      }}
     />
   );
 }
@@ -93,7 +112,12 @@ export const AllSelected: StoryObj = {
   render: () => <FiltersDemo />,
   play: async ({ canvas }) => {
     await expect(canvas.getByText("Filters")).toBeVisible();
+    await expect(canvas.getByText("Roots")).toBeVisible();
     await expect(canvas.getByText("Questions")).toBeVisible();
+    await expect(canvas.getByRole("button", { name: /Sound/ })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
     await expect(canvas.getByRole("button", { name: /Root/ })).toHaveAttribute(
       "aria-pressed",
       "true",
@@ -131,6 +155,8 @@ export const SparseSelection: StoryObj = {
       initialTenses={["past"]}
       initialVoices={["active"]}
       initialPersons={["huwa", "hiya", "ana"]}
+      initialWeaknesses={["ajwaf", "naqis"]}
+      initialWeakLetters={["waw"]}
     />
   ),
   play: async ({ canvas }) => {
@@ -141,6 +167,14 @@ export const SparseSelection: StoryObj = {
     await expect(canvas.getByRole("button", { name: /Tense/ })).toHaveAttribute(
       "aria-pressed",
       "false",
+    );
+    await expect(canvas.getByRole("button", { name: /Ajwaf/ })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    await expect(canvas.getByRole("button", { name: /Waw/ })).toHaveAttribute(
+      "aria-pressed",
+      "true",
     );
   },
 };
