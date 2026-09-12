@@ -40,10 +40,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${outfit.variable} ${bricolage.variable} ${naskh.variable} h-full antialiased`}
+      className={`${outfit.variable} ${bricolage.variable} ${naskh.variable} h-full min-w-0 antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">
+      <body className="flex min-h-full min-w-0 flex-col">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

@@ -96,6 +96,30 @@ export type {
   RootGenderPrompt,
 } from "./primer";
 export { inferWeakness } from "./weak";
+export {
+  COURSE_CHAPTERS,
+  COURSE_KINDS,
+  COURSE_KIND_META,
+  FIRST_CHAPTER_ID,
+  MASTERY_ROUNDS,
+  MUTATION_META,
+  WEAK_ROUNDS,
+  buildWeakSteps,
+  chapterRounds,
+  conjugateCourse,
+  courseKind,
+  getChapter,
+  makeWeakPrompt,
+  mutationId,
+  nextChapter,
+} from "./weak-course";
+export type {
+  ChapterId,
+  ChapterMeta,
+  CourseKind,
+  MutationId,
+  WeakPrompt,
+} from "./weak-course";
 export { stripHarakat, normalizeForAnswer } from "./harakat";
 export { surfaceOf } from "./slots";
 export {

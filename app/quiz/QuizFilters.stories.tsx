@@ -29,6 +29,8 @@ function FiltersDemo({
   initialPersons = [...ALL_PERSON_IDS],
   initialWeaknesses = ["sound"] as QuizWeakness[],
   initialWeakLetters = [...ALL_WEAK_LETTERS] as WeakLetter[],
+  collapsible = false,
+  summary,
 }: {
   initialLabelMode?: LabelMode;
   initialQuestions?: QuestionId[];
@@ -38,6 +40,8 @@ function FiltersDemo({
   initialPersons?: PersonId[];
   initialWeaknesses?: QuizWeakness[];
   initialWeakLetters?: WeakLetter[];
+  collapsible?: boolean;
+  summary?: string;
 }) {
   const [labelMode, setLabelMode] = useState(initialLabelMode);
   const [enabledQuestions, setQuestions] = useState(initialQuestions);
@@ -97,6 +101,8 @@ function FiltersDemo({
         const next = toggleItem(enabledWeakLetters, letter);
         if (next) setWeakLetters(next);
       }}
+      collapsible={collapsible}
+      summary={summary}
     />
   );
 }
@@ -176,5 +182,40 @@ export const SparseSelection: StoryObj = {
       "aria-pressed",
       "true",
     );
+  },
+};
+
+/** Closed mobile Filters header inside the quiz page grid — must keep px-4 inset. */
+export const CollapsedMobile: StoryObj = {
+  render: () => (
+    <div
+      data-testid="mobile-quiz-frame"
+      className="mx-auto flex min-w-0 flex-col gap-6 px-4 py-8"
+      style={{ width: "375px", maxWidth: "375px" }}
+    >
+      <div className="grid min-w-0 gap-6">
+        <div className="flex min-w-0 flex-col gap-4">
+          <div className="min-w-0">
+            <FiltersDemo
+              collapsible
+              summary="5 questions · 10 forms · 3 tenses · 2 voices · 14 pronouns"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  ),
+  play: async ({ canvas }) => {
+    const frame = canvas.getByTestId("mobile-quiz-frame");
+    const toggle = canvas.getByRole("button", { name: /Filters/i });
+    await expect(toggle).toHaveAttribute("aria-expanded", "false");
+
+    const filters = toggle.closest("[data-quiz-filters]");
+    await expect(filters).toBeTruthy();
+
+    const frameBox = frame.getBoundingClientRect();
+    const filtersBox = filters!.getBoundingClientRect();
+    await expect(filtersBox.left - frameBox.left).toBeGreaterThanOrEqual(16);
+    await expect(frameBox.right - filtersBox.right).toBeGreaterThanOrEqual(16);
   },
 };

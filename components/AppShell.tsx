@@ -32,6 +32,7 @@ const ARABIC_FONT_SIZE_OPTIONS = [
 const NAV = [
   { href: "/landing", label: "Home" },
   { href: "/lessons", label: "Lessons" },
+  { href: "/weak", label: "Weak" },
   { href: "/atlas", label: "Atlas" },
   { href: "/gym", label: "Gym" },
   { href: "/", label: "Quiz" },
@@ -93,7 +94,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   );
 
   return (
-    <div className="min-h-full flex flex-col">
+    <div className="flex min-h-full min-w-0 flex-col">
       <header className="border-b border-border bg-card/80 backdrop-blur-sm sticky top-0 z-20">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-2.5">
           {bare ? (
@@ -166,7 +167,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
         </div>
       </header>
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
+      <main className="mx-auto w-full min-w-0 max-w-6xl flex-1 px-4 py-8">
         {children}
       </main>
       <footer className="px-4 py-3">

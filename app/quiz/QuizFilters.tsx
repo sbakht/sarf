@@ -437,7 +437,7 @@ export function QuizFilters({
     <aside
       data-quiz-filters
       className={cn(
-        "flex flex-col rounded-xl border border-border bg-card ring-1 ring-foreground/10",
+        "flex min-w-0 w-full flex-col overflow-hidden rounded-xl border border-border bg-card ring-1 ring-foreground/10",
         collapsible ? "gap-0" : "gap-5 p-4 lg:sticky lg:top-20 lg:self-start",
       )}
     >
@@ -446,7 +446,7 @@ export function QuizFilters({
           type="button"
           aria-expanded={open}
           onClick={() => setOpen((value) => !value)}
-          className="flex w-full cursor-pointer items-start gap-3 px-4 py-3 text-start"
+          className="flex min-w-0 w-full cursor-pointer items-start gap-3 px-4 py-3 text-start"
         >
           <div className="min-w-0 flex-1">
             <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
