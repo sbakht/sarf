@@ -88,7 +88,7 @@ describe("quizRootPool", () => {
     expect(pool.length).toBeGreaterThanOrEqual(3);
     expect(pool.every((root) => root.weakness.startsWith("mahmuz"))).toBe(true);
     expect(pool.map((root) => root.id)).toEqual(
-      expect.arrayContaining(["axd", "qrA", "sAl"]),
+      expect.arrayContaining(["axd", "qrA", "sAl", "bdA"]),
     );
   });
 
